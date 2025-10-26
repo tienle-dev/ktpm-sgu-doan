@@ -1,0 +1,27 @@
+services:
+  server:
+    build: ./server_app
+    container_name: webktpm-server
+    ports:
+      - "8000:8000"
+    working_dir: /app
+    command: npm start
+    volumes:
+      - ./server_app:/app
+    environment:
+      - NODE_ENV=production
+
+  client:
+    build: ./client_app
+    container_name: webktpm-client
+    ports:
+      - "3000:3000"
+    working_dir: /app
+    command: npm start
+    volumes:
+      - ./client_app:/app
+    environment:
+      - NODE_OPTIONS=--openssl-legacy-provider
+      - REACT_APP_API_URL=http://server:8000/api
+    depends_on:
+      - server

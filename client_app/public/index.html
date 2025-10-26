@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Web site created using create-react-app" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+  <script
+    src="https://www.paypal.com/sdk/js?client-id=AZs1BwWM6IlHg7FFjBOURgGUuObrQmEKguSVbowu4ZqOuH7n2em2NBDmzBoQOqrUsgV-CVAsylOOB5ve"
+    data-csp-nonce="xyz-123"></script>
+
+  <!-- Leaflet for OpenStreetMap -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <title>React App</title>
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root">
+
+  </div>
+  <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+
+  <script>
+    $(function () {
+      var origin, destination, map;
+      var currentRouteLayer;
+
+      // Init autocompletes and map
+      initAutocompletes();
+      initMap();
+
+      // Geocode address using Photon
+      function geocodeAddress(address, callback) {
+        if (!address) return callback(null);
+        fetch(`https://photon.komoot.io/api?q=${encodeURIComponent(address)}&limit=1`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.features && data.features.length > 0) {
+              var feature = data.features[0];
+              var center = feature.geometry.coordinates; // [lng, lat]
+              callback({ lat: center[1], lng: center[0] }, feature.properties);
+            } else {
+              callback(null);
+            }
+          })
+          .catch(() => callback(null));
+      }
+
+      // Set up autocomplete for inputs
+      function setAutocomplete(inputId, hiddenId, suggestionsId) {
+        var input = $(`#${inputId}`);
+        var suggestions = $(`#${suggestionsId}`);
+        if (suggestions.length === 0) {
+          var sugDiv = `<ul id="${suggestionsId}" class="list-unstyled suggestions" style="position:absolute; z-index:1000; background:white; border:1px solid #ccc; max-height:200px; overflow:auto; display:none; list-style:none; margin:0; padding:0; width:100%;"></ul>`;
+          input.after(sugDiv);
+          suggestions = $(`#${suggestionsId}`);
+        }
+
+        input.on('input', function () {
+          var query = this.value.trim();
+          suggestions.hide().empty();
+          if (query.length < 3) return;
+
+          fetch(`https://photon.komoot.io/api?q=${encodeURIComponent(query)}&limit=5`)
+            .then(response => response.json())
+            .then(data => {
+              if (data.features && data.features.length > 0) {
+                data.features.forEach(function (f) {
+                  var props = f.properties;
+                  var text = props.name || '';
+                  if (props.street) text = `${props.street}${props.housenumber ? ' ' + props.housenumber : ''}${text ? ', ' + text : ''}`;
+                  if (props.city || props.state) text += `, ${props.city || props.state}`;
+                  if (props.country) text += `, ${props.country}`;
+
+                  var li = $(`<li class="p-2 border-bottom" style="cursor:pointer;"></li>`).text(text).hover(
+                    function () { $(this).addClass('bg-light'); },
+                    function () { $(this).removeClass('bg-light'); }
+                  ).on('click', function () {
+                    input.val(text);
+                    $(`#${hiddenId}`).val(text);
+                    suggestions.hide();
+                  });
+                  suggestions.append(li);
+                });
+                suggestions.show();
+              }
+            })
+            .catch(() => {});
+        });
+
+        // Hide suggestions on outside click
+        $(document).on('click', function (e) {
+          if (!input.is(e.target) && input.has(e.target).length === 0 &&
+              !suggestions.is(e.target) && suggestions.has(e.target).length === 0) {
+            suggestions.hide();
+          }
+        });
+      }
+
+      function initAutocompletes() {
+        setAutocomplete('from_places', 'origin', 'from-suggestions');
+        setAutocomplete('to_places', 'destination', 'to-suggestions');
+      }
+
+      // Init or load map with Leaflet
+      function initMap() {
+        var myLatLng = [10.7760195, 106.6652137];
+        map = L.map('map').setView(myLatLng, 16);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        currentRouteLayer = L.layerGroup().addTo(map);
+      }
+
+      function displayRoute(travel_mode, origin_str, destination_str) {
+        if (currentRouteLayer) currentRouteLayer.clearLayers();
+
+        geocodeAddress(origin_str, function (origin_ll) {
+          if (!origin_ll) return alert('Không thể tìm địa chỉ xuất phát');
+          L.marker([origin_ll.lat, origin_ll.lng], { icon: L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png', iconSize: [25, 41] }) })
+            .bindPopup('Xuất phát').addTo(currentRouteLayer);
+
+          geocodeAddress(destination_str, function (dest_ll) {
+            if (!dest_ll) return alert('Không thể tìm địa chỉ đến');
+            L.marker([dest_ll.lat, dest_ll.lng], { icon: L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png', iconSize: [25, 41] }) })
+              .bindPopup('Đến').addTo(currentRouteLayer);
+
+            var profileMap = { 'DRIVING': 'driving', 'WALKING': 'foot', 'BICYCLING': 'cycling' };
+            var profile = profileMap[travel_mode] || 'driving';
+            var url = `http://router.project-osrm.org/route/v1/${profile}/${origin_ll.lng},${origin_ll.lat};${dest_ll.lng},${dest_ll.lat}?overview=full&geometries=geojson`;
+
+            fetch(url)
+              .then(response => response.json())
+              .then(data => {
+                if (data.code === 'Ok' && data.routes.length > 0) {
+                  var route = data.routes[0];
+                  var geojson = { type: 'Feature', properties: {}, geometry: route.geometry };
+                  L.geoJSON(geojson, { style: { color: 'blue', weight: 5 } }).addTo(currentRouteLayer);
+                  map.fitBounds(currentRouteLayer.getBounds());
+                } else {
+                  alert('Không thể hiển thị tuyến đường: ' + (data.message || 'Lỗi'));
+                }
+              })
+              .catch(() => alert('Lỗi khi tải tuyến đường'));
+          });
+        });
+      }
+
+      // Calculate distance using OSRM
+      function calculateDistance(travel_mode, origin_str, destination_str) {
+        geocodeAddress(origin_str, function (origin_ll) {
+          if (!origin_ll) return alert('Không thể tìm địa chỉ xuất phát');
+          geocodeAddress(destination_str, function (dest_ll) {
+            if (!dest_ll) return alert('Không thể tìm địa chỉ đến');
+            var profileMap = { 'DRIVING': 'driving', 'WALKING': 'foot', 'BICYCLING': 'cycling' };
+            var profile = profileMap[travel_mode] || 'driving';
+            var url = `http://router.project-osrm.org/route/v1/${profile}/${origin_ll.lng},${origin_ll.lat};${dest_ll.lng},${dest_ll.lat}?overview=false`;
+
+            fetch(url)
+              .then(response => response.json())
+              .then(data => {
+                if (data.code === 'Ok' && data.routes.length > 0) {
+                  var route = data.routes[0];
+                  var distance_in_kilo = route.distance / 1000;
+                  var duration_text = Math.floor(route.duration / 60) + ' mins';
+                  appendResults(distance_in_kilo, duration_text);
+                } else {
+                  $('#result').html('Không có tuyến đường khả dụng giữa hai địa điểm này');
+                }
+              })
+              .catch(err => {
+                $('#result').html('Lỗi: ' + err);
+              });
+          });
+        });
+      }
+
+      // Append results
+      function appendResults(distance_in_kilo, duration_text) {
+        $("#result").removeClass("hide");
+        $('#in_kilo').html(distance_in_kilo.toFixed(2) + ' Km');
+        $('#duration_text').html(duration_text);
+        var roundedKm = parseInt(Math.round(distance_in_kilo));
+        if (roundedKm <= 5) {
+          $('#price_shipping').html('5000');
+        } else if (roundedKm > 5 && roundedKm <= 10) {
+          $('#price_shipping').html('10000');
+        } else {
+          $('#price_shipping').html('15000');
+        }
+      }
+
+      // On submit display route and calculate distance
+      $('#distance_form').click(function (e) {
+        e.preventDefault();
+        var origin_str = $('#origin').val();
+        var destination_str = $('#destination').val();
+        var travel_mode = $('#travel_mode').val() || 'DRIVING';
+        if (!origin_str || !destination_str) return alert('Vui lòng nhập địa chỉ');
+        displayRoute(travel_mode, origin_str, destination_str);
+        calculateDistance(travel_mode, origin_str, destination_str);
+      });
+
+      $('#distance_next').click(function (e) {
+        e.preventDefault();
+        var origin_str = $('#origin').val();
+        var destination_str = $('#destination').val();
+        var travel_mode = $('#travel_mode').val() || 'DRIVING';
+        if (!origin_str || !destination_str) return alert('Vui lòng nhập địa chỉ');
+        displayRoute(travel_mode, origin_str, destination_str);
+        calculateDistance(travel_mode, origin_str, destination_str);
+      });
+    });
+  </script>
+
+</body>
+
+</html>
