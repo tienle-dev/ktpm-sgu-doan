@@ -56,7 +56,7 @@ module.exports.create = async (req, res) => {
         newUser.username = req.query.username
         newUser.password = req.query.password
         if (req.query.permission) {
-            newUser.id_permission = "6087dcb5f269113b3460fce4"
+            newUser.id_permission = "68ed1321ea0818176077f743"
         } else newUser.id_permission = req.query.permission
         newUser.email = req.query.email
 

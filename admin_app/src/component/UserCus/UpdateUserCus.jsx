@@ -12,7 +12,7 @@ function UpdateUserCus(props) {
     const [username, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [permissionChoose, setPermissionChoose] = useState('6087dcb5f269113b3460fce4');
+    const [permissionChoose, setPermissionChoose] = useState('68ed1321ea0818176077f743');
     const [validationMsg, setValidationMsg] = useState('');
     const { handleSubmit } = useForm();
 
