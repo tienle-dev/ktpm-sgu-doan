@@ -67,7 +67,7 @@ function CreateCoupon(props) {
                                         {errors.count && errors.count.type === "required" && <p className="form-text text-danger">Số lượng không được để trống</p>}
                                     </div>
                                     <div className="form-group w-50">
-                                        <label htmlFor="description">Khuyến Mãi</label>
+                                        <label htmlFor="description">Khuyến Mãi (%)</label>
                                         <input type="text" className="form-control" id="promotion" {...register('promotion', { required: true })} />
                                         {errors.promotion && errors.promotion.type === "required" && <p className="form-text text-danger">Khuyến mãi không được để trống</p>}
                                     </div>
