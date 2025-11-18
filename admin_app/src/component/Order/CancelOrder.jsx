@@ -58,7 +58,7 @@ function CancelOrder(props) {
                         <div className="card">
                             <div className="card-body">
                                 <h4 className="card-title">Cancel Order</h4>
-                                <h4 className="card-title">TotalMoney: {totalMoney}$</h4>
+                                <h4 className="card-title">TotalMoney: {totalMoney} VNĐ</h4>
                                 <Search handlerSearch={handlerSearch} />
 
                                 <div className="table-responsive mt-3">
