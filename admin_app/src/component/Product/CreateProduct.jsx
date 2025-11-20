@@ -174,9 +174,9 @@ function CreateProduct(props) {
                                         <p className="form-text text-danger">{validationMsg.category}</p>
                                     </div>
 
-                                    {/* <div className="form-group w-50">
+                                    <div className="form-group w-50">
                                         <label htmlFor="gender" className="mr-2">Chọn giới tính:</label>
-                                        <select name="gender" id="gender" value={genderChoose} onChange={(e) => setGenderChoose(e.target.value)}>
+                                        <select name="gender" id="gender" className="form-control" value={genderChoose} onChange={(e) => setGenderChoose(e.target.value)}>
                                             {
                                                 gender && gender.map((item, index) => (
                                                     <option value={item} key={index}>{item}</option>
@@ -184,7 +184,7 @@ function CreateProduct(props) {
                                             }
 
                                         </select>
-                                    </div> */}
+                                    </div>
 
                                     <div className="form-group w-50">
                                         <label>Hình Ảnh</label>

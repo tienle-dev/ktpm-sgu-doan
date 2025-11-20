@@ -9,19 +9,17 @@ import "slick-carousel/slick/slick-theme.css";
 
 Home_Product.propTypes = {
     gender: PropTypes.string,
-    category: PropTypes.string,
     GET_id_modal: PropTypes.func
 };
 
 Home_Product.defaultProps = {
     gender: '',
-    category: '',
     GET_id_modal: null
 }
 
 function Home_Product(props) {
 
-    const { gender, category, GET_id_modal } = props
+    const { gender, GET_id_modal } = props
 
     var settings = {
         dots: false,
@@ -66,21 +64,15 @@ function Home_Product(props) {
 
         const fetchData = async () => {
 
-            const params = {
-                id_category: category
-            }
+            const response = await Product.Get_Product_By_Gender(gender)
 
-            const query = '?' + queryString.stringify(params)
-
-            const response = await Product.Get_Category_Product(query)
-
-            set_products(response.splice(0, 7))
+            set_products(response.slice(0, 7))
 
         }
 
         fetchData()
 
-    }, [])
+    }, [gender])
 
 
     return (

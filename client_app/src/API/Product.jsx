@@ -30,6 +30,11 @@ const Product = {
     get_search_list: (query) => {
         const url = `/api/Product/scoll/page${query}`
         return axiosClient.get(url)
+    },
+
+    Get_Product_By_Gender: (gender) => {
+        const url = `/api/Product/gender/${gender}`
+        return axiosClient.get(url)
     }
 
 }

@@ -10,10 +10,10 @@ router.get('/category', Products.category)
 
 router.get('/:id', Products.detail)
 
-router.get('/category/gender', Products.gender)
-
 router.get('/category/pagination', Products.pagination)
 
 router.get('/scoll/page', Products.scoll)
+
+router.get('/gender/:gender', Products.getByGender)
 
 module.exports = router

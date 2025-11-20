@@ -10,17 +10,6 @@ module.exports.index = async (req, res) => {
     res.json(products)
 }
 
-
-module.exports.gender = async (req, res) => {
-
-    const gender = req.query.gender
-
-    const category = await Category.find({ gender: gender })
-
-    res.json(category)
-
-}
-
 //TH: Hàm này dùng để phân loại sản phẩm
 module.exports.category = async (req, res) => {
 
@@ -118,4 +107,13 @@ module.exports.scoll = async (req, res) => {
 
     res.json(paginationProducts)
 
+}
+
+
+module.exports.getByGender = async (req, res) => {
+    const gender = req.params.gender
+    
+    const products = await Products.find({ gender: gender })
+    
+    res.json(products)
 }
