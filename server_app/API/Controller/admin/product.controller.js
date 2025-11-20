@@ -1,4 +1,5 @@
 const Product = require('../../../Models/product')
+const cloudinary = require('../../../config/cloudinary.config');
 
 module.exports.index = async (req, res) => {
     let page = parseInt(req.query.page) || 1;
@@ -49,27 +50,38 @@ module.exports.create = async (req, res) => {
         newProduct.name_product = req.body.name
         newProduct.price_product = req.body.price
         newProduct.id_category = req.body.category
-        // newProduct.number = req.body.number
         newProduct.describe = req.body.description
         newProduct.gender = req.body.gender
 
-        if (req.files) {
-            var fileImage = req.files.file;
+        if (req.files && req.files.file) {
+            try {
+                const fileImage = req.files.file;
+                
+                // Chuyển buffer sang base64 data URI
+                const base64Image = `data:${fileImage.mimetype};base64,${fileImage.data.toString('base64')}`;
+                
+                // Upload ảnh lên Cloudinary
+                const result = await cloudinary.uploader.upload(base64Image, {
+                    folder: 'products',
+                    resource_type: 'auto'
+                });
 
-            var fileName = fileImage.name
-
-            var fileProduct = "/img/" + fileName
-
-            newProduct.image = "http://localhost:8000" + fileProduct
-
-            fileImage.mv('./public/img/' + fileName)
+                newProduct.image = result.secure_url;
+            } catch (error) {
+                console.error('Cloudinary upload error:', error);
+                newProduct.image = 'https://via.placeholder.com/300x300?text=No+Photo';
+            }
         }
-        else newProduct.image = 'http://localhost:8000/img/nophoto.jpg'
+        else {
+            newProduct.image = 'https://via.placeholder.com/300x300?text=No+Photo';
+        }
 
-        newProduct.save();
+        await newProduct.save();
         res.json({ msg: "Bạn đã thêm thành công" })
     }
 }
+
+
 
 module.exports.delete = async (req, res) => {
     const id = req.query.id;
@@ -102,44 +114,44 @@ module.exports.update = async (req, res) => {
     } else {
         req.body.name = req.body.name.toLowerCase().replace(/^.|\s\S/g, a => { return a.toUpperCase() })
 
+        const updateData = {
+            name_product: req.body.name,
+            price_product: req.body.price,
+            id_category: req.body.category,
+            describe: req.body.description,
+            gender: req.body.gender
+        };
 
-        if (req.files) {
-            var fileImage = req.files.file;
+        if (req.files && req.files.file) {
+            try {
+                const fileImage = req.files.file;
+                
+                // Chuyển buffer sang base64 data URI
+                const base64Image = `data:${fileImage.mimetype};base64,${fileImage.data.toString('base64')}`;
+                
+                // Upload ảnh mới lên Cloudinary
+                const result = await cloudinary.uploader.upload(base64Image, {
+                    folder: 'products',
+                    resource_type: 'auto'
+                });
 
-            var fileName = fileImage.name
+                updateData.image = result.secure_url;
 
-
-            var fileProduct = "/img/" + fileName
-
-            await Product.updateOne({ _id: req.body.id }, {
-                name_product: req.body.name,
-                price_product: req.body.price,
-                id_category: req.body.category,
-                // number: req.body.number,
-                describe: req.body.description,
-                gender: req.body.gender,
-                image: fileProduct
-            }, function (err, res) {
-                if (err) return res.json({ msg: err });
-            });
-            res.json({ msg: "Bạn đã update thành công" })
-
-            fileImage.mv('./public/img/' + fileName)
+                // Xóa ảnh cũ trên Cloudinary
+                const oldProduct = await Product.findById(req.body.id);
+                if (oldProduct.image && oldProduct.image.includes('cloudinary')) {
+                    const urlParts = oldProduct.image.split('/');
+                    const fileWithExt = urlParts[urlParts.length - 1];
+                    const folder = urlParts.slice(urlParts.indexOf('upload') + 2, -1).join('/');
+                    const publicId = `${folder}/${fileWithExt.split('.')[0]}`;
+                    await cloudinary.uploader.destroy(publicId);
+                }
+            } catch (error) {
+                console.error('Cloudinary upload error:', error);
+            }
         }
-        else {
-            await Product.updateOne({ _id: req.body.id }, {
-                name_product: req.body.name,
-                price_product: req.body.price,
-                id_category: req.body.category,
-                // number: req.body.number,
-                describe: req.body.description,
-                gender: req.body.gender
-            }, function (err, res) {
-                if (err) return res.json({ msg: err });
-            });
-            res.json({ msg: "Bạn đã update thành công" })
-        }
 
-
+        await Product.updateOne({ _id: req.body.id }, updateData);
+        res.json({ msg: "Bạn đã update thành công" })
     }
 }

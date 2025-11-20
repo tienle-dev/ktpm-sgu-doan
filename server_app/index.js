@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
@@ -42,7 +43,10 @@ mongoose.connect("mongodb+srv://vinhmatlo432_db_user:vinhcucyeuqa3212@cluster0.c
 
 
 app.use('/', express.static('public'))
-app.use(upload());
+app.use(upload({
+    useTempFiles: false,  // Tắt tạo file tạm
+    limits: { fileSize: 50 * 1024 * 1024 }, // Giới hạn 50MB
+}));
 
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
