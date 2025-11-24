@@ -149,7 +149,7 @@ function Shop(props) {
 
     const handler_Search = (value) => {
         console.log("Search: ", value)
-        
+
         setPagination({
             page: pagination.page,
             count: pagination.count,

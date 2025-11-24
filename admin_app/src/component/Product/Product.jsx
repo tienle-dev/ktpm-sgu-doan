@@ -99,10 +99,10 @@ function Product() {
                                                         <td className="name">{value.name_product}</td>
                                                         <td>{new Intl.NumberFormat('vi-VN', { style: 'decimal', decimal: 'VND' }).format(value.price_product) + ' VNĐ'}</td>
                                                         <td><img src={value.image} alt="" style={{ width: '70px' }} /></td>
-                                                        
-                                                        <td 
-                                                            className="name" 
-                                                            style={{ 
+
+                                                        <td
+                                                            className="name"
+                                                            style={{
                                                                 maxWidth: '200px', // Giới hạn chiều rộng tối đa
                                                                 overflow: 'hidden', // Ẩn phần thừa
                                                                 textOverflow: 'ellipsis', // Thêm dấu ...
