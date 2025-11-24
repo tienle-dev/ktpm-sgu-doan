@@ -3,11 +3,10 @@ import { Modal } from "react-bootstrap";
 import { useParams } from 'react-router';
 import Product from '../API/Product';
 import { useDispatch, useSelector } from 'react-redux';
-import { stringify } from 'query-string';
-import { addCart } from '../Redux/Action/ActionCart';
+// import { stringify } from 'query-string'; // Không thấy dùng, có thể bỏ
 import { changeCount } from '../Redux/Action/ActionCount';
 import { Link } from 'react-router-dom';
-import Cart from '../API/CartAPI';
+// import Cart from '../API/CartAPI'; // Không thấy dùng
 import CommentAPI from '../API/CommentAPI';
 import CartsLocal from '../Share/CartsLocal';
 import SaleAPI from '../API/SaleAPI';
@@ -34,25 +33,30 @@ function Detail_Product(props) {
 
     // Hàm này dùng để gọi API hiển thị sản phẩm
     useEffect(() => {
-
         const fetchData = async () => {
-
             const response = await Product.Get_Detail_Product(id)
-
             set_product(response)
-
             const resDetail = await SaleAPI.checkSale(id)
-
             if (resDetail.msg === "Thanh Cong") {
                 setSale(resDetail.sale)
             }
-
         }
-
         fetchData()
-
     }, [id])
 
+
+    const [count, set_count] = useState(1)
+    const [show_success, set_show_success] = useState(false)
+    const [size, set_size] = useState('S')
+
+
+    // --- PHẦN CHỈNH SỬA LOGIC SIZE ---
+
+    // 1. Định nghĩa danh sách size
+    const listSizePants = ['29', '30', '31', '32', '33', '34', '36'];
+    const listSizeNormal = ['S', 'M', 'L', 'XL', 'XXL'];
+
+    // 2. Logic set mặc định (giữ nguyên logic cũ của bạn)
     useEffect(() => {
         if (product.id_category && product.id_category.category === 'Pants') {
             set_size('29')
@@ -61,17 +65,25 @@ function Detail_Product(props) {
         }
     }, [product])
 
-
-    const [count, set_count] = useState(1)
-
-    const [show_success, set_show_success] = useState(false)
-
-    const [size, set_size] = useState('S')
+    // 3. Hàm xử lý khi bấm vào nút Size (Chọn hoặc Hủy chọn)
+    const handler_choose_size = (value) => {
+        if (size === value) {
+            set_size(null); // Nếu bấm vào size đang chọn thì hủy chọn
+        } else {
+            set_size(value); // Nếu bấm size khác thì chọn size đó
+        }
+    }
+    // ----------------------------------
 
     // Hàm này dùng để thêm vào giỏ hàng
     const handler_addcart = (e) => {
-
         e.preventDefault()
+
+        // Thêm validate: Nếu chưa chọn size thì báo lỗi (Optional)
+        if (!size) {
+            alert("Vui lòng chọn kích cỡ sản phẩm!");
+            return;
+        }
 
         const data = {
             id_cart: Math.random().toString(),
@@ -93,17 +105,13 @@ function Detail_Product(props) {
         setTimeout(() => {
             set_show_success(false)
         }, 1000)
-
     }
-
-
 
     // Hàm này dùng để giảm số lượng
     const downCount = () => {
         if (count === 1) {
             return
         }
-
         set_count(count - 1)
     }
 
@@ -111,17 +119,13 @@ function Detail_Product(props) {
         set_count(count + 1)
     }
 
-
     // State dùng để mở modal
     const [modal, set_modal] = useState(false)
 
     // State thông báo lỗi comment
     const [error_comment, set_error_comment] = useState(false)
-
     const [star, set_star] = useState(1)
-
     const [comment, set_comment] = useState('')
-
     const [validation_comment, set_validation_comment] = useState(false)
 
     // state load comment
@@ -132,66 +136,42 @@ function Detail_Product(props) {
 
     // Hàm này dùng để gọi API post comment sản phẩm của user
     const handler_Comment = () => {
-
         if (!sessionStorage.getItem('id_user')) { // Khi khách hàng chưa đăng nhập
-
             set_error_comment(true)
-
         } else { // Khi khách hàng đã đăng nhập
-
             if (!comment) {
                 set_validation_comment(true)
                 return
             }
-
             const data = {
                 id_user: sessionStorage.getItem('id_user'),
                 content: comment,
                 star: star
             }
-
             const post_data = async () => {
-
                 const response = await CommentAPI.post_comment(data, id)
-
                 console.log(response)
-
                 set_load_comment(true)
-
                 set_comment('')
-
                 set_modal(false)
-
             }
-
             post_data()
-
         }
-
         setTimeout(() => {
             set_error_comment(false)
         }, 1500)
-
     }
-
 
     // Hàm này dùng để GET API load ra những comment của sản phẩm
     useEffect(() => {
-
         if (load_comment) {
             const fetchData = async () => {
-
                 const response = await CommentAPI.get_comment(id)
-
                 set_list_comment(response)
-
             }
-
             fetchData()
-
             set_load_comment(false)
         }
-
     }, [load_comment])
 
 
@@ -219,7 +199,6 @@ function Detail_Product(props) {
                     </div>
                 </div>
             }
-
 
             <div className="breadcrumb-area">
                 <div className="container">
@@ -268,34 +247,63 @@ function Detail_Product(props) {
                                             </span>
                                         </p>
                                     </div>
+
+                                    {/* --- PHẦN GIAO DIỆN CHỌN SIZE ĐÃ SỬA --- */}
                                     <div className="product-variants">
                                         <div className="produt-variants-size">
-                                            <label>Size</label>
-                                            <select className="nice-select" onChange={(e) => set_size(e.target.value)} value={size}>
+                                            <label style={{ marginBottom: '10px', display: 'block' }}>Size</label>
+
+                                            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                                                 {
-                                                    product.id_category && product.id_category.category === 'Pants' ? (
-                                                        <>
-                                                            <option value="29">29</option>
-                                                            <option value="30">30</option>
-                                                            <option value="31">31</option>
-                                                            <option value="32">32</option>
-                                                            <option value="33">33</option>
-                                                            <option value="34">34</option>
-                                                            <option value="36">36</option>
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <option value="S">S</option>
-                                                            <option value="M">M</option>
-                                                            <option value="L">L</option>
-                                                            <option value="XL">XL</option>
-                                                            <option value="XXL">XXL</option>
-                                                        </>
-                                                    )
+                                                    product.id_category && product.id_category.category === 'Pants' ?
+                                                        (
+                                                            listSizePants.map((item) => (
+                                                                <button
+                                                                    key={item}
+                                                                    onClick={() => handler_choose_size(item)}
+                                                                    className={size === item ? 'active-size' : ''}
+                                                                    style={{
+                                                                        padding: '5px 15px',
+                                                                        border: '1px solid #e1e1e1',
+                                                                        backgroundColor: size === item ? '#fed700' : '#fff', // Màu vàng khi chọn, trắng khi không chọn
+                                                                        color: size === item ? '#fff' : '#333',
+                                                                        cursor: 'pointer',
+                                                                        fontWeight: 'bold',
+                                                                        minWidth: '40px',
+                                                                        transition: 'all 0.3s'
+                                                                    }}
+                                                                >
+                                                                    {item}
+                                                                </button>
+                                                            ))
+                                                        ) : (
+                                                            listSizeNormal.map((item) => (
+                                                                <button
+                                                                    key={item}
+                                                                    onClick={() => handler_choose_size(item)}
+                                                                    className={size === item ? 'active-size' : ''}
+                                                                    style={{
+                                                                        padding: '5px 15px',
+                                                                        border: '1px solid #e1e1e1',
+                                                                        backgroundColor: size === item ? '#fed700' : '#fff', // Màu vàng khi chọn
+                                                                        color: size === item ? '#fff' : '#333',
+                                                                        cursor: 'pointer',
+                                                                        fontWeight: 'bold',
+                                                                        minWidth: '40px',
+                                                                        transition: 'all 0.3s'
+                                                                    }}
+                                                                >
+                                                                    {item}
+                                                                </button>
+                                                            ))
+                                                        )
                                                 }
-                                            </select>
+                                            </div>
+
                                         </div>
                                     </div>
+                                    {/* -------------------------------------- */}
+
                                     <div className="single-add-to-cart">
                                         <form action="#" className="cart-quantity">
                                             <div className="quantity">
@@ -340,7 +348,6 @@ function Detail_Product(props) {
                                     <div style={{ overflow: 'auto', height: '10rem' }}>
                                         {
                                             list_comment && list_comment.map(value => (
-
                                                 <div className="comment-author-infos pt-25" key={value._id}>
                                                     <span>{value.id_user.fullname} <div style={{ fontWeight: '400' }}>{value.content}</div></span>
                                                     <ul className="rating">
@@ -351,7 +358,6 @@ function Detail_Product(props) {
                                                         <li><i className={value.star > 4 ? 'fa fa-star' : 'fa fa-star-o'}></i></li>
                                                     </ul>
                                                 </div>
-
                                             ))
                                         }
                                     </div>
@@ -371,7 +377,7 @@ function Detail_Product(props) {
                                                                 <div className="li-review-product-desc">
                                                                     <p className="li-product-name">Today is a good day Framed poster</p>
                                                                     <p>
-                                                                        <span>Beach Camera Exclusive Bundle - Includes Two Samsung Radiant 360 R3 Wi-Fi Bluetooth Speakers. Fill The Entire Room With Exquisite Sound via Ring Radiator Technology. Stream And Control R3 Speakers Wirelessly With Your Smartphone. Sophisticated, Modern Design </span>
+                                                                        <span>Beach Camera Exclusive Bundle...</span>
                                                                     </p>
                                                                 </div>
                                                             </div>
