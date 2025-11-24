@@ -31,6 +31,7 @@ function UpdateProduct(props) {
             setDescription(rs.describe)
             // setNumber(rs.number)
             setCategoryChoose(rs.id_category)
+            setGenderChoose(rs.gender)
             setImage(rs.image)
             setCategory(ct)
         }
@@ -174,7 +175,7 @@ function UpdateProduct(props) {
                                         <p className="form-text text-danger">{validationMsg.category}</p>
                                     </div>
 
-                                    {/* <div className="form-group w-50">
+                                    <div className="form-group w-50">
                                         <label htmlFor="gender" className="mr-2">Chọn giới tính:</label>
                                         <select name="gender" id="gender" value={genderChoose} onChange={(e) => setGenderChoose(e.target.value)}>
                                             {
@@ -182,9 +183,8 @@ function UpdateProduct(props) {
                                                     <option value={item} key={index}>{item}</option>
                                                 ))
                                             }
-
                                         </select>
-                                    </div> */}
+                                    </div>
 
                                     <div className="form-group w-50">
                                         <label>Hình Ảnh</label>

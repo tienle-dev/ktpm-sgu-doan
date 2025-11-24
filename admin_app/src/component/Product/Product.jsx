@@ -87,6 +87,7 @@ function Product() {
                                                 <th>Describe</th>
                                                 {/* <th>Producer</th> */}
                                                 <th>Category</th>
+                                                <th>Gender</th>
                                                 <th>Edit</th>
                                             </tr>
                                         </thead>
@@ -114,6 +115,7 @@ function Product() {
                                                         </td>
 
                                                         <td>{value.id_category ? value.id_category.category : ""}</td>
+                                                        <td>{value.gender}</td>
                                                         <td>
                                                             <div className="d-flex">
                                                                 <Link to={"/product/update/" + value._id} className="btn btn-success mr-1">Update</Link>
