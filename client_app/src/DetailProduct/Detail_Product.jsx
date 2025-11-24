@@ -42,8 +42,8 @@ function Detail_Product(props) {
             set_product(response)
 
             const resDetail = await SaleAPI.checkSale(id)
-            
-            if (resDetail.msg === "Thanh Cong"){
+
+            if (resDetail.msg === "Thanh Cong") {
                 setSale(resDetail.sale)
             }
 
@@ -52,6 +52,14 @@ function Detail_Product(props) {
         fetchData()
 
     }, [id])
+
+    useEffect(() => {
+        if (product.id_category && product.id_category.category === 'Pants') {
+            set_size('29')
+        } else {
+            set_size('S')
+        }
+    }, [product])
 
 
     const [count, set_count] = useState(1)
@@ -243,14 +251,14 @@ function Detail_Product(props) {
                                     <h2>{product.name_product}</h2>
                                     <div className="price-box pt-20">
                                         {
-                                            sale ? (<del className="new-price new-price-2" style={{ color: '#525252'}}>{new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(product.price_product)+ ' VNĐ'}</del>) :
-                                            <span className="new-price new-price-2">{new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(product.price_product)+ ' VNĐ'}</span>
+                                            sale ? (<del className="new-price new-price-2" style={{ color: '#525252' }}>{new Intl.NumberFormat('vi-VN', { style: 'decimal', decimal: 'VND' }).format(product.price_product) + ' VNĐ'}</del>) :
+                                                <span className="new-price new-price-2">{new Intl.NumberFormat('vi-VN', { style: 'decimal', decimal: 'VND' }).format(product.price_product) + ' VNĐ'}</span>
                                         }
                                         <br />
                                         {
                                             sale && (
-                                                <span className="new-price new-price-2">{new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'})
-                                                .format(parseInt(sale.id_product.price_product) - ((parseInt(sale.id_product.price_product) * parseInt(sale.promotion)) / 100)) + ' VNĐ'}</span>
+                                                <span className="new-price new-price-2">{new Intl.NumberFormat('vi-VN', { style: 'decimal', decimal: 'VND' })
+                                                    .format(parseInt(sale.id_product.price_product) - ((parseInt(sale.id_product.price_product) * parseInt(sale.promotion)) / 100)) + ' VNĐ'}</span>
                                             )
                                         }
                                     </div>
@@ -263,10 +271,28 @@ function Detail_Product(props) {
                                     <div className="product-variants">
                                         <div className="produt-variants-size">
                                             <label>Size</label>
-                                            <select className="nice-select" onChange={(e) => set_size(e.target.value)}>
-                                                <option value="S">S</option>
-                                                <option value="M">M</option>
-                                                <option value="L">L</option>
+                                            <select className="nice-select" onChange={(e) => set_size(e.target.value)} value={size}>
+                                                {
+                                                    product.id_category && product.id_category.category === 'Pants' ? (
+                                                        <>
+                                                            <option value="29">29</option>
+                                                            <option value="30">30</option>
+                                                            <option value="31">31</option>
+                                                            <option value="32">32</option>
+                                                            <option value="33">33</option>
+                                                            <option value="34">34</option>
+                                                            <option value="36">36</option>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <option value="S">S</option>
+                                                            <option value="M">M</option>
+                                                            <option value="L">L</option>
+                                                            <option value="XL">XL</option>
+                                                            <option value="XXL">XXL</option>
+                                                        </>
+                                                    )
+                                                }
                                             </select>
                                         </div>
                                     </div>

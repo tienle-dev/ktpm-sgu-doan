@@ -31,7 +31,7 @@ module.exports.detail = async (req, res) => {
 
     const id = req.params.id
 
-    const product = await Products.findOne({ _id: id })
+    const product = await Products.findOne({ _id: id }).populate('id_category')
 
     res.json(product)
 
