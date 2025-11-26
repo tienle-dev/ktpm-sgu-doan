@@ -21,7 +21,7 @@ function AllProducts(props) {
     const [selectedGender, setSelectedGender] = useState('all')
     const [selectedCategory, setSelectedCategory] = useState('all')
     const [categories, setCategories] = useState([])
-    
+
     // Phân trang
     const [currentPage, setCurrentPage] = useState(1)
     const productsPerPage = 6 // 2 hàng x 3 sản phẩm
@@ -46,14 +46,14 @@ function AllProducts(props) {
 
         // Lọc theo giới tính
         if (selectedGender !== 'all') {
-            filtered = filtered.filter(product => 
+            filtered = filtered.filter(product =>
                 product.gender && product.gender.toLowerCase() === selectedGender.toLowerCase()
             )
         }
 
         // Lọc theo category từ database
         if (selectedCategory !== 'all') {
-            filtered = filtered.filter(product => 
+            filtered = filtered.filter(product =>
                 product.id_category === selectedCategory
             )
         }
@@ -75,10 +75,10 @@ function AllProducts(props) {
     const indexOfLastProduct = currentPage * productsPerPage
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage
     const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct)
-    
+
     // Tổng số trang
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage)
-    
+
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber)
         window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -104,10 +104,10 @@ function AllProducts(props) {
                             border: '1px solid #e0e0e0',
                             boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
                         }}>
-                            <div style={{marginBottom: '20px'}}>
+                            <div style={{ marginBottom: '20px' }}>
                                 <h5 style={{
-                                    marginBottom: '12px', 
-                                    fontSize: '15px', 
+                                    marginBottom: '12px',
+                                    fontSize: '15px',
                                     fontWeight: '700',
                                     color: '#2c3e50',
                                     textTransform: 'uppercase',
@@ -115,8 +115,8 @@ function AllProducts(props) {
                                 }}>
                                     Giới Tính:
                                 </h5>
-                                <div className="filter-buttons" style={{display: 'flex', flexWrap: 'wrap', gap: '10px'}}>
-                                    <button 
+                                <div className="filter-buttons" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                                    <button
                                         onClick={() => handleGenderFilter('all')}
                                         onMouseEnter={(e) => {
                                             if (selectedGender !== 'all') {
@@ -149,7 +149,7 @@ function AllProducts(props) {
                                     >
                                         Tất Cả
                                     </button>
-                                    <button 
+                                    <button
                                         onClick={() => handleGenderFilter('male')}
                                         onMouseEnter={(e) => {
                                             if (selectedGender !== 'male') {
@@ -158,7 +158,7 @@ function AllProducts(props) {
                                             }
                                         }}
                                         onMouseLeave={(e) => {
-                                            if (selectedGender !== 'male') {
+                                            if (selectedGender !== 'Male') {
                                                 e.target.style.backgroundColor = '#fff';
                                                 e.target.style.transform = 'translateY(0)';
                                             }
@@ -166,14 +166,14 @@ function AllProducts(props) {
                                         style={{
                                             padding: '10px 24px',
                                             margin: '0',
-                                            border: selectedGender === 'male' ? 'none' : '2px solid #ddd',
+                                            border: selectedGender === 'Male' ? 'none' : '2px solid #ddd',
                                             borderRadius: '25px',
                                             cursor: 'pointer',
                                             fontSize: '14px',
                                             fontWeight: '600',
-                                            backgroundColor: selectedGender === 'male' ? '#3498db' : '#fff',
-                                            color: selectedGender === 'male' ? '#fff' : '#555',
-                                            boxShadow: selectedGender === 'male' ? '0 4px 12px rgba(52,152,219,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
+                                            backgroundColor: selectedGender === 'Male' ? '#3498db' : '#fff',
+                                            color: selectedGender === 'Male' ? '#fff' : '#555',
+                                            boxShadow: selectedGender === 'Male' ? '0 4px 12px rgba(52,152,219,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
                                             transition: 'all 0.3s ease',
                                             position: 'relative',
                                             zIndex: 1,
@@ -182,16 +182,16 @@ function AllProducts(props) {
                                     >
                                         Nam
                                     </button>
-                                    <button 
-                                        onClick={() => handleGenderFilter('female')}
+                                    <button
+                                        onClick={() => handleGenderFilter('Female')}
                                         onMouseEnter={(e) => {
-                                            if (selectedGender !== 'female') {
+                                            if (selectedGender !== 'Female') {
                                                 e.target.style.backgroundColor = '#fce4ec';
                                                 e.target.style.transform = 'translateY(-2px)';
                                             }
                                         }}
                                         onMouseLeave={(e) => {
-                                            if (selectedGender !== 'female') {
+                                            if (selectedGender !== 'Female') {
                                                 e.target.style.backgroundColor = '#fff';
                                                 e.target.style.transform = 'translateY(0)';
                                             }
@@ -199,14 +199,14 @@ function AllProducts(props) {
                                         style={{
                                             padding: '10px 24px',
                                             margin: '0',
-                                            border: selectedGender === 'female' ? 'none' : '2px solid #ddd',
+                                            border: selectedGender === 'Female' ? 'none' : '2px solid #ddd',
                                             borderRadius: '25px',
                                             cursor: 'pointer',
                                             fontSize: '14px',
                                             fontWeight: '600',
-                                            backgroundColor: selectedGender === 'female' ? '#e91e63' : '#fff',
-                                            color: selectedGender === 'female' ? '#fff' : '#555',
-                                            boxShadow: selectedGender === 'female' ? '0 4px 12px rgba(233,30,99,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
+                                            backgroundColor: selectedGender === 'Female' ? '#e91e63' : '#fff',
+                                            color: selectedGender === 'Female' ? '#fff' : '#555',
+                                            boxShadow: selectedGender === 'Female' ? '0 4px 12px rgba(233,30,99,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
                                             transition: 'all 0.3s ease',
                                             position: 'relative',
                                             zIndex: 1,
@@ -215,16 +215,16 @@ function AllProducts(props) {
                                     >
                                         Nữ
                                     </button>
-                                    <button 
-                                        onClick={() => handleGenderFilter('unisex')}
+                                    <button
+                                        onClick={() => handleGenderFilter('Unisex')}
                                         onMouseEnter={(e) => {
-                                            if (selectedGender !== 'unisex') {
+                                            if (selectedGender !== 'Unisex') {
                                                 e.target.style.backgroundColor = '#f3e5f5';
                                                 e.target.style.transform = 'translateY(-2px)';
                                             }
                                         }}
                                         onMouseLeave={(e) => {
-                                            if (selectedGender !== 'unisex') {
+                                            if (selectedGender !== 'Unisex') {
                                                 e.target.style.backgroundColor = '#fff';
                                                 e.target.style.transform = 'translateY(0)';
                                             }
@@ -232,14 +232,14 @@ function AllProducts(props) {
                                         style={{
                                             padding: '10px 24px',
                                             margin: '0',
-                                            border: selectedGender === 'unisex' ? 'none' : '2px solid #ddd',
+                                            border: selectedGender === 'Unisex' ? 'none' : '2px solid #ddd',
                                             borderRadius: '25px',
                                             cursor: 'pointer',
                                             fontSize: '14px',
                                             fontWeight: '600',
-                                            backgroundColor: selectedGender === 'unisex' ? '#9c27b0' : '#fff',
-                                            color: selectedGender === 'unisex' ? '#fff' : '#555',
-                                            boxShadow: selectedGender === 'unisex' ? '0 4px 12px rgba(156,39,176,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
+                                            backgroundColor: selectedGender === 'Unisex' ? '#9c27b0' : '#fff',
+                                            color: selectedGender === 'Unisex' ? '#fff' : '#555',
+                                            boxShadow: selectedGender === 'Unisex' ? '0 4px 12px rgba(156,39,176,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
                                             transition: 'all 0.3s ease',
                                             position: 'relative',
                                             zIndex: 1,
@@ -254,8 +254,8 @@ function AllProducts(props) {
                             {/* Bộ lọc theo loại trang phục - từ database */}
                             <div>
                                 <h5 style={{
-                                    marginBottom: '12px', 
-                                    fontSize: '15px', 
+                                    marginBottom: '12px',
+                                    fontSize: '15px',
                                     fontWeight: '700',
                                     color: '#2c3e50',
                                     textTransform: 'uppercase',
@@ -263,8 +263,8 @@ function AllProducts(props) {
                                 }}>
                                     Loại Trang Phục:
                                 </h5>
-                                <div className="filter-buttons" style={{display: 'flex', flexWrap: 'wrap', gap: '10px'}}>
-                                    <button 
+                                <div className="filter-buttons" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                                    <button
                                         onClick={() => handleCategoryFilter('all')}
                                         onMouseEnter={(e) => {
                                             if (selectedCategory !== 'all') {
@@ -302,9 +302,9 @@ function AllProducts(props) {
                                         const hoverColors = ['#fff3e0', '#e0f2f1', '#ffebee', '#e3f2fd'];
                                         const activeColor = colors[index % colors.length];
                                         const hoverColor = hoverColors[index % hoverColors.length];
-                                        
+
                                         return (
-                                            <button 
+                                            <button
                                                 key={cat._id}
                                                 onClick={() => handleCategoryFilter(cat._id)}
                                                 onMouseEnter={(e) => {
@@ -365,7 +365,7 @@ function AllProducts(props) {
                                                 transition: 'all 0.3s ease',
                                                 position: 'relative'
                                             }}>
-                                                <div className="product-image" style={{position: 'relative'}}>
+                                                <div className="product-image" style={{ position: 'relative' }}>
                                                     <Link to={`/detail/${value._id}`}>
                                                         <img src={value.image} alt={value.name_product} style={{
                                                             filter: value.stock === 0 ? 'grayscale(100%)' : 'none'
@@ -407,17 +407,17 @@ function AllProducts(props) {
                                                                 </ul>
                                                             </div>
                                                         </div>
-                                                        <div style={{marginBottom: '8px'}}>
+                                                        <div style={{ marginBottom: '8px' }}>
                                                             <span style={{
                                                                 display: 'inline-block',
                                                                 padding: '3px 10px',
                                                                 borderRadius: '12px',
                                                                 fontSize: '12px',
                                                                 fontWeight: '500',
-                                                                backgroundColor: value.gender === 'male' ? '#3498db' : value.gender === 'female' ? '#e91e63' : '#9c27b0',
+                                                                backgroundColor: value.gender === 'Male' ? '#3498db' : value.gender === 'Female' ? '#e91e63' : '#9c27b0',
                                                                 color: 'white'
                                                             }}>
-                                                                {value.gender === 'male' ? 'Nam' : value.gender === 'female' ? 'Nữ' : 'Unisex'}
+                                                                {value.gender === 'Male' ? 'Nam' : value.gender === 'Female' ? 'Nữ' : 'Unisex'}
                                                             </span>
                                                             {value.stock > 0 ? (
                                                                 <span style={{
@@ -440,7 +440,7 @@ function AllProducts(props) {
                                                             )}
                                                         </div>
                                                         <div className="price-box">
-                                                            <span className="new-price">{new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(value.price_product)+ ' VNĐ'}</span>
+                                                            <span className="new-price">{new Intl.NumberFormat('vi-VN', { style: 'decimal', decimal: 'VND' }).format(value.price_product) + ' VNĐ'}</span>
                                                         </div>
                                                     </div>
                                                     <div className="add-actions">
@@ -472,9 +472,9 @@ function AllProducts(props) {
                                             backgroundColor: '#f8f9fa',
                                             borderRadius: '8px'
                                         }}>
-                                            <i className="fa fa-shopping-bag" style={{fontSize: '48px', color: '#ccc', marginBottom: '15px'}}></i>
-                                            <h4 style={{color: '#666'}}>Không tìm thấy sản phẩm</h4>
-                                            <p style={{color: '#999'}}>Vui lòng thử lại với bộ lọc khác</p>
+                                            <i className="fa fa-shopping-bag" style={{ fontSize: '48px', color: '#ccc', marginBottom: '15px' }}></i>
+                                            <h4 style={{ color: '#666' }}>Không tìm thấy sản phẩm</h4>
+                                            <p style={{ color: '#999' }}>Vui lòng thử lại với bộ lọc khác</p>
                                         </div>
                                     </div>
                                 )
