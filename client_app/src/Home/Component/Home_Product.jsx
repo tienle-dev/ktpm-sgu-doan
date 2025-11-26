@@ -90,12 +90,36 @@ function Home_Product(props) {
                             {
                                 products && products.map(value => (
                                     <div className="col-lg-12 col_product" style={{ zIndex: '999', height: '30rem', position: 'relative' }} key={value._id}>
-                                        <div className="single-product-wrap">
-                                            <div className="product-image">
+                                        <div className="single-product-wrap" style={{
+                                            opacity: value.stock === 0 ? 0.6 : 1,
+                                            filter: value.stock === 0 ? 'grayscale(80%)' : 'none',
+                                            transition: 'all 0.3s ease'
+                                        }}>
+                                            <div className="product-image" style={{position: 'relative'}}>
                                                 <Link to={`/detail/${value._id}`}>
-                                                    <img src={value.image} alt="Li's Product Image" />
+                                                    <img src={value.image} alt="Li's Product Image" style={{
+                                                        filter: value.stock === 0 ? 'grayscale(100%)' : 'none'
+                                                    }} />
                                                 </Link>
-                                                <span className="sticker">New</span>
+                                                {value.stock === 0 && (
+                                                    <div style={{
+                                                        position: 'absolute',
+                                                        top: '50%',
+                                                        left: '50%',
+                                                        transform: 'translate(-50%, -50%)',
+                                                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                                        color: 'white',
+                                                        padding: '8px 16px',
+                                                        borderRadius: '8px',
+                                                        fontSize: '16px',
+                                                        fontWeight: 'bold',
+                                                        zIndex: 10,
+                                                        border: '2px solid #e74c3c'
+                                                    }}>
+                                                        HẾT HÀNG
+                                                    </div>
+                                                )}
+                                                <span className="sticker">Mới</span>
                                             </div>
                                             <div className="product_desc">
                                                 <div className="product_desc_info">
@@ -112,6 +136,38 @@ function Home_Product(props) {
                                                                 <li className="no-star"><i className="fa fa-star-o"></i></li>
                                                             </ul>
                                                         </div>
+                                                    </div>
+                                                    <div style={{marginBottom: '8px'}}>
+                                                        <span style={{
+                                                            display: 'inline-block',
+                                                            padding: '3px 10px',
+                                                            borderRadius: '12px',
+                                                            fontSize: '12px',
+                                                            fontWeight: '500',
+                                                            backgroundColor: value.gender === 'male' ? '#3498db' : value.gender === 'female' ? '#e91e63' : '#9c27b0',
+                                                            color: 'white'
+                                                        }}>
+                                                            {value.gender === 'male' ? 'Nam' : value.gender === 'female' ? 'Nữ' : 'Unisex'}
+                                                        </span>
+                                                        {value.stock > 0 ? (
+                                                            <span style={{
+                                                                marginLeft: '8px',
+                                                                fontSize: '12px',
+                                                                color: value.stock < 10 ? '#e74c3c' : '#27ae60',
+                                                                fontWeight: '500'
+                                                            }}>
+                                                                Còn {value.stock} sản phẩm
+                                                            </span>
+                                                        ) : (
+                                                            <span style={{
+                                                                marginLeft: '8px',
+                                                                fontSize: '12px',
+                                                                color: '#e74c3c',
+                                                                fontWeight: '600'
+                                                            }}>
+                                                                HẾT HÀNG
+                                                            </span>
+                                                        )}
                                                     </div>
                                                     <div className="price-box">
                                                         <span className="new-price">{new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(value.price_product)+ ' VNĐ'}</span>

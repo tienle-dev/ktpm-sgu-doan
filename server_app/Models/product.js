@@ -11,6 +11,10 @@ var schema = new mongoose.Schema(
         image: String,
         describe: String,
         gender: String,
+        stock: {
+            type: Number,
+            default: 0
+        }
         // number: Number,
     }
 );

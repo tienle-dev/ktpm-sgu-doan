@@ -119,25 +119,11 @@ function Shop(props) {
         const fetchData = async () => {
 
             // gender = male
-            const params_male = {
-                gender: 'male'
-            }
-
-            const query_male = '?' + queryString.stringify(params_male)
-
-            const response_male = await Product.Get_Category_Gender(query_male)
-
+            const response_male = await Product.Get_Product_By_Gender('male')
             set_male(response_male)
 
             // gender = female
-            const params_female = {
-                gender: 'female'
-            }
-
-            const query_female = '?' + queryString.stringify(params_female)
-
-            const response_female = await Product.Get_Category_Gender(query_female)
-
+            const response_female = await Product.Get_Product_By_Gender('female')
             set_female(response_female)
 
         }

@@ -8,6 +8,7 @@ import bg6 from '../CSS/Image/6.jpg'
 import bg7 from '../CSS/Image/7.jpg'
 import Home_Category from './Component/Home_Category';
 import Home_Product from './Component/Home_Product';
+import AllProducts from './Component/AllProducts';
 import Product from '../API/Product';
 import { changeCount } from '../Redux/Action/ActionCount';
 import { useDispatch, useSelector } from 'react-redux';
@@ -146,11 +147,8 @@ function Home(props) {
                 </div>
             </div>
 
-            <Home_Product gender="Unisex" GET_id_modal={GET_id_modal} />
-
-            <Home_Product gender="Male" GET_id_modal={GET_id_modal} />
-
-            <Home_Product gender="Female" GET_id_modal={GET_id_modal} />
+            {/* Phần hiển thị tất cả sản phẩm với bộ lọc */}
+            <AllProducts GET_id_modal={GET_id_modal} />
 
 
             <div className="modal fade modal-wrapper" id={id_modal} >
@@ -202,7 +200,7 @@ function Home(props) {
                                             </div>
                                             <div className="single-add-to-cart">
                                                 <form onSubmit={handler_addcart} className="cart-quantity">
-                                                    <button className="add-to-cart" type="submit">Add to cart</button>
+                                                    <button className="add-to-cart" type="submit">Thêm vào giỏ</button>
                                                 </form>
                                             </div>
                                         </div>

@@ -155,25 +155,11 @@ function Header(props) {
         const fetchData = async () => {
 
             // gender = male
-            const params_male = {
-                gender: 'male'
-            }
-
-            const query_male = '?' + queryString.stringify(params_male)
-
-            const response_male = await Product.Get_Category_Gender(query_male)
-
+            const response_male = await Product.Get_Product_By_Gender('male')
             set_male(response_male)
 
             // gender = female
-            const params_female = {
-                gender: 'female'
-            }
-
-            const query_female = '?' + queryString.stringify(params_female)
-
-            const response_female = await Product.Get_Category_Gender(query_female)
-
+            const response_female = await Product.Get_Product_By_Gender('female')
             set_female(response_female)
 
         }
@@ -236,7 +222,7 @@ function Header(props) {
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-3 col-md-4">
-                            <li><span>Telephone Enquiry:</span><a href="#">(+123) 123 321 345</a></li>
+                            <li><span>Liên Hệ:</span><a href="#">(+123) 123 321 345</a></li>
                         </div>
                         <div className="col-lg-9 col-md-8">
                             <ul className="d-flex justify-content-end" >
@@ -253,20 +239,20 @@ function Header(props) {
                                                     data-toggle="collapse"
                                                     data-target="#collapseExample"
                                                     aria-expanded="false"
-                                                    aria-controls="collapseExample">Setting</span>
+                                                    aria-controls="collapseExample">Cài Đặt</span>
                                             )
                                         }
                                     </div>
                                     <div className="ul_setting">
                                         {active_user ? (
                                             <ul className="setting_ul collapse" id="collapseExample">
-                                                <li className="li_setting"><Link to={`/profile/${sessionStorage.getItem("id_user")}`}>Profile</Link></li>
-                                                <li className="li_setting"><Link to="/history">Order Status</Link></li>
-                                                <li className="li_setting"><a onClick={handler_logout} href="#">Log Out</a></li>
+                                                <li className="li_setting"><Link to={`/profile/${sessionStorage.getItem("id_user")}`}>Hồ Sơ</Link></li>
+                                                <li className="li_setting"><Link to="/history">Lịch Sử Đơn Hàng</Link></li>
+                                                <li className="li_setting"><a onClick={handler_logout} href="#">Đăng Xuất</a></li>
                                             </ul>
                                         ) : (
                                             <ul className="setting_ul collapse" id="collapseExample">
-                                                <li className="li_setting"><Link to="/signin">Sign In</Link></li>
+                                                <li className="li_setting"><Link to="/signin">Đăng Nhập</Link></li>
                                             </ul>
                                         )}
 
@@ -289,7 +275,7 @@ function Header(props) {
                         </div>
                         <div className="col-lg-9 pl-0 ml-sm-15 ml-xs-15 d-flex justify-content-between">
                             <form action="/search" className="hm-searchbox" onSubmit={handler_search}>
-                                <input type="text" placeholder="Enter your search key ..." value={keyword_search} onChange={(e) => set_keyword_search(e.target.value)} />
+                                <input type="text" placeholder="Nhập từ khóa tìm kiếm..." value={keyword_search} onChange={(e) => set_keyword_search(e.target.value)} />
                                 <button className="li-btn" type="submit"><i className="fa fa-search"></i></button>
                                 {
                                     keyword_search && <div className="show_search_product">
@@ -344,10 +330,10 @@ function Header(props) {
                                                         ))
                                                     }
                                                 </ul>
-                                                <p className="minicart-total">SUBTOTAL: <span>{new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(total_price)+ ' VNĐ'}</span></p>
+                                                <p className="minicart-total">TỔNG TIỀN: <span>{new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(total_price)+ ' VNĐ'}</span></p>
                                                 <div className="minicart-button">
                                                     <Link to="/cart" className="li-button li-button-fullwidth li-button-dark">
-                                                        <span>View Full Cart</span>
+                                                        <span>Xem Giỏ Hàng</span>
                                                     </Link>
                                                 </div>
                                             </div>
@@ -366,10 +352,10 @@ function Header(props) {
                                     <nav>
                                         <ul>
 
-                                            <li className="dropdown-holder"><Link to="/">Home</Link></li>
-                                            <li className="megamenu-holder"><Link to="/shop/all">Menu</Link>
+                                            <li className="dropdown-holder"><Link to="/">Trang Chủ</Link></li>
+                                            <li className="megamenu-holder"><Link to="/shop/all">Danh Mục</Link>
                                                 <ul class="megamenu hb-megamenu">
-                                                    <li><Link to="/shop/all">Male</Link>
+                                                    <li><Link to="/shop/all">Nam</Link>
                                                         <ul>
                                                             {
                                                                 male && male.map(value => (
@@ -380,7 +366,7 @@ function Header(props) {
                                                             }
                                                         </ul>
                                                     </li>
-                                                    <li><Link to="/shop">Female</Link>
+                                                    <li><Link to="/shop">Nữ</Link>
                                                         <ul>
                                                             {
                                                                 female && female.map(value => (
@@ -393,8 +379,8 @@ function Header(props) {
                                                     </li>
                                                 </ul>
                                             </li>
-                                            <li><Link to="/event">Event</Link></li>
-                                            <li><Link to="/contact">Contact</Link></li>
+                                            <li><Link to="/event">Sự Kiện</Link></li>
+                                            <li><Link to="/contact">Liên Hệ</Link></li>
                                         </ul>
 
                                     </nav>

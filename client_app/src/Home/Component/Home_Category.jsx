@@ -80,7 +80,7 @@ function Home_Category(props) {
                     <div className="col-lg-12">
                         <div className="li-product-tab">
                             <ul className="nav li-product-menu">
-                                <li><a className="active" data-toggle="tab" href="#"><span>Sale</span></a></li>
+                                <li><a className="active" data-toggle="tab" href="#"><span>Khuyến Mãi</span></a></li>
                             </ul>
                         </div>
                     </div>
@@ -90,11 +90,35 @@ function Home_Category(props) {
                     {
                         product_category && product_category.map(value => (
                             <div className="col-lg-12 animate__animated animate__zoomIn col_product" style={{ zIndex: '999', height: '30rem' }} key={value._id}>
-                                <div className="single-product-wrap">
-                                    <div className="product-image">
+                                <div className="single-product-wrap" style={{
+                                    opacity: value.id_product.stock === 0 ? 0.6 : 1,
+                                    filter: value.id_product.stock === 0 ? 'grayscale(80%)' : 'none',
+                                    transition: 'all 0.3s ease'
+                                }}>
+                                    <div className="product-image" style={{position: 'relative'}}>
                                         <Link to={`/detail/${value.id_product._id}`}>
-                                            <img src={value.id_product.image} alt="Li's Product Image" />
+                                            <img src={value.id_product.image} alt="Li's Product Image" style={{
+                                                filter: value.id_product.stock === 0 ? 'grayscale(100%)' : 'none'
+                                            }} />
                                         </Link>
+                                        {value.id_product.stock === 0 && (
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '50%',
+                                                left: '50%',
+                                                transform: 'translate(-50%, -50%)',
+                                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                                color: 'white',
+                                                padding: '8px 16px',
+                                                borderRadius: '8px',
+                                                fontSize: '16px',
+                                                fontWeight: 'bold',
+                                                zIndex: 10,
+                                                border: '2px solid #e74c3c'
+                                            }}>
+                                                HẾT HÀNG
+                                            </div>
+                                        )}
                                         <span className="sticker">-{value.promotion}%</span>
                                     </div>
                                     <div className="product_desc">
@@ -112,6 +136,38 @@ function Home_Category(props) {
                                                         <li className="no-star"><i className="fa fa-star-o"></i></li>
                                                     </ul>
                                                 </div>
+                                            </div>
+                                            <div style={{marginBottom: '8px'}}>
+                                                <span style={{
+                                                    display: 'inline-block',
+                                                    padding: '3px 10px',
+                                                    borderRadius: '12px',
+                                                    fontSize: '12px',
+                                                    fontWeight: '500',
+                                                    backgroundColor: value.id_product.gender === 'male' ? '#3498db' : value.id_product.gender === 'female' ? '#e91e63' : '#9c27b0',
+                                                    color: 'white'
+                                                }}>
+                                                    {value.id_product.gender === 'male' ? 'Nam' : value.id_product.gender === 'female' ? 'Nữ' : 'Unisex'}
+                                                </span>
+                                                {value.id_product.stock > 0 ? (
+                                                    <span style={{
+                                                        marginLeft: '8px',
+                                                        fontSize: '12px',
+                                                        color: value.id_product.stock < 10 ? '#e74c3c' : '#27ae60',
+                                                        fontWeight: '500'
+                                                    }}>
+                                                        Còn {value.id_product.stock} sản phẩm
+                                                    </span>
+                                                ) : (
+                                                    <span style={{
+                                                        marginLeft: '8px',
+                                                        fontSize: '12px',
+                                                        color: '#e74c3c',
+                                                        fontWeight: '600'
+                                                    }}>
+                                                        HẾT HÀNG
+                                                    </span>
+                                                )}
                                             </div>
                                             <div className="d-flex justify-content-between price-box">
                                                 <del className="new-price">{new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(value.id_product.price_product)+ ' VNĐ'}</del>

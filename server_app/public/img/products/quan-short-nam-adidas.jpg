@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="500" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="500" height="600" fill="#2980b9"/>
+  <text x="250" y="280" font-family="Arial, sans-serif" font-size="24" fill="white" text-anchor="middle" font-weight="bold">
+    QUẦN
+  </text>
+  <text x="250" y="310" font-family="Arial, sans-serif" font-size="20" fill="white" text-anchor="middle">
+    SHORT NAM
+  </text>
+  <text x="250" y="350" font-family="Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.7)" text-anchor="middle">
+    quan-short-nam-adidas
+  </text>
+</svg>

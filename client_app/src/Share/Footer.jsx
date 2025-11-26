@@ -111,12 +111,12 @@ function Footer(props) {
                             </div>
                             <div className="col-lg-4">  
                                 <div className="footer-newsletter">
-                                    <h4>Sign up to newsletter</h4>
+                                    <h4>Đăng Ký Nhận Bản Tin</h4>
                                     <form action="#" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="footer-subscribe-form validate" target="_blank">
                                         <div id="mc_embed_signup_scroll">
                                             <div id="mc-form" className="mc-form subscribe-form form-group" >
-                                                <input id="mc-email" type="email" autoComplete="off" placeholder="Enter your email" />
-                                                <button className="btn" id="mc-submit">Subscribe</button>
+                                                <input id="mc-email" type="email" autocomplete="off" placeholder="Nhập email của bạn" />
+                                                <button className="btn" id="mc-submit">Đăng Ký</button>
                                             </div>
                                         </div>
                                     </form>
