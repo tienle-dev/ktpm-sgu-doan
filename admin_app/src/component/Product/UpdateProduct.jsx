@@ -11,7 +11,7 @@ function UpdateProduct(props) {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState('');
-    const [number, setNumber] = useState('');
+    const [number, setNumber] = useState(''); // Biến lưu trữ Stock
     const [categoryChoose, setCategoryChoose] = useState('');
     const [genderChoose, setGenderChoose] = useState('Unisex');
     const [file, setFile] = useState();
@@ -29,7 +29,11 @@ function UpdateProduct(props) {
             setName(rs.name_product)
             setPrice(rs.price_product)
             setDescription(rs.describe)
-            // setNumber(rs.number)
+
+            // SỬA: Lấy dữ liệu stock từ API gán vào biến number
+            // Lưu ý: Trong model bạn đặt là 'stock', nên ở đây gọi rs.stock
+            setNumber(rs.stock)
+
             setCategoryChoose(rs.id_category)
             setGenderChoose(rs.gender)
             setImage(rs.image)
@@ -43,36 +47,43 @@ function UpdateProduct(props) {
         setFileName(e.target.files[0].name);
     };
 
+    // SỬA: Logic nhập số lượng
     const onChangeNumber = (e) => {
-
         const value = e.target.value
-        if (!Number.isNaN(value) && Number(value) >= 0) {
+        if (value === '' || (!Number.isNaN(Number(value)) && Number(value) >= 0)) {
             setNumber(value)
         }
     }
 
-
+    // SỬA: Logic nhập giá tiền (cho phép xóa hết về rỗng)
     const onChangePrice = (e) => {
         const value = e.target.value
-        if (!Number.isNaN(value) && Number(value) > 0) {
+        // Cho phép rỗng HOẶC số dương
+        if (value === '' || (!Number.isNaN(Number(value)) && Number(value) >= 0)) {
             setPrice(value)
         }
     }
 
     const validateAll = () => {
+        const priceRegex = /^[1-9](?=.+[0-9]).{0,}$/
         let msg = {}
         if (isEmpty(name)) {
             msg.name = "Tên không được để trống"
         }
-        if (isEmpty(price)) {
+        if (isEmpty(String(price))) { // Ép kiểu String để tránh lỗi nếu price là số
             msg.price = "Giá không được để trống"
         }
         if (isEmpty(description)) {
             msg.description = "Mô tả không được để trống"
         }
-        // if (isEmpty(number.toString())) {
-        //     msg.number = "Số lượng không được để trống"
-        // }
+
+        // SỬA: Bỏ comment và validate số lượng
+        if (isEmpty(String(number))) {
+            msg.number = "Số lượng không được để trống"
+        } else if (Number(number) < 0) {
+            msg.number = "Số lượng phải lớn hơn hoặc bằng 0"
+        }
+
         if (isEmpty(categoryChoose)) {
             msg.category = "Vui lòng chọn loại"
         }
@@ -83,12 +94,10 @@ function UpdateProduct(props) {
     }
 
     const handleCreate = () => {
-
         const isValid = validateAll();
         if (!isValid) return
         console.log(file)
         addProduct();
-
     }
 
     const addProduct = async () => {
@@ -99,7 +108,10 @@ function UpdateProduct(props) {
         formData.append("name", name)
         formData.append("price", price)
         formData.append("category", categoryChoose)
-        // formData.append("number", number)
+
+        // SỬA: Bỏ comment để gửi số lượng lên server
+        formData.append("number", number)
+
         formData.append("description", description)
         formData.append("gender", genderChoose)
 
@@ -154,15 +166,17 @@ function UpdateProduct(props) {
                                         <input type="text" className="form-control" id="description" name="description" value={description} onChange={(e) => setDescription(e.target.value)} required />
                                         <p className="form-text text-danger">{validationMsg.description}</p>
                                     </div>
-                                    {/* <div className="form-group w-50">
-                                        <label htmlFor="number">Số lượng: </label>
-                                        <input type="text" className="form-control" id="number" name="number" value={number} onChange={(e) => onChangeNumber(e)} required />
+
+                                    {/* SỬA: Bỏ comment hiển thị ô nhập Stock */}
+                                    <div className="form-group w-50">
+                                        <label htmlFor="number">Số lượng (Stock): </label>
+                                        <input type="number" className="form-control" id="number" name="number" value={number} onChange={(e) => onChangeNumber(e)} required />
                                         <p className="form-text text-danger">{validationMsg.number}</p>
-                                    </div> */}
+                                    </div>
 
                                     <div className="form-group w-50">
                                         {/* <label htmlFor="categories" className="mr-2">Chọn loại:</label> */}
-                                        <label htmlFor="categories" className="mr-2">Chọn nhà sản xuất:</label>
+                                        <label htmlFor="categories" className="mr-2">Chọn phân loại:</label>
                                         <select name="categories" id="categories" value={categoryChoose} onChange={(e) => setCategoryChoose(e.target.value)}>
                                             <option >Chọn loại</option>
                                             {

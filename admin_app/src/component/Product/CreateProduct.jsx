@@ -10,7 +10,7 @@ function CreateProduct(props) {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState('');
-    const [number, setNumber] = useState('');
+    const [number, setNumber] = useState(''); // Đây là trường Stock
     const [categoryChoose, setCategoryChoose] = useState('');
     const [genderChoose, setGenderChoose] = useState('Unisex');
     const [file, setFile] = useState();
@@ -32,16 +32,21 @@ function CreateProduct(props) {
         setFileName(e.target.files[0].name);
     };
 
+    // SỬA: Logic nhập số lượng (Stock)
     const onChangeNumber = (e) => {
         const value = e.target.value
-        if (!Number.isNaN(value) && Number(value) >= 0) {
+        // Cho phép rỗng HOẶC là số dương
+        if (value === '' || (!Number.isNaN(Number(value)) && Number(value) >= 0)) {
             setNumber(value)
         }
     }
 
+    // SỬA: Logic nhập giá tiền
     const onChangePrice = (e) => {
         const value = e.target.value
-        if (!Number.isNaN(value) && Number(value) > 0) {
+        // Cho phép rỗng HOẶC là số dương.
+        // Logic cũ ngăn cản xóa hết vì Number("") = 0.
+        if (value === '' || (!Number.isNaN(Number(value)) && Number(value) >= 0)) {
             setPrice(value)
         }
     }
@@ -53,19 +58,24 @@ function CreateProduct(props) {
         if (isEmpty(name)) {
             msg.name = "Tên không được để trống"
         }
+
         if (isEmpty(price)) {
             msg.price = "Giá không được để trống"
         } else if (!priceRegex.test(price)) {
             msg.price = "Giá sai định dạng"
         }
+
         if (isEmpty(description)) {
             msg.description = "Mô tả không được để trống"
         }
-        // if (isEmpty(number)) {
-        //     msg.number = "Số lượng không được để trống"
-        // } else if (!priceRegex.test(number)) {
-        //     msg.number = "Số lượng sai định dạng"
-        // }
+
+        // THÊM: Validate cho số lượng (Stock)
+        if (isEmpty(number)) {
+            msg.number = "Số lượng không được để trống"
+        } else if (Number(number) < 0) {
+            msg.number = "Số lượng phải lớn hơn hoặc bằng 0"
+        }
+
         if (isEmpty(categoryChoose)) {
             msg.category = "Vui lòng chọn loại"
         }
@@ -76,12 +86,10 @@ function CreateProduct(props) {
     }
 
     const handleCreate = () => {
-
         const isValid = validateAll();
         if (!isValid) return
         console.log(file)
         addProduct();
-
     }
 
     const addProduct = async () => {
@@ -91,7 +99,10 @@ function CreateProduct(props) {
         formData.append("name", name)
         formData.append("price", price)
         formData.append("category", categoryChoose)
-        // formData.append("number", number)
+
+        // THÊM: Gửi số lượng lên server
+        formData.append("number", number)
+
         formData.append("description", description)
         formData.append("gender", genderChoose)
 
@@ -101,7 +112,7 @@ function CreateProduct(props) {
             setName('');
             setPrice('');
             setDescription('');
-            // setNumber('')
+            setNumber(''); // Reset số lượng về rỗng sau khi thêm thành công
             setCategoryChoose('')
             setGenderChoose('Unisex')
             setFile('')
@@ -143,25 +154,30 @@ function CreateProduct(props) {
                                         <input type="text" className="form-control" id="name" name="name" value={name} onChange={(e) => setName(e.target.value)} required />
                                         <p className="form-text text-danger">{validationMsg.name}</p>
                                     </div>
+
                                     <div className="form-group w-50">
                                         <label htmlFor="price">Giá Sản Phẩm</label>
+                                        {/* Đã sửa hàm onChangePrice */}
                                         <input type="text" className="form-control" id="price" name="price" value={price} onChange={(e) => onChangePrice(e)} required />
                                         <p className="form-text text-danger">{validationMsg.price}</p>
                                     </div>
+
                                     <div className="form-group w-50">
                                         <label htmlFor="description">Mô tả</label>
                                         <input type="text" className="form-control" id="description" name="description" value={description} onChange={(e) => setDescription(e.target.value)} required />
                                         <p className="form-text text-danger">{validationMsg.description}</p>
                                     </div>
-                                    {/* <div className="form-group w-50">
-                                        <label htmlFor="number">Số lượng: </label>
+
+                                    {/* THÊM: Input cho số lượng (Stock) */}
+                                    <div className="form-group w-50">
+                                        <label htmlFor="number">Số lượng (Stock): </label>
                                         <input type="number" className="form-control" id="number" name="number" value={number} onChange={(e) => onChangeNumber(e)} required />
                                         <p className="form-text text-danger">{validationMsg.number}</p>
-                                    </div> */}
+                                    </div>
 
                                     <div className="form-group w-50">
                                         {/* <label htmlFor="categories" className="mr-2">Chọn loại:</label> */}
-                                        <label htmlFor="categories" className="mr-2">Chọn nhà sản xuất:</label>
+                                        <label htmlFor="categories" className="mr-2">Chọn phân loại:</label>
                                         <select name="categories" id="categories" value={categoryChoose} onChange={(e) => setCategoryChoose(e.target.value)}>
                                             <option >Chọn loại</option>
                                             {

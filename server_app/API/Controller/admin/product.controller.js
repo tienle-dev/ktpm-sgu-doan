@@ -47,19 +47,24 @@ module.exports.create = async (req, res) => {
     } else {
         var newProduct = new Product()
         req.body.name = req.body.name.toLowerCase().replace(/^.|\s\S/g, a => { return a.toUpperCase() })
+
         newProduct.name_product = req.body.name
         newProduct.price_product = req.body.price
         newProduct.id_category = req.body.category
         newProduct.describe = req.body.description
         newProduct.gender = req.body.gender
 
+        // --- THÊM DÒNG NÀY ---
+        // Nhận 'number' từ frontend và lưu vào 'stock' của model
+        newProduct.stock = req.body.number
+
         if (req.files && req.files.file) {
             try {
                 const fileImage = req.files.file;
-                
+
                 // Chuyển buffer sang base64 data URI
                 const base64Image = `data:${fileImage.mimetype};base64,${fileImage.data.toString('base64')}`;
-                
+
                 // Upload ảnh lên Cloudinary
                 const result = await cloudinary.uploader.upload(base64Image, {
                     folder: 'products',
@@ -93,7 +98,7 @@ module.exports.delete = async (req, res) => {
         }
         res.json({ msg: "Thanh Cong" })
     })
-    
+
 }
 
 module.exports.details = async (req, res) => {
@@ -119,16 +124,19 @@ module.exports.update = async (req, res) => {
             price_product: req.body.price,
             id_category: req.body.category,
             describe: req.body.description,
-            gender: req.body.gender
+            gender: req.body.gender,
+            // --- THÊM DÒNG NÀY ---
+            // Cập nhật stock khi sửa sản phẩm
+            stock: req.body.number
         };
 
         if (req.files && req.files.file) {
             try {
                 const fileImage = req.files.file;
-                
+
                 // Chuyển buffer sang base64 data URI
                 const base64Image = `data:${fileImage.mimetype};base64,${fileImage.data.toString('base64')}`;
-                
+
                 // Upload ảnh mới lên Cloudinary
                 const result = await cloudinary.uploader.upload(base64Image, {
                     folder: 'products',
