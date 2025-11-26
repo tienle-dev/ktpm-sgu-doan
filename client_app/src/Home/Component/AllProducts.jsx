@@ -150,9 +150,9 @@ function AllProducts(props) {
                                         Tất Cả
                                     </button>
                                     <button
-                                        onClick={() => handleGenderFilter('male')}
+                                        onClick={() => handleGenderFilter('Male')}
                                         onMouseEnter={(e) => {
-                                            if (selectedGender !== 'male') {
+                                            if (selectedGender !== 'Male') {
                                                 e.target.style.backgroundColor = '#e3f2fd';
                                                 e.target.style.transform = 'translateY(-2px)';
                                             }
