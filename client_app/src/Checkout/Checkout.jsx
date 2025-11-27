@@ -64,7 +64,7 @@ function Checkout(props) {
 
         const total = Number(sum_price)
 
-        if (localStorage.getItem('coupon')){
+        if (localStorage.getItem('coupon')) {
             // GET localStorage
             const coupon = JSON.parse(localStorage.getItem('coupon'))
 
@@ -75,8 +75,8 @@ function Checkout(props) {
             localStorage.setItem("total_price", newTotal)
 
             set_total_price(newTotal)
-        }else{
-            
+        } else {
+
             localStorage.setItem("total_price", total + Number(price))
 
             set_total_price(total + Number(price))
@@ -144,7 +144,7 @@ function Checkout(props) {
                 set_show_error(true)
             } else {
                 if (information.email === '') {
-                    
+
                     localStorage.setItem('information', JSON.stringify(information))
 
                     set_show_error(true)
@@ -172,7 +172,7 @@ function Checkout(props) {
 
         set_load_order(true)
 
-        if (localStorage.getItem("id_coupon")){
+        if (localStorage.getItem("id_coupon")) {
 
             const responseUpdate = await CouponAPI.updateCoupon(localStorage.getItem("id_coupon"))
             console.log(responseUpdate)
@@ -380,7 +380,7 @@ function Checkout(props) {
                                                     value={information.address}
                                                     onChange={onChangeAddress} />
                                                 {error_address && <span style={{ color: 'red' }}>* Address is required</span>}
-                                                <input id="destination" type="text" name="destination" required=""  />
+                                                <input id="destination" type="text" name="destination" required="" />
                                             </div>
                                         </div>
                                         <div className="col-md-12">
@@ -388,11 +388,11 @@ function Checkout(props) {
                                                 <div className="form-group">
                                                     <label>
                                                         Travel Mode
-                                                        </label>
+                                                    </label>
                                                     <select id="travel_mode" name="travel_mode">
                                                         <option value="DRIVING">
                                                             DRIVING
-                                                            </option>
+                                                        </option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -401,16 +401,16 @@ function Checkout(props) {
                                             <div id="result" className="hide">
                                                 <div>
                                                     <label htmlFor="Kilometers">Kilometers: </label>&nbsp;
-                                                        <label id="in_kilo"></label>
+                                                    <label id="in_kilo"></label>
                                                 </div>
                                                 <div>
                                                     <label htmlFor="Duration">Duration: </label>&nbsp;
-                                                        <label id="duration_text"></label>
+                                                    <label id="duration_text"></label>
                                                 </div>
                                                 <div>
                                                     <label htmlFor="Price">Shipping Cost: </label>&nbsp;
-                                                        <label id="price_shipping"></label>
-                                                        &nbsp;<label>VNĐ</label>
+                                                    <label id="price_shipping"></label>
+                                                    &nbsp;<label>VNĐ</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -512,7 +512,7 @@ function Checkout(props) {
                                                     carts && carts.map(value => (
                                                         <tr className="cart_item" key={value._id}>
                                                             <td className="cart-product-name">{value.name_product}<strong className="product-quantity"> × {value.count}</strong></td>
-                                                            <td className="cart-product-total"><span className="amount">{new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(parseInt(value.price_product) * parseInt(value.count)) + ' VNĐ'}</span></td>
+                                                            <td className="cart-product-total"><span className="amount">{new Intl.NumberFormat('vi-VN', { style: 'decimal', decimal: 'VND' }).format(parseInt(value.price_product) * parseInt(value.count)) + ' VNĐ'}</span></td>
                                                         </tr>
                                                     ))
                                                 }
@@ -520,15 +520,15 @@ function Checkout(props) {
                                             <tfoot>
                                                 <tr className="cart-subtotal">
                                                     <th>Shipping Cost</th>
-                                                    <td><span className="amount">{new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(price) + ' VNĐ'}</span></td>
+                                                    <td><span className="amount">{new Intl.NumberFormat('vi-VN', { style: 'decimal', decimal: 'VND' }).format(price) + ' VNĐ'}</span></td>
                                                 </tr>
                                                 <tr className="cart-subtotal">
                                                     <th>Discount</th>
-                                                    <td><span className="amount">{new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(discount) + ' VNĐ'}</span></td>
+                                                    <td><span className="amount">{new Intl.NumberFormat('vi-VN', { style: 'decimal', decimal: 'VND' }).format(discount) + ' VNĐ'}</span></td>
                                                 </tr>
                                                 <tr className="order-total">
                                                     <th>Order Total</th>
-                                                    <td><strong><span className="amount">{new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(total_price) + ' VNĐ'}</span></strong></td>
+                                                    <td><strong><span className="amount">{new Intl.NumberFormat('vi-VN', { style: 'decimal', decimal: 'VND' }).format(total_price) + ' VNĐ'}</span></strong></td>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -541,7 +541,7 @@ function Checkout(props) {
                                                         <h5 className="panel-title">
                                                             <a className="collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                                                                 PayPal
-                                                </a>
+                                                            </a>
                                                         </h5>
                                                     </div>
                                                     <div id="collapseThree" className="collapse">
@@ -568,21 +568,21 @@ function Checkout(props) {
                                                         <h5 className="panel-title">
                                                             <a className="collapsed" data-toggle="collapse" data-target="#collapseMomo" aria-expanded="false" aria-controls="collapseMomo">
                                                                 MoMo
-                                                        </a>
+                                                            </a>
                                                         </h5>
                                                     </div>
                                                     <div id="collapseMomo" className="collapse">
                                                         <div className="card-body">
                                                             {
                                                                 show_error ? 'Please Checking Information!' :
-                                                                <div>
-                                                                    <img src="https://developers.momo.vn/images/logo.png" width="50" onClick={handlerMomo}
-                                                                    style={{ cursor: 'pointer' }} />
-                                                                    <MoMo 
-                                                                        orderID={orderID}
-                                                                        total={total_price}
+                                                                    <div>
+                                                                        <img src="https://developers.momo.vn/images/logo.png" width="50" onClick={handlerMomo}
+                                                                            style={{ cursor: 'pointer' }} />
+                                                                        <MoMo
+                                                                            orderID={orderID}
+                                                                            total={total_price}
                                                                         />
-                                                                </div>  
+                                                                    </div>
                                                             }
                                                         </div>
                                                     </div>
