@@ -314,7 +314,7 @@ function Detail_Product(props) {
                                                     <div className="inc qtybutton" onClick={upCount}><i className="fa fa-angle-up"></i></div>
                                                 </div>
                                             </div>
-                                            <a href="#" className="add-to-cart" type="submit" onClick={handler_addcart}>Add to cart</a>
+                                            <a href="#" className="add-to-cart" type="submit" onClick={handler_addcart}>Thêm vào giỏ</a>
                                         </form>
                                     </div>
                                 </div>

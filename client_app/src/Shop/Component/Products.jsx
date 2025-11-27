@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import CartsLocal from '../../Share/CartsLocal';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeCount } from '../../Redux/Action/ActionCount';
 
 Products.propTypes = {
     products: PropTypes.array,
@@ -15,6 +18,32 @@ Products.defaultProps = {
 function Products(props) {
 
     const { products, sort } = props
+    
+    const dispatch = useDispatch()
+    const count_change = useSelector(state => state.Count.isLoad)
+    const [showSuccess, setShowSuccess] = useState(false)
+
+    const handleAddToCart = (product) => {
+        const data = {
+            id_cart: Math.random().toString(),
+            id_product: product._id,
+            name_product: product.name_product,
+            price_product: product.price_product,
+            count: 1,
+            image: product.image,
+            size: 'M',
+        }
+
+        CartsLocal.addProduct(data)
+        
+        const action_count_change = changeCount(count_change)
+        dispatch(action_count_change)
+
+        setShowSuccess(true)
+        setTimeout(() => {
+            setShowSuccess(false)
+        }, 2000)
+    }
 
     if (sort === 'DownToUp') {
         products.sort((a, b) => {
@@ -28,7 +57,24 @@ function Products(props) {
     }
 
     return (
-        <div className="row">
+        <>
+            {showSuccess && (
+                <div style={{
+                    position: 'fixed',
+                    top: '20px',
+                    right: '20px',
+                    backgroundColor: '#27ae60',
+                    color: 'white',
+                    padding: '15px 25px',
+                    borderRadius: '8px',
+                    zIndex: 9999,
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                }}>
+                    <i className="fa fa-check-circle" style={{marginRight: '10px'}}></i>
+                    Đã thêm sản phẩm vào giỏ hàng!
+                </div>
+            )}
+            <div className="row">
             {
                 products && products.map(value => (
                     <div className="col-lg-4 col-md-4 col-sm-6 mt-40 animate__animated animate__zoomIn col_product" key={value._id}>
@@ -115,13 +161,35 @@ function Products(props) {
                                     <div className="price-box">
                                         <span className="new-price">{new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(value.price_product)+ ' VNĐ'}</span>
                                     </div>
+                                    <div className="cart-quantity" style={{marginTop: '12px'}}>
+                                        <a 
+                                            href="#" 
+                                            className="add-to-cart"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                if (value.stock > 0) {
+                                                    console.log('Button clicked!', value);
+                                                    handleAddToCart(value);
+                                                }
+                                            }}
+                                            style={{
+                                                pointerEvents: value.stock === 0 ? 'none' : 'auto',
+                                                opacity: value.stock === 0 ? 0.5 : 1,
+                                                display: 'block',
+                                                textAlign: 'center'
+                                            }}
+                                        >
+                                            Thêm vào giỏ
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 ))
             }
-        </div>
+            </div>
+        </>
     );
 }
 

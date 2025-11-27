@@ -6,11 +6,16 @@ const CartsLocal = {
         //Lấy dữ liệu từ local
         const data_add_cart = data
 
-        //Lấy dữ liệu có sẵn trong state
-        const add_cart = JSON.parse(localStorage.getItem('carts'))
+        //Lấy dữ liệu có sẵn trong state - Khởi tạo nếu null
+        let add_cart = localStorage.getItem('carts')
+        if (!add_cart) {
+            add_cart = []
+        } else {
+            add_cart = JSON.parse(add_cart)
+        }
 
-        console.log(add_cart.length)
-        console.log(data_add_cart)
+        console.log('Cart length:', add_cart.length)
+        console.log('Adding product:', data_add_cart)
 
         if (add_cart.length < 1) {
 

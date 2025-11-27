@@ -225,39 +225,117 @@ function Header(props) {
                             <li><span>Liên Hệ:</span><a href="#">(+123) 123 321 345</a></li>
                         </div>
                         <div className="col-lg-9 col-md-8">
-                            <ul className="d-flex justify-content-end" >
-                                <li>
-                                    <div className="ht-setting-trigger">
-                                        {
-                                            active_user ? (
-                                                <span
-                                                    data-toggle="collapse"
-                                                    data-target="#collapseExample"
-                                                    aria-expanded="false"
-                                                    aria-controls="collapseExample">{user.fullname}</span>) : (
-                                                <span
-                                                    data-toggle="collapse"
-                                                    data-target="#collapseExample"
-                                                    aria-expanded="false"
-                                                    aria-controls="collapseExample">Cài Đặt</span>
-                                            )
-                                        }
-                                    </div>
-                                    <div className="ul_setting">
-                                        {active_user ? (
+                            <ul className="d-flex justify-content-end align-items-center" style={{gap: '15px'}}>
+                                {active_user ? (
+                                    <li>
+                                        <div className="ht-setting-trigger">
+                                            <span
+                                                data-toggle="collapse"
+                                                data-target="#collapseExample"
+                                                aria-expanded="false"
+                                                aria-controls="collapseExample"
+                                                style={{
+                                                    cursor: 'pointer',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '8px',
+                                                    padding: '8px 15px',
+                                                    backgroundColor: '#f8f9fa',
+                                                    borderRadius: '6px',
+                                                    fontWeight: '500',
+                                                    transition: 'all 0.3s'
+                                                }}
+                                                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#e9ecef'}
+                                                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
+                                            >
+                                                <i className="fa fa-user-circle" style={{fontSize: '18px', color: '#fed700'}}></i>
+                                                {user.fullname}
+                                                <i className="fa fa-angle-down" style={{fontSize: '14px'}}></i>
+                                            </span>
+                                        </div>
+                                        <div className="ul_setting">
                                             <ul className="setting_ul collapse" id="collapseExample">
-                                                <li className="li_setting"><Link to={`/profile/${sessionStorage.getItem("id_user")}`}>Hồ Sơ</Link></li>
-                                                <li className="li_setting"><Link to="/history">Lịch Sử Đơn Hàng</Link></li>
-                                                <li className="li_setting"><a onClick={handler_logout} href="#">Đăng Xuất</a></li>
+                                                <li className="li_setting">
+                                                    <Link to={`/profile/${sessionStorage.getItem("id_user")}`}>
+                                                        <i className="fa fa-user" style={{marginRight: '8px', width: '18px'}}></i>
+                                                        Hồ Sơ
+                                                    </Link>
+                                                </li>
+                                                <li className="li_setting">
+                                                    <Link to="/history">
+                                                        <i className="fa fa-shopping-bag" style={{marginRight: '8px', width: '18px'}}></i>
+                                                        Lịch Sử Đơn Hàng
+                                                    </Link>
+                                                </li>
+                                                <li className="li_setting">
+                                                    <a onClick={handler_logout} href="#" style={{color: '#dc3545'}}>
+                                                        <i className="fa fa-sign-out" style={{marginRight: '8px', width: '18px'}}></i>
+                                                        Đăng Xuất
+                                                    </a>
+                                                </li>
                                             </ul>
-                                        ) : (
-                                            <ul className="setting_ul collapse" id="collapseExample">
-                                                <li className="li_setting"><Link to="/signin">Đăng Nhập</Link></li>
-                                            </ul>
-                                        )}
-
-                                    </div>
-                                </li>
+                                        </div>
+                                    </li>
+                                ) : (
+                                    <>
+                                        <li>
+                                            <Link to="/signin" style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '6px',
+                                                padding: '8px 18px',
+                                                backgroundColor: '#fff',
+                                                border: '2px solid #fed700',
+                                                borderRadius: '6px',
+                                                color: '#333',
+                                                fontWeight: '600',
+                                                fontSize: '14px',
+                                                textDecoration: 'none',
+                                                transition: 'all 0.3s',
+                                                whiteSpace: 'nowrap'
+                                            }}
+                                            onMouseOver={(e) => {
+                                                e.currentTarget.style.backgroundColor = '#fed700';
+                                                e.currentTarget.style.color = '#333';
+                                            }}
+                                            onMouseOut={(e) => {
+                                                e.currentTarget.style.backgroundColor = '#fff';
+                                                e.currentTarget.style.color = '#333';
+                                            }}>
+                                                <i className="fa fa-sign-in" style={{fontSize: '16px'}}></i>
+                                                Đăng Nhập
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link to="/signup" style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '6px',
+                                                padding: '8px 18px',
+                                                backgroundColor: '#fed700',
+                                                border: '2px solid #fed700',
+                                                borderRadius: '6px',
+                                                color: '#333',
+                                                fontWeight: '600',
+                                                fontSize: '14px',
+                                                textDecoration: 'none',
+                                                transition: 'all 0.3s',
+                                                whiteSpace: 'nowrap'
+                                            }}
+                                            onMouseOver={(e) => {
+                                                e.currentTarget.style.backgroundColor = '#e5c200';
+                                                e.currentTarget.style.borderColor = '#e5c200';
+                                            }}
+                                            onMouseOut={(e) => {
+                                                e.currentTarget.style.backgroundColor = '#fed700';
+                                                e.currentTarget.style.borderColor = '#fed700';
+                                            }}>
+                                                <i className="fa fa-user-plus" style={{fontSize: '16px'}}></i>
+                                                Đăng Ký
+                                            </Link>
+                                        </li>
+                                    </>
+                                )}
                             </ul>
                         </div>
                     </div>
@@ -353,32 +431,7 @@ function Header(props) {
                                         <ul>
 
                                             <li className="dropdown-holder"><Link to="/">Trang Chủ</Link></li>
-                                            <li className="megamenu-holder"><Link to="/shop/all">Danh Mục</Link>
-                                                <ul class="megamenu hb-megamenu">
-                                                    <li><Link to="/shop/all">Nam</Link>
-                                                        <ul>
-                                                            {
-                                                                male && male.map(value => (
-                                                                    <li key={value._id}>
-                                                                        <Link to={`/shop/${value._id}`} style={{ cursor: 'pointer' }}>{value.category}</Link>
-                                                                    </li>
-                                                                ))
-                                                            }
-                                                        </ul>
-                                                    </li>
-                                                    <li><Link to="/shop">Nữ</Link>
-                                                        <ul>
-                                                            {
-                                                                female && female.map(value => (
-                                                                    <li key={value._id}>
-                                                                        <Link to={`/shop/${value._id}`} style={{ cursor: 'pointer' }}>{value.category}</Link>
-                                                                    </li>
-                                                                ))
-                                                            }
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
+                                            <li className="megamenu-holder"><Link to="/shop/all">Danh Mục</Link></li>
                                             <li><Link to="/event">Sự Kiện</Link></li>
                                             <li><Link to="/contact">Liên Hệ</Link></li>
                                         </ul>

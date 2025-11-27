@@ -7,6 +7,9 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import SaleAPI from '../../API/SaleAPI';
+import CartsLocal from '../../Share/CartsLocal';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeCount } from '../../Redux/Action/ActionCount';
 
 Home_Category.propTypes = {
     GET_id_modal: PropTypes.func
@@ -17,6 +20,10 @@ Home_Category.defaultProps = {
 }
 
 function Home_Category(props) {
+
+    const dispatch = useDispatch()
+    const count_change = useSelector(state => state.Count.isLoad)
+    const [showSuccess, setShowSuccess] = useState(false)
 
     var settings = {
         dots: false,
@@ -72,21 +79,51 @@ function Home_Category(props) {
 
     }, [])
 
+    const handleAddToCart = (product) => {
+        const discountedPrice = parseInt(product.id_product.price_product) - 
+            ((parseInt(product.id_product.price_product) * parseInt(product.promotion)) / 100)
+        
+        const data = {
+            id_cart: Math.random().toString(),
+            id_product: product.id_product._id,
+            name_product: product.id_product.name_product,
+            price_product: discountedPrice,
+            count: 1,
+            image: product.id_product.image,
+            size: 'M',
+        }
+
+        CartsLocal.addProduct(data)
+        
+        const action_count_change = changeCount(count_change)
+        dispatch(action_count_change)
+
+        setShowSuccess(true)
+        setTimeout(() => {
+            setShowSuccess(false)
+        }, 2000)
+    }
 
     return (
         <div className="product-area pt-60 pb-50">
-            <div className="container">
-                <div className="row">
-                    <div className="col-lg-12">
-                        <div className="li-product-tab">
-                            <ul className="nav li-product-menu">
-                                <li><a className="active" data-toggle="tab" href="#"><span>Khuyến Mãi</span></a></li>
-                            </ul>
-                        </div>
-                    </div>
+            {showSuccess && (
+                <div style={{
+                    position: 'fixed',
+                    top: '20px',
+                    right: '20px',
+                    backgroundColor: '#27ae60',
+                    color: 'white',
+                    padding: '15px 25px',
+                    borderRadius: '8px',
+                    zIndex: 9999,
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                }}>
+                    <i className="fa fa-check-circle" style={{marginRight: '10px'}}></i>
+                    Đã thêm sản phẩm vào giỏ hàng!
                 </div>
+            )}
+            <div className="container">
                 <Slider {...settings}>
-
                     {
                         product_category && product_category.map(value => (
                             <div className="col-lg-12 animate__animated animate__zoomIn col_product" style={{ zIndex: '999', height: '30rem' }} key={value._id}>
@@ -177,14 +214,26 @@ function Home_Category(props) {
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className="add_actions">
-                                            <ul className="add-actions-link">
-                                                <li><a href="#" title="quick view"
-                                                    className="links-details"
-                                                    data-toggle="modal"
-                                                    data-target={`#${value.id_product._id}`}
-                                                    onClick={() => GET_id_modal(`${value.id_product._id}`, parseInt(value.id_product.price_product) - ((parseInt(value.id_product.price_product) * parseInt(value.promotion)) / 100))}><i className="fa fa-eye"></i></a></li>
-                                            </ul>
+                                        <div className="cart-quantity" style={{marginTop: '12px'}}>
+                                            <a 
+                                                href="#" 
+                                                className="add-to-cart"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    if (value.id_product.stock > 0) {
+                                                        console.log('Button clicked!', value);
+                                                        handleAddToCart(value);
+                                                    }
+                                                }}
+                                                style={{
+                                                    pointerEvents: value.id_product.stock === 0 ? 'none' : 'auto',
+                                                    opacity: value.id_product.stock === 0 ? 0.5 : 1,
+                                                    display: 'block',
+                                                    textAlign: 'center'
+                                                }}
+                                            >
+                                                Thêm vào giỏ
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

@@ -6,20 +6,30 @@ import { Link } from 'react-router-dom';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import CartsLocal from '../../Share/CartsLocal';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeCount } from '../../Redux/Action/ActionCount';
 
 Home_Product.propTypes = {
     gender: PropTypes.string,
-    GET_id_modal: PropTypes.func
+    GET_id_modal: PropTypes.func,
+    title: PropTypes.string,
+    limit: PropTypes.number
 };
 
 Home_Product.defaultProps = {
     gender: '',
-    GET_id_modal: null
+    GET_id_modal: null,
+    title: 'Sản Phẩm',
+    limit: 8
 }
 
 function Home_Product(props) {
 
-    const { gender, GET_id_modal } = props
+    const { gender, GET_id_modal, title, limit } = props
+    
+    const dispatch = useDispatch()
+    const count_change = useSelector(state => state.Count.isLoad)
 
     var settings = {
         dots: false,
@@ -58,42 +68,87 @@ function Home_Product(props) {
 
 
     const [products, set_products] = useState([])
+    const [showSuccess, setShowSuccess] = useState(false)
 
-    // Hàm này dùng gọi API trả lại dữ liệu product category
+    // Hàm này dùng gọi API trả lại dữ liệu product
     useEffect(() => {
 
         const fetchData = async () => {
 
-            const response = await Product.Get_Product_By_Gender(gender)
+            let response;
+            if (gender === 'all') {
+                response = await Product.Get_All_Product()
+            } else {
+                response = await Product.Get_Product_By_Gender(gender)
+            }
 
-            set_products(response.slice(0, 7))
+            set_products(response.slice(0, limit))
 
         }
 
         fetchData()
 
-    }, [gender])
+    }, [gender, limit])
+
+    const handleAddToCart = (product) => {
+        const data = {
+            id_cart: Math.random().toString(),
+            id_product: product._id,
+            name_product: product.name_product,
+            price_product: product.price_product,
+            count: 1,
+            image: product.image,
+            size: 'M',
+        }
+
+        CartsLocal.addProduct(data)
+        
+        const action_count_change = changeCount(count_change)
+        dispatch(action_count_change)
+
+        setShowSuccess(true)
+        setTimeout(() => {
+            setShowSuccess(false)
+        }, 2000)
+    }
 
 
     return (
         // col-lg-3 col-md-4 col-sm-6 mt-40 col_product
         <section className="product-area li-laptop-product pt-60 pb-45">
             <div className="container">
+                {showSuccess && (
+                    <div style={{
+                        position: 'fixed',
+                        top: '20px',
+                        right: '20px',
+                        backgroundColor: '#27ae60',
+                        color: 'white',
+                        padding: '15px 25px',
+                        borderRadius: '8px',
+                        zIndex: 9999,
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                    }}>
+                        <i className="fa fa-check-circle" style={{marginRight: '10px'}}></i>
+                        Đã thêm sản phẩm vào giỏ hàng!
+                    </div>
+                )}
                 <div className="row">
                     <div className="col-lg-12">
                         <div className="li-section-title">
                             <h2>
-                                <span>{gender}</span>
+                                <span>{title}</span>
                             </h2>
                         </div>
                         <Slider {...settings}>
                             {
                                 products && products.map(value => (
-                                    <div className="col-lg-12 col_product" style={{ zIndex: '999', height: '30rem', position: 'relative' }} key={value._id}>
+                                    <div className="col-lg-12 col_product" style={{ height: '30rem', position: 'relative' }} key={value._id}>
                                         <div className="single-product-wrap" style={{
                                             opacity: value.stock === 0 ? 0.6 : 1,
                                             filter: value.stock === 0 ? 'grayscale(80%)' : 'none',
-                                            transition: 'all 0.3s ease'
+                                            transition: 'all 0.3s ease',
+                                            position: 'relative'
                                         }}>
                                             <div className="product-image" style={{position: 'relative'}}>
                                                 <Link to={`/detail/${value._id}`}>
@@ -173,15 +228,27 @@ function Home_Product(props) {
                                                         <span className="new-price">{new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(value.price_product)+ ' VNĐ'}</span>
                                                     </div>
                                                 </div>
-                                                {/* <div className="add_actions">
-                                                    <ul className="add-actions-link">                                                      
-                                                        <li><a href="#" title="quick view"
-                                                            className="links-details"
-                                                            data-toggle="modal"
-                                                            data-target={`#${value._id}`}
-                                                            onClick={() => GET_id_modal(`${value._id}`)}><i className="fa fa-eye"></i></a></li>
-                                                    </ul>
-                                                </div> */}
+                                                <div className="cart-quantity" style={{marginTop: '10px'}}>
+                                                    <a 
+                                                        href="#" 
+                                                        className="add-to-cart"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            if (value.stock > 0) {
+                                                                console.log('Button clicked!', value);
+                                                                handleAddToCart(value);
+                                                            }
+                                                        }}
+                                                        style={{
+                                                            pointerEvents: value.stock === 0 ? 'none' : 'auto',
+                                                            opacity: value.stock === 0 ? 0.5 : 1,
+                                                            display: 'block',
+                                                            textAlign: 'center'
+                                                        }}
+                                                    >
+                                                        Thêm vào giỏ
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

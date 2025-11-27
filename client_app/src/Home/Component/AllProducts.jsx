@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import Product from '../../API/Product';
 import CategoryAPI from '../../API/CategoryAPI';
 import { Link } from 'react-router-dom';
+import CartsLocal from '../../Share/CartsLocal';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeCount } from '../../Redux/Action/ActionCount';
 
 AllProducts.propTypes = {
     GET_id_modal: PropTypes.func
@@ -15,12 +18,16 @@ AllProducts.defaultProps = {
 function AllProducts(props) {
 
     const { GET_id_modal } = props
+    
+    const dispatch = useDispatch()
+    const count_change = useSelector(state => state.Count.isLoad)
 
     const [allProducts, setAllProducts] = useState([])
     const [filteredProducts, setFilteredProducts] = useState([])
     const [selectedGender, setSelectedGender] = useState('all')
     const [selectedCategory, setSelectedCategory] = useState('all')
     const [categories, setCategories] = useState([])
+    const [showSuccess, setShowSuccess] = useState(false)
 
     // Phân trang
     const [currentPage, setCurrentPage] = useState(1)
@@ -47,7 +54,7 @@ function AllProducts(props) {
         // Lọc theo giới tính
         if (selectedGender !== 'all') {
             filtered = filtered.filter(product =>
-                product.gender && product.gender.toLowerCase() === selectedGender.toLowerCase()
+                product.gender && product.gender === selectedGender
             )
         }
 
@@ -59,16 +66,37 @@ function AllProducts(props) {
         }
 
         setFilteredProducts(filtered)
+        setCurrentPage(1) // Reset về trang 1 khi filter thay đổi
     }, [selectedGender, selectedCategory, allProducts])
 
     const handleGenderFilter = (gender) => {
         setSelectedGender(gender)
-        setCurrentPage(1) // Reset về trang 1 khi filter
     }
 
     const handleCategoryFilter = (category) => {
         setSelectedCategory(category)
-        setCurrentPage(1) // Reset về trang 1 khi filter
+    }
+
+    const handleAddToCart = (product) => {
+        const data = {
+            id_cart: Math.random().toString(),
+            id_product: product._id,
+            name_product: product.name_product,
+            price_product: product.price_product,
+            count: 1,
+            image: product.image,
+            size: 'M', // Size mặc định
+        }
+
+        CartsLocal.addProduct(data)
+        
+        const action_count_change = changeCount(count_change)
+        dispatch(action_count_change)
+
+        setShowSuccess(true)
+        setTimeout(() => {
+            setShowSuccess(false)
+        }, 2000)
     }
 
     // Tính toán sản phẩm cho trang hiện tại
@@ -87,6 +115,24 @@ function AllProducts(props) {
     return (
         <section className="product-area li-laptop-product pt-60 pb-45">
             <div className="container">
+                {/* Thông báo thành công */}
+                {showSuccess && (
+                    <div style={{
+                        position: 'fixed',
+                        top: '20px',
+                        right: '20px',
+                        backgroundColor: '#27ae60',
+                        color: 'white',
+                        padding: '15px 25px',
+                        borderRadius: '8px',
+                        zIndex: 9999,
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                        animation: 'slideIn 0.3s ease-out'
+                    }}>
+                        <i className="fa fa-check-circle" style={{marginRight: '10px'}}></i>
+                        Đã thêm sản phẩm vào giỏ hàng!
+                    </div>
+                )}
                 <div className="row">
                     <div className="col-lg-12">
                         <div className="li-section-title">
@@ -150,15 +196,15 @@ function AllProducts(props) {
                                         Tất Cả
                                     </button>
                                     <button
-                                        onClick={() => handleGenderFilter('Male')}
+                                        onClick={() => handleGenderFilter('male')}
                                         onMouseEnter={(e) => {
-                                            if (selectedGender !== 'Male') {
+                                            if (selectedGender !== 'male') {
                                                 e.target.style.backgroundColor = '#e3f2fd';
                                                 e.target.style.transform = 'translateY(-2px)';
                                             }
                                         }}
                                         onMouseLeave={(e) => {
-                                            if (selectedGender !== 'Male') {
+                                            if (selectedGender !== 'male') {
                                                 e.target.style.backgroundColor = '#fff';
                                                 e.target.style.transform = 'translateY(0)';
                                             }
@@ -166,14 +212,14 @@ function AllProducts(props) {
                                         style={{
                                             padding: '10px 24px',
                                             margin: '0',
-                                            border: selectedGender === 'Male' ? 'none' : '2px solid #ddd',
+                                            border: selectedGender === 'male' ? 'none' : '2px solid #ddd',
                                             borderRadius: '25px',
                                             cursor: 'pointer',
                                             fontSize: '14px',
                                             fontWeight: '600',
-                                            backgroundColor: selectedGender === 'Male' ? '#3498db' : '#fff',
-                                            color: selectedGender === 'Male' ? '#fff' : '#555',
-                                            boxShadow: selectedGender === 'Male' ? '0 4px 12px rgba(52,152,219,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
+                                            backgroundColor: selectedGender === 'male' ? '#3498db' : '#fff',
+                                            color: selectedGender === 'male' ? '#fff' : '#555',
+                                            boxShadow: selectedGender === 'male' ? '0 4px 12px rgba(52,152,219,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
                                             transition: 'all 0.3s ease',
                                             position: 'relative',
                                             zIndex: 1,
@@ -183,15 +229,15 @@ function AllProducts(props) {
                                         Nam
                                     </button>
                                     <button
-                                        onClick={() => handleGenderFilter('Female')}
+                                        onClick={() => handleGenderFilter('female')}
                                         onMouseEnter={(e) => {
-                                            if (selectedGender !== 'Female') {
+                                            if (selectedGender !== 'female') {
                                                 e.target.style.backgroundColor = '#fce4ec';
                                                 e.target.style.transform = 'translateY(-2px)';
                                             }
                                         }}
                                         onMouseLeave={(e) => {
-                                            if (selectedGender !== 'Female') {
+                                            if (selectedGender !== 'female') {
                                                 e.target.style.backgroundColor = '#fff';
                                                 e.target.style.transform = 'translateY(0)';
                                             }
@@ -199,14 +245,14 @@ function AllProducts(props) {
                                         style={{
                                             padding: '10px 24px',
                                             margin: '0',
-                                            border: selectedGender === 'Female' ? 'none' : '2px solid #ddd',
+                                            border: selectedGender === 'female' ? 'none' : '2px solid #ddd',
                                             borderRadius: '25px',
                                             cursor: 'pointer',
                                             fontSize: '14px',
                                             fontWeight: '600',
-                                            backgroundColor: selectedGender === 'Female' ? '#e91e63' : '#fff',
-                                            color: selectedGender === 'Female' ? '#fff' : '#555',
-                                            boxShadow: selectedGender === 'Female' ? '0 4px 12px rgba(233,30,99,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
+                                            backgroundColor: selectedGender === 'female' ? '#e91e63' : '#fff',
+                                            color: selectedGender === 'female' ? '#fff' : '#555',
+                                            boxShadow: selectedGender === 'female' ? '0 4px 12px rgba(233,30,99,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
                                             transition: 'all 0.3s ease',
                                             position: 'relative',
                                             zIndex: 1,
@@ -216,15 +262,15 @@ function AllProducts(props) {
                                         Nữ
                                     </button>
                                     <button
-                                        onClick={() => handleGenderFilter('Unisex')}
+                                        onClick={() => handleGenderFilter('unisex')}
                                         onMouseEnter={(e) => {
-                                            if (selectedGender !== 'Unisex') {
+                                            if (selectedGender !== 'unisex') {
                                                 e.target.style.backgroundColor = '#f3e5f5';
                                                 e.target.style.transform = 'translateY(-2px)';
                                             }
                                         }}
                                         onMouseLeave={(e) => {
-                                            if (selectedGender !== 'Unisex') {
+                                            if (selectedGender !== 'unisex') {
                                                 e.target.style.backgroundColor = '#fff';
                                                 e.target.style.transform = 'translateY(0)';
                                             }
@@ -232,14 +278,14 @@ function AllProducts(props) {
                                         style={{
                                             padding: '10px 24px',
                                             margin: '0',
-                                            border: selectedGender === 'Unisex' ? 'none' : '2px solid #ddd',
+                                            border: selectedGender === 'unisex' ? 'none' : '2px solid #ddd',
                                             borderRadius: '25px',
                                             cursor: 'pointer',
                                             fontSize: '14px',
                                             fontWeight: '600',
-                                            backgroundColor: selectedGender === 'Unisex' ? '#9c27b0' : '#fff',
-                                            color: selectedGender === 'Unisex' ? '#fff' : '#555',
-                                            boxShadow: selectedGender === 'Unisex' ? '0 4px 12px rgba(156,39,176,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
+                                            backgroundColor: selectedGender === 'unisex' ? '#9c27b0' : '#fff',
+                                            color: selectedGender === 'unisex' ? '#fff' : '#555',
+                                            boxShadow: selectedGender === 'unisex' ? '0 4px 12px rgba(156,39,176,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
                                             transition: 'all 0.3s ease',
                                             position: 'relative',
                                             zIndex: 1,
@@ -443,22 +489,26 @@ function AllProducts(props) {
                                                             <span className="new-price">{new Intl.NumberFormat('vi-VN', { style: 'decimal', decimal: 'VND' }).format(value.price_product) + ' VNĐ'}</span>
                                                         </div>
                                                     </div>
-                                                    <div className="add-actions">
-                                                        <ul className="add-actions-link">
-                                                            <li className="add-cart active">
-                                                                <a href="shopping-cart.html">Thêm vào giỏ</a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#" title="quick view" data-toggle="modal" data-target={`#${value._id}`} onClick={() => GET_id_modal(value._id)}>
-                                                                    <i className="fa fa-eye"></i>
-                                                                </a>
-                                                            </li>
-                                                            <li className="wishlist">
-                                                                <a href="wishlist.html">
-                                                                    <i className="fa fa-heart-o"></i>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
+                                                    <div className="cart-quantity" style={{marginTop: '10px'}}>
+                                                        <a 
+                                                            href="#" 
+                                                            className="add-to-cart"
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                if (value.stock > 0) {
+                                                                    console.log('Button clicked!', value);
+                                                                    handleAddToCart(value);
+                                                                }
+                                                            }}
+                                                            style={{
+                                                                pointerEvents: value.stock === 0 ? 'none' : 'auto',
+                                                                opacity: value.stock === 0 ? 0.5 : 1,
+                                                                display: 'block',
+                                                                textAlign: 'center'
+                                                            }}
+                                                        >
+                                                            Thêm vào giỏ
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
