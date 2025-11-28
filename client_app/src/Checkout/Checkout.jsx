@@ -33,14 +33,23 @@ function Checkout(props) {
 
     const [discount, set_discount] = useState(0)
 
-    // state load_map
-    const [load_map, set_load_map] = useState(true)
+    // state load_map - đã gộp chung nên không cần state này nữa
+    // const [load_map, set_load_map] = useState(true)
 
-    // state load_order
-    const [load_order_status, set_load_order_status] = useState(false)
+    // state load_order - luôn hiển thị cả hai phần
+    // const [load_order_status, set_load_order_status] = useState(false)
 
     const [check_action, set_check_action] = useState(false)
 
+    // Load giỏ hàng khi component mount
+    useEffect(() => {
+        const cartsFromStorage = JSON.parse(localStorage.getItem('carts')) || []
+        set_carts(cartsFromStorage)
+        
+        if (cartsFromStorage.length > 0) {
+            Sum_Price(cartsFromStorage, 0)
+        }
+    }, [])
 
     useEffect(() => {
 
@@ -282,8 +291,8 @@ function Checkout(props) {
     const [price, set_price] = useState('')
 
 
-    // Kiểm tra xem khách hàng đã nhập chỉ nhận hàng hay chưa
-    const handler_Next = () => {
+    // Kiểm tra xem khách hàng đã nhập chỉ nhận hàng hay chưa và tính phí ship
+    const handler_CheckDistance = () => {
 
         if (!information.address) {
             set_error_address(true)
@@ -314,20 +323,25 @@ function Checkout(props) {
             address: to_places,
             email: information.email
         })
+        
         if (kilo) {
-            set_load_map(false)
-            set_load_order_status(true) // Hiển thị phần checkout
             set_check_action(true)
-
         }
 
     }
 
     const handlerMomo = () => {
-
-        setOrderID(Math.random().toString())
-        console.log("Momo Thanh Cong")
-
+        // Mở collapse trước
+        const collapseElement = document.getElementById('collapseMomo');
+        if (collapseElement && !collapseElement.classList.contains('show')) {
+            window.$('#collapseMomo').collapse('show');
+        }
+        
+        // Tạo orderID sau một chút để component được mount
+        setTimeout(() => {
+            setOrderID(Math.random().toString())
+            console.log("Momo Thanh Cong")
+        }, 100);
     }
 
     return (
@@ -345,247 +359,259 @@ function Checkout(props) {
                 <div className="container">
                     <div className="breadcrumb-content">
                         <ul>
-                            <li><a href="index.html">Home</a></li>
-                            <li className="active">Checkout</li>
+                            <li><a href="index.html">Trang chủ</a></li>
+                            <li className="active">Thanh toán</li>
                         </ul>
                     </div>
                 </div>
             </div>
 
             <div className="container" style={{ paddingTop: '3rem', paddingBottom: '3rem' }}>
-                {
-                    load_map && (
-                        <div className="row">
-                            <div className="col-lg-6 col-12 pb-5">
-                                <div className="checkbox-form">
-                                    <h3>Check Distance</h3>
-                                    <div className="row">
-                                        <div className="col-md-12">
-                                            <div className="checkout-form-list">
-                                                <label>From <span className="required">*</span></label>
-                                                <input type="text" name="from"
-                                                    id="from_places"
-                                                    disabled="true"
-                                                    value={from} />
-                                                <input id="origin" name="origin" required="" type="hidden"
-                                                    value={from} />
-                                            </div>
+                <div className="row">
+                    {/* Cột trái: Thông tin người nhận */}
+                    <div className="col-lg-6 col-12 pb-5">
+                        <form onSubmit={handleSubmit(handler_Checkout)}>
+                            {/* Thông tin người nhận */}
+                            <div className="checkbox-form">
+                                <h3>Thông tin người nhận</h3>
+                                <div className="row">
+                                    <div className="col-md-12">
+                                        <div className="checkout-form-list">
+                                            <label>Họ và tên <span className="required">*</span></label>
+                                            <input placeholder="Nhập họ tên" type="text" name="fullname"
+                                                ref={register({ required: true })}
+                                                value={information.fullname}
+                                                onChange={onChangeFullname} />
+                                            {errors.fullname && errors.fullname.type === "required" && <span style={{ color: 'red' }}>* Vui lòng nhập họ tên</span>}
                                         </div>
-                                        <div className="col-md-12">
-                                            <div className="checkout-form-list">
-                                                <label>To <span className="required">*</span></label>
-                                                <input type="text"
-                                                    id="to_places"
-                                                    placeholder="Enter A Location"
-                                                    value={information.address}
-                                                    onChange={onChangeAddress} />
-                                                {error_address && <span style={{ color: 'red' }}>* Address is required</span>}
-                                                <input id="destination" type="text" name="destination" required="" />
-                                            </div>
+                                    </div>
+                                    <div className="col-md-12">
+                                        <div className="checkout-form-list">
+                                            <label>Số điện thoại <span className="required">*</span></label>
+                                            <input placeholder="Nhập số điện thoại" type="text" name="phone"
+                                                ref={register({ required: true })}
+                                                value={information.phone}
+                                                onChange={onChangePhone} />
+                                            {errors.phone && errors.phone.type === "required" && <span style={{ color: 'red' }}>* Vui lòng nhập số điện thoại</span>}
                                         </div>
-                                        <div className="col-md-12">
-                                            <div className="checkout-form-list">
-                                                <div className="form-group">
-                                                    <label>
-                                                        Travel Mode
-                                                    </label>
-                                                    <select id="travel_mode" name="travel_mode">
-                                                        <option value="DRIVING">
-                                                            DRIVING
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-12">
-                                            <div id="result" className="hide">
-                                                <div>
-                                                    <label htmlFor="Kilometers">Kilometers: </label>&nbsp;
-                                                    <label id="in_kilo"></label>
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="Duration">Duration: </label>&nbsp;
-                                                    <label id="duration_text"></label>
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="Price">Shipping Cost: </label>&nbsp;
-                                                    <label id="price_shipping"></label>
-                                                    &nbsp;<label>VNĐ</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-12">
-                                            <div className="order-button-payment">
-                                                <input value="CHECKING" type="submit" id="distance_form" />
-                                            </div>
-                                        </div>
-                                        <div className="col-md-12">
-                                            <div className="d-flex justify-content-end">
-                                                <div className="order-button-payment">
-                                                    <input value="Next" onClick={handler_Next} id="distance_next" type="submit" style={{ padding: '.4rem 1.6rem' }} />
-                                                </div>
-                                            </div>
+                                    </div>
+                                    <div className="col-md-12">
+                                        <div className="checkout-form-list">
+                                            <label>Email <span className="required">*</span></label>
+                                            <input placeholder="Nhập email" type="email" name="email"
+                                                ref={register({ required: true })}
+                                                value={information.email}
+                                                onChange={onChangeEmail} />
+                                            {errors.email && errors.email.type === "required" && <span style={{ color: 'red' }}>* Vui lòng nhập email</span>}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-lg-6 col-12">
-                                <div id="map" style={{ height: '400px', width: '500px' }}></div>
+
+                            {/* Địa chỉ nhận hàng */}
+                            <div className="checkbox-form" style={{ marginTop: '2rem' }}>
+                                <h3>Địa chỉ nhận hàng</h3>
+                                <div className="row">
+                                    <div className="col-md-12">
+                                        <div className="checkout-form-list">
+                                            <label>Gửi từ <span className="required">*</span></label>
+                                            <input type="text" name="from"
+                                                id="from_places"
+                                                disabled
+                                                value={from}
+                                                style={{ backgroundColor: '#f5f5f5' }} />
+                                            <input id="origin" name="origin" type="hidden" value={from} />
+                                        </div>
+                                    </div>
+                                    <div className="col-md-12">
+                                        <div className="checkout-form-list">
+                                            <label>Địa chỉ giao hàng <span className="required">*</span></label>
+                                            <input type="text"
+                                                id="to_places"
+                                                placeholder="Nhập địa chỉ giao hàng"
+                                                name="address"
+                                                ref={register({ required: true })}
+                                                value={information.address}
+                                                onChange={onChangeAddress} />
+                                            {errors.address && errors.address.type === "required" && <span style={{ color: 'red' }}>* Vui lòng nhập địa chỉ</span>}
+                                            {error_address && <span style={{ color: 'red' }}>* Vui lòng nhập địa chỉ</span>}
+                                            <input id="destination" type="hidden" name="destination" />
+                                        </div>
+                                    </div>
+                                    <div className="col-md-12">
+                                        <div className="checkout-form-list">
+                                            <label>Phương tiện vận chuyển</label>
+                                            <select id="travel_mode" name="travel_mode" className="form-control">
+                                                <option value="DRIVING">Xe máy/Ô tô</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Hiển thị kết quả tính phí */}
+                                    {distance && (
+                                        <div className="col-md-12">
+                                            <div style={{ 
+                                                padding: '15px', 
+                                                backgroundColor: '#f8f9fa', 
+                                                borderRadius: '5px',
+                                                marginBottom: '15px'
+                                            }}>
+                                                <div style={{ marginBottom: '8px' }}>
+                                                    <strong>Khoảng cách:</strong> {distance}
+                                                </div>
+                                                <div style={{ marginBottom: '8px' }}>
+                                                    <strong>Thời gian:</strong> {duration}
+                                                </div>
+                                                <div>
+                                                    <strong>Phí vận chuyển:</strong> <span style={{ color: '#e74c3c', fontSize: '18px' }}>{new Intl.NumberFormat('vi-VN').format(price)} VNĐ</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                    
+                                    {/* Hidden fields cho jQuery xử lý */}
+                                    <div id="result" className="hide">
+                                        <div><label id="in_kilo"></label></div>
+                                        <div><label id="duration_text"></label></div>
+                                        <div><label id="price_shipping"></label></div>
+                                    </div>
+
+                                    <div className="col-md-6">
+                                        <div className="order-button-payment">
+                                            <input value="Tính phí vận chuyển" type="button" id="distance_form" 
+                                                style={{ width: '100%', backgroundColor: '#3498db' }} />
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="order-button-payment">
+                                            {redirect && <Redirect to="/success" />}
+                                            <input value="Đặt hàng" type="submit" 
+                                                style={{ width: '100%', backgroundColor: '#27ae60' }} />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    )
-                }
-                {
-                    load_order_status && (
-                        <div className="row">
-                            <div className="col-lg-6 col-12 pb-5">
-                                <form onSubmit={handleSubmit(handler_Checkout)}>
-                                    <div className="checkbox-form">
-                                        <h3>Billing Details</h3>
-                                        <div className="row">
-                                            <div className="col-md-12">
-                                                <div className="checkout-form-list">
-                                                    <label>Full Name <span className="required">*</span></label>
-                                                    <input placeholder="Enter Fullname" type="text" name="fullname"
-                                                        ref={register({ required: true })}
-                                                        value={information.fullname}
-                                                        onChange={onChangeFullname} />
-                                                    {errors.fullname && errors.fullname.type === "required" && <span style={{ color: 'red' }}>* Fullname is required</span>}
-                                                </div>
+                        </form>
+                    </div>
+
+                    {/* Cột phải: Đơn hàng */}
+                    <div className="col-lg-6 col-12">
+                        {/* Đơn hàng */}
+                        <div className="your-order">
+                            <h3>Đơn hàng của bạn</h3>
+                            <div className="your-order-table table-responsive">
+                                <table className="table">
+                                    <thead>
+                                        <tr>
+                                            <th className="cart-product-name" style={{ width: '60%' }}>Sản phẩm</th>
+                                            <th className="cart-product-total" style={{ textAlign: 'right' }}>Thành tiền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            carts && carts.map(value => (
+                                                <tr className="cart_item" key={value._id}>
+                                                    <td className="cart-product-name">
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                            {(value.image || value.img1) && (
+                                                                <img 
+                                                                    src={value.image || value.img1 || `https://localhost:8000/${value.image}`} 
+                                                                    alt={value.name_product}
+                                                                    style={{ 
+                                                                        width: '60px', 
+                                                                        height: '60px', 
+                                                                        objectFit: 'cover',
+                                                                        borderRadius: '5px',
+                                                                        border: '1px solid #ddd'
+                                                                    }} 
+                                                                    onError={(e) => {
+                                                                        e.target.style.display = 'none'
+                                                                    }}
+                                                                />
+                                                            )}
+                                                            <div>
+                                                                <div>{value.name_product}</div>
+                                                                <strong className="product-quantity" style={{ fontSize: '13px', color: '#666' }}>Số lượng: {value.count}</strong>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="cart-product-total" style={{ textAlign: 'right', verticalAlign: 'middle' }}>
+                                                        <span className="amount">
+                                                            {new Intl.NumberFormat('vi-VN').format(parseInt(value.price_product) * parseInt(value.count))} VNĐ
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr className="cart-subtotal">
+                                            <th>Phí vận chuyển</th>
+                                            <td style={{ textAlign: 'right' }}><span className="amount">{new Intl.NumberFormat('vi-VN').format(price || 0)} VNĐ</span></td>
+                                        </tr>
+                                        <tr className="cart-subtotal">
+                                            <th>Giảm giá</th>
+                                            <td style={{ textAlign: 'right' }}><span className="amount" style={{ color: '#27ae60' }}>-{new Intl.NumberFormat('vi-VN').format(discount || 0)} VNĐ</span></td>
+                                        </tr>
+                                        <tr className="order-total">
+                                            <th>Tổng cộng</th>
+                                            <td style={{ textAlign: 'right' }}><strong><span className="amount" style={{ color: '#e74c3c', fontSize: '20px' }}>{new Intl.NumberFormat('vi-VN').format(total_price || 0)} VNĐ</span></strong></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            
+                            {/* Phương thức thanh toán */}
+                            <div className="payment-method">
+                                <h4 style={{ marginBottom: '15px' }}>Phương thức thanh toán</h4>
+                                <div className="payment-accordion">
+                                    <div id="accordion">
+                                        {/* Thanh toán khi nhận hàng */}
+                                        <div className="card" style={{ marginBottom: '10px', border: '1px solid #ddd', borderRadius: '5px' }}>
+                                            <div className="card-header" style={{ backgroundColor: '#fff', padding: '12px 15px', border: 'none' }}>
+                                                <h5 className="panel-title mb-0">
+                                                    <span style={{ fontWeight: 'normal', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                        <span style={{ fontSize: '20px' }}>💵</span>
+                                                        <span>Thanh toán khi nhận hàng (COD)</span>
+                                                    </span>
+                                                </h5>
                                             </div>
-                                            <div className="col-md-12">
-                                                <div className="checkout-form-list">
-                                                    <label>Phone Number <span className="required">*</span></label>
-                                                    <input placeholder="Enter Phone Number" type="text" name="phone"
-                                                        ref={register({ required: true })}
-                                                        value={information.phone}
-                                                        onChange={onChangePhone} />
-                                                    {errors.phone && errors.phone.type === "required" && <span style={{ color: 'red' }}>* Phone Number is required</span>}
-                                                </div>
+                                        </div>
+
+                                        <div className="card" style={{ marginTop: '10px', border: '1px solid #ddd', borderRadius: '5px' }}>
+                                            <div className="card-header" style={{ backgroundColor: '#fff', padding: '12px 15px', border: 'none', cursor: 'pointer' }} data-toggle="collapse" data-target="#collapseMomo">
+                                                <h5 className="panel-title mb-0">
+                                                    <span style={{ fontWeight: 'normal', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                        <img 
+                                                            src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-MoMo-Square.png"
+                                                            alt="MoMo" 
+                                                            style={{ width: '24px', height: '24px', borderRadius: '4px' }}
+                                                        />
+                                                        <span>MoMo</span>
+                                                    </span>
+                                                </h5>
                                             </div>
-                                            <div className="col-md-12">
-                                                <div className="checkout-form-list">
-                                                    <label>Address <span className="required">*</span></label>
-                                                    <input placeholder="Street address" type="text" name="address"
-                                                        ref={register({ required: true })}
-                                                        value={information.address}
-                                                        onChange={onChangeAddress}
-                                                        disabled="true" />
-                                                    {errors.address && errors.address.type === "required" && <span style={{ color: 'red' }}>* Address is required</span>}
-                                                </div>
-                                            </div>
-                                            <div className="col-md-12">
-                                                <div className="checkout-form-list">
-                                                    <label>Email <span className="required">*</span></label>
-                                                    <input placeholder="Enter Email" type="email" name="email"
-                                                        ref={register({ required: true })}
-                                                        value={information.email}
-                                                        onChange={onChangeEmail} />
-                                                    {errors.email && errors.email.type === "required" && <span style={{ color: 'red' }}>* Email is required</span>}
-                                                </div>
-                                            </div>
-                                            <div className="col-md-12">
-                                                <div className="order-button-payment">
+                                            <div id="collapseMomo" className="collapse">
+                                                <div className="card-body" style={{ textAlign: 'center', padding: '20px' }}>
                                                     {
-                                                        redirect && <Redirect to="/success" />
-                                                    }
-                                                    <input value="Place order" type="submit" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div className="col-lg-6 col-12">
-                                <div className="your-order">
-                                    <h3>Your order</h3>
-                                    <div className="your-order-table table-responsive">
-                                        <table className="table">
-                                            <thead>
-                                                <tr>
-                                                    <th className="cart-product-name">Product</th>
-                                                    <th className="cart-product-total">Total</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    carts && carts.map(value => (
-                                                        <tr className="cart_item" key={value._id}>
-                                                            <td className="cart-product-name">{value.name_product}<strong className="product-quantity"> × {value.count}</strong></td>
-                                                            <td className="cart-product-total"><span className="amount">{new Intl.NumberFormat('vi-VN', { style: 'decimal', decimal: 'VND' }).format(parseInt(value.price_product) * parseInt(value.count)) + ' VNĐ'}</span></td>
-                                                        </tr>
-                                                    ))
-                                                }
-                                            </tbody>
-                                            <tfoot>
-                                                <tr className="cart-subtotal">
-                                                    <th>Shipping Cost</th>
-                                                    <td><span className="amount">{new Intl.NumberFormat('vi-VN', { style: 'decimal', decimal: 'VND' }).format(price) + ' VNĐ'}</span></td>
-                                                </tr>
-                                                <tr className="cart-subtotal">
-                                                    <th>Discount</th>
-                                                    <td><span className="amount">{new Intl.NumberFormat('vi-VN', { style: 'decimal', decimal: 'VND' }).format(discount) + ' VNĐ'}</span></td>
-                                                </tr>
-                                                <tr className="order-total">
-                                                    <th>Order Total</th>
-                                                    <td><strong><span className="amount">{new Intl.NumberFormat('vi-VN', { style: 'decimal', decimal: 'VND' }).format(total_price) + ' VNĐ'}</span></strong></td>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
-                                    <div className="payment-method">
-                                        <div className="payment-accordion">
-                                            <div id="accordion">
-                                                <div className="card">
-                                                    <div className="card-header" id="#payment-3">
-                                                        <h5 className="panel-title">
-                                                            <a className="collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                                                PayPal
-                                                            </a>
-                                                        </h5>
-                                                    </div>
-                                                    <div id="collapseThree" className="collapse">
-                                                        <div className="card-body">
-                                                            {
-                                                                show_error ? 'Please Checking Information!' :
-                                                                    <Paypal
-                                                                        information={information}
+                                                        show_error ? <p style={{ color: '#e74c3c' }}>Vui lòng kiểm tra lại thông tin!</p> :
+                                                            <div>
+                                                                <img 
+                                                                    src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-MoMo-Square.png" 
+                                                                    width="80" 
+                                                                    onClick={handlerMomo}
+                                                                    alt="MoMo"
+                                                                    style={{ cursor: 'pointer', borderRadius: '8px', marginBottom: '10px' }} 
+                                                                />
+                                                                <p style={{ fontSize: '14px', color: '#666', marginBottom: '10px' }}>Nhấn vào logo để thanh toán qua MoMo</p>
+                                                                {orderID && (
+                                                                    <MoMo
+                                                                        orderID={orderID}
                                                                         total={total_price}
-                                                                        Change_Load_Order={Change_Load_Order}
-                                                                        from={from}
-                                                                        distance={distance}
-                                                                        duration={duration}
-                                                                        price={price}
                                                                     />
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div className="card">
-                                                    <div className="card-header" id="#payment-3">
-                                                        <h5 className="panel-title">
-                                                            <a className="collapsed" data-toggle="collapse" data-target="#collapseMomo" aria-expanded="false" aria-controls="collapseMomo">
-                                                                MoMo
-                                                            </a>
-                                                        </h5>
-                                                    </div>
-                                                    <div id="collapseMomo" className="collapse">
-                                                        <div className="card-body">
-                                                            {
-                                                                show_error ? 'Please Checking Information!' :
-                                                                    <div>
-                                                                        <img src="https://developers.momo.vn/images/logo.png" width="50" onClick={handlerMomo}
-                                                                            style={{ cursor: 'pointer' }} />
-                                                                        <MoMo
-                                                                            orderID={orderID}
-                                                                            total={total_price}
-                                                                        />
-                                                                    </div>
-                                                            }
-                                                        </div>
-                                                    </div>
+                                                                )}
+                                                            </div>
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -593,8 +619,8 @@ function Checkout(props) {
                                 </div>
                             </div>
                         </div>
-                    )
-                }
+                    </div>
+                </div>
             </div>
         </div>
 
