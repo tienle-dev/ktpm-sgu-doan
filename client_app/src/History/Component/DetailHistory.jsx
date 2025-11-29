@@ -47,7 +47,8 @@ function DetailHistory(props) {
                     <li style={{ fontSize: '1.1rem' }}>Fullname: <span>{order.id_note && order.id_note.fullname}</span></li>
                     <li style={{ fontSize: '1.1rem' }}>Total: <span>{new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(order.total) + ' VNĐ'}</span></li>
                     <li style={{ fontSize: '1.1rem' }}>Feeship: <span>{new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(order.feeship) + ' VNĐ'}</span></li>
-                    <li style={{ fontSize: '1.1rem' }}>Payment: <span>{order.id_payment && order.id_payment.pay_name}</span></li>
+                    <li style={{ fontSize: '1.1rem' }}>Payment: <span>{order.id_payment ? order.id_payment.pay_name : 'Chưa có thông tin'}</span></li>
+                    <li style={{ fontSize: '1.1rem' }}>Status: <span style={{ color: order.pay ? 'green' : 'red' }}>{order.pay ? 'Đã thanh toán' : 'Chưa thanh toán'}</span></li>
                 </ul>
                 <div className="group_box_status" style={{ marginTop: '3rem' }}>
                     <div className="d-flex justify-content-center">
