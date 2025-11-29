@@ -3,7 +3,6 @@ import io from "socket.io-client";
 
 import './Checkout.css'
 import OrderAPI from '../API/OrderAPI';
-import Paypal from './Paypal';
 import { useForm } from "react-hook-form";
 import { Redirect } from 'react-router-dom';
 import { changeCount } from '../Redux/Action/ActionCount';
@@ -96,6 +95,10 @@ function Checkout(props) {
 
     const [show_error, set_show_error] = useState(false)
 
+    // State cho phương thức thanh toán được chọn: 'cod' hoặc 'momo'
+    const [paymentMethod, setPaymentMethod] = useState('')
+    const [paymentError, setPaymentError] = useState(false)
+
     const [information, set_information] = useState({
         fullname: '',
         phone: '',
@@ -178,6 +181,18 @@ function Checkout(props) {
 
     // Hàm này dùng để thanh toán offline
     const handler_Checkout = async (data) => {
+        // Kiểm tra đã chọn phương thức thanh toán chưa
+        if (!paymentMethod) {
+            setPaymentError(true)
+            return
+        }
+        setPaymentError(false)
+
+        // Nếu chọn MoMo thì xử lý riêng
+        if (paymentMethod === 'momo') {
+            handlerMomo()
+            return
+        }
 
         set_load_order(true)
 
@@ -371,7 +386,7 @@ function Checkout(props) {
                     {/* Cột trái: Thông tin người nhận */}
                     <div className="col-lg-6 col-12 pb-5">
                         <form onSubmit={handleSubmit(handler_Checkout)}>
-                            {/* Thông tin người nhận */}
+                            {/* Thông tin người nhận - Gộp cả thông tin cá nhân và địa chỉ */}
                             <div className="checkbox-form">
                                 <h3>Thông tin người nhận</h3>
                                 <div className="row">
@@ -405,13 +420,6 @@ function Checkout(props) {
                                             {errors.email && errors.email.type === "required" && <span style={{ color: 'red' }}>* Vui lòng nhập email</span>}
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            {/* Địa chỉ nhận hàng */}
-                            <div className="checkbox-form" style={{ marginTop: '2rem' }}>
-                                <h3>Địa chỉ nhận hàng</h3>
-                                <div className="row">
                                     <div className="col-md-12">
                                         <div className="checkout-form-list">
                                             <label>Gửi từ <span className="required">*</span></label>
@@ -476,17 +484,11 @@ function Checkout(props) {
                                         <div><label id="price_shipping"></label></div>
                                     </div>
 
-                                    <div className="col-md-6">
-                                        <div className="order-button-payment">
-                                            <input value="Tính phí vận chuyển" type="button" id="distance_form" 
-                                                style={{ width: '100%', backgroundColor: '#3498db' }} />
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-12">
                                         <div className="order-button-payment">
                                             {redirect && <Redirect to="/success" />}
                                             <input value="Đặt hàng" type="submit" 
-                                                style={{ width: '100%', backgroundColor: '#27ae60' }} />
+                                                style={{ width: '100%', backgroundColor: '#000000' }} />
                                         </div>
                                     </div>
                                 </div>
@@ -563,47 +565,84 @@ function Checkout(props) {
                             
                             {/* Phương thức thanh toán */}
                             <div className="payment-method">
-                                <h4 style={{ marginBottom: '15px' }}>Phương thức thanh toán</h4>
+                                <h4 style={{ marginBottom: '15px' }}>Phương thức thanh toán <span className="required">*</span></h4>
+                                {paymentError && <p style={{ color: '#e74c3c', marginBottom: '10px' }}>* Vui lòng chọn phương thức thanh toán</p>}
                                 <div className="payment-accordion">
                                     <div id="accordion">
                                         {/* Thanh toán khi nhận hàng */}
-                                        <div className="card" style={{ marginBottom: '10px', border: '1px solid #ddd', borderRadius: '5px' }}>
-                                            <div className="card-header" style={{ backgroundColor: '#fff', padding: '12px 15px', border: 'none' }}>
+                                        <div 
+                                            className="card" 
+                                            style={{ 
+                                                marginBottom: '10px', 
+                                                border: paymentMethod === 'cod' ? '2px solid #27ae60' : '1px solid #ddd', 
+                                                borderRadius: '5px',
+                                                cursor: 'pointer',
+                                                backgroundColor: paymentMethod === 'cod' ? '#f0fff4' : '#fff'
+                                            }}
+                                            onClick={() => { setPaymentMethod('cod'); setPaymentError(false); }}
+                                        >
+                                            <div className="card-header" style={{ backgroundColor: 'transparent', padding: '12px 15px', border: 'none' }}>
                                                 <h5 className="panel-title mb-0">
-                                                    <span style={{ fontWeight: 'normal', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                    <label style={{ fontWeight: 'normal', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginBottom: 0 }}>
+                                                        <input 
+                                                            type="radio" 
+                                                            name="paymentMethod" 
+                                                            value="cod" 
+                                                            checked={paymentMethod === 'cod'}
+                                                            onChange={() => { setPaymentMethod('cod'); setPaymentError(false); }}
+                                                            style={{ width: '18px', height: '18px', accentColor: '#27ae60' }}
+                                                        />
                                                         <span style={{ fontSize: '20px' }}>💵</span>
                                                         <span>Thanh toán khi nhận hàng (COD)</span>
-                                                    </span>
+                                                    </label>
                                                 </h5>
                                             </div>
                                         </div>
 
-                                        <div className="card" style={{ marginTop: '10px', border: '1px solid #ddd', borderRadius: '5px' }}>
-                                            <div className="card-header" style={{ backgroundColor: '#fff', padding: '12px 15px', border: 'none', cursor: 'pointer' }} data-toggle="collapse" data-target="#collapseMomo">
+                                        {/* Thanh toán MoMo */}
+                                        <div 
+                                            className="card" 
+                                            style={{ 
+                                                marginTop: '10px', 
+                                                border: paymentMethod === 'momo' ? '2px solid #a50064' : '1px solid #ddd', 
+                                                borderRadius: '5px',
+                                                cursor: 'pointer',
+                                                backgroundColor: paymentMethod === 'momo' ? '#fff0f7' : '#fff'
+                                            }}
+                                            onClick={() => { setPaymentMethod('momo'); setPaymentError(false); }}
+                                        >
+                                            <div className="card-header" style={{ backgroundColor: 'transparent', padding: '12px 15px', border: 'none' }}>
                                                 <h5 className="panel-title mb-0">
-                                                    <span style={{ fontWeight: 'normal', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                    <label style={{ fontWeight: 'normal', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginBottom: 0 }}>
+                                                        <input 
+                                                            type="radio" 
+                                                            name="paymentMethod" 
+                                                            value="momo" 
+                                                            checked={paymentMethod === 'momo'}
+                                                            onChange={() => { setPaymentMethod('momo'); setPaymentError(false); }}
+                                                            style={{ width: '18px', height: '18px', accentColor: '#a50064' }}
+                                                        />
                                                         <img 
-                                                            src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-MoMo-Square.png"
+                                                            src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png"
                                                             alt="MoMo" 
                                                             style={{ width: '24px', height: '24px', borderRadius: '4px' }}
                                                         />
-                                                        <span>MoMo</span>
-                                                    </span>
+                                                        <span>Ví MoMo</span>
+                                                    </label>
                                                 </h5>
                                             </div>
-                                            <div id="collapseMomo" className="collapse">
-                                                <div className="card-body" style={{ textAlign: 'center', padding: '20px' }}>
+                                            {paymentMethod === 'momo' && (
+                                                <div className="card-body" style={{ textAlign: 'center', padding: '20px', borderTop: '1px solid #eee' }}>
                                                     {
                                                         show_error ? <p style={{ color: '#e74c3c' }}>Vui lòng kiểm tra lại thông tin!</p> :
                                                             <div>
                                                                 <img 
-                                                                    src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-MoMo-Square.png" 
+                                                                    src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" 
                                                                     width="80" 
-                                                                    onClick={handlerMomo}
                                                                     alt="MoMo"
-                                                                    style={{ cursor: 'pointer', borderRadius: '8px', marginBottom: '10px' }} 
+                                                                    style={{ borderRadius: '8px', marginBottom: '10px' }} 
                                                                 />
-                                                                <p style={{ fontSize: '14px', color: '#666', marginBottom: '10px' }}>Nhấn vào logo để thanh toán qua MoMo</p>
+                                                                <p style={{ fontSize: '14px', color: '#666', marginBottom: '10px' }}>Thanh toán an toàn qua ví MoMo</p>
                                                                 {orderID && (
                                                                     <MoMo
                                                                         orderID={orderID}
@@ -613,7 +652,7 @@ function Checkout(props) {
                                                             </div>
                                                     }
                                                 </div>
-                                            </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
