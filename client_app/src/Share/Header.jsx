@@ -98,6 +98,8 @@ function Header(props) {
 
         sessionStorage.clear()
 
+        window.location.replace('/')
+
     }
 
 
