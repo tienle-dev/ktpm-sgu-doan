@@ -79,6 +79,12 @@ function Detail_Product(props) {
     const handler_addcart = (e) => {
         e.preventDefault()
 
+        // Kiểm tra tồn kho
+        if (product.stock === 0) {
+            alert("Sản phẩm này đã hết hàng!");
+            return;
+        }
+
         // Thêm validate: Nếu chưa chọn size thì báo lỗi (Optional)
         if (!size) {
             alert("Vui lòng chọn kích cỡ sản phẩm!");
@@ -248,6 +254,29 @@ function Detail_Product(props) {
                                         </p>
                                     </div>
 
+                                    {/*Hiển thị trạng thái tồn kho */}
+                                    <div style={{ marginTop: '15px' }}>
+                                        {product.stock > 0 ? (
+                                            <span style={{
+                                                fontSize: '14px',
+                                                color: product.stock < 10 ? '#e74c3c' : '#27ae60',
+                                                fontWeight: '600'
+                                            }}>
+                                                <i className="fa fa-check-circle" style={{ marginRight: '5px' }}></i>
+                                                Còn {product.stock} sản phẩm
+                                            </span>
+                                        ) : (
+                                            <span style={{
+                                                fontSize: '14px',
+                                                color: '#e74c3c',
+                                                fontWeight: '700'
+                                            }}>
+                                                <i className="fa fa-times-circle" style={{ marginRight: '5px' }}></i>
+                                                HẾT HÀNG
+                                            </span>
+                                        )}
+                                    </div>
+
                                     {/* --- PHẦN GIAO DIỆN CHỌN SIZE ĐÃ SỬA --- */}
                                     <div className="product-variants">
                                         <div className="produt-variants-size">
@@ -314,7 +343,20 @@ function Detail_Product(props) {
                                                     <div className="inc qtybutton" onClick={upCount}><i className="fa fa-angle-up"></i></div>
                                                 </div>
                                             </div>
-                                            <a href="#" className="add-to-cart" type="submit" onClick={handler_addcart}>Thêm vào giỏ</a>
+                                            <a 
+                                                href="#" 
+                                                className="add-to-cart" 
+                                                type="submit" 
+                                                onClick={handler_addcart}
+                                                style={{
+                                                    pointerEvents: product.stock === 0 ? 'none' : 'auto',
+                                                    opacity: product.stock === 0 ? 0.5 : 1,
+                                                    backgroundColor: product.stock === 0 ? '#ccc' : '',
+                                                    cursor: product.stock === 0 ? 'not-allowed' : 'pointer'
+                                                }}
+                                            >
+                                                {product.stock === 0 ? 'HẾT HÀNG' : 'Thêm vào giỏ'}
+                                            </a>
                                         </form>
                                     </div>
                                 </div>
