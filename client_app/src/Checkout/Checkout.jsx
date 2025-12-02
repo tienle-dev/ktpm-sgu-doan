@@ -99,55 +99,37 @@ function Checkout(props) {
     const [paymentMethod, setPaymentMethod] = useState('')
     const [paymentError, setPaymentError] = useState(false)
 
+    // information.address bây giờ sẽ là địa chỉ FINAL (đã chốt)
     const [information, set_information] = useState({
         fullname: '',
         phone: '',
-        address: '',
+        address: '', 
         email: ''
     })
 
+    // State riêng cho ô tìm kiếm (Google Maps điền vào đây)
+    const [searchAddress, setSearchAddress] = useState('');
+
     const onChangeFullname = (e) => {
-        set_information({
-            fullname: e.target.value,
-            phone: information.phone,
-            address: information.address,
-            email: information.email
-        })
+        set_information({ ...information, fullname: e.target.value })
     }
     const onChangePhone = (e) => {
-        set_information({
-            fullname: information.fullname,
-            phone: e.target.value,
-            address: information.address,
-            email: information.email
-        })
-    }
-
-    const onChangeAddress = (e) => {
-        set_information({
-            fullname: information.fullname,
-            phone: information.phone,
-            address: e.target.value,
-            email: information.email
-        })
+        set_information({ ...information, phone: e.target.value })
     }
     const onChangeEmail = (e) => {
-        set_information({
-            fullname: information.fullname,
-            phone: information.phone,
-            address: information.address,
-            email: e.target.value
-        })
+        set_information({ ...information, email: e.target.value })
     }
 
-    // Hàm này dùng để check validation cho paypal
+    // Hàm xử lý thay đổi cho ô tìm kiếm
+    const onChangeSearchAddress = (e) => {
+        setSearchAddress(e.target.value);
+    }
+
+    // Hàm này dùng để check validation
     useEffect(() => {
-
         checkValidation()
-
     }, [information])
 
-    // Kiểm tra Paypal
     function checkValidation() {
         if (information.fullname === '') {
             set_show_error(true)
@@ -156,9 +138,7 @@ function Checkout(props) {
                 set_show_error(true)
             } else {
                 if (information.email === '') {
-
                     localStorage.setItem('information', JSON.stringify(information))
-
                     set_show_error(true)
                 } else {
                     set_show_error(false)
@@ -171,7 +151,6 @@ function Checkout(props) {
     const { register, handleSubmit, errors } = useForm();
 
     const [redirect, set_redirect] = useState(false)
-
 
     const [load_order, set_load_order] = useState(false)
 
@@ -188,6 +167,13 @@ function Checkout(props) {
         }
         setPaymentError(false)
 
+        // Kiểm tra xem đã chốt địa chỉ chưa
+        if (!information.address) {
+            set_error_address(true);
+            alert("Vui lòng nhập địa chỉ và bấm 'Tính phí vận chuyển' để xác nhận!");
+            return;
+        }
+
         // Nếu chọn MoMo thì xử lý riêng
         if (paymentMethod === 'momo') {
             handlerMomo()
@@ -197,10 +183,8 @@ function Checkout(props) {
         set_load_order(true)
 
         if (localStorage.getItem("id_coupon")) {
-
             const responseUpdate = await CouponAPI.updateCoupon(localStorage.getItem("id_coupon"))
             console.log(responseUpdate)
-
         }
 
         // data Delivery
@@ -216,7 +200,7 @@ function Checkout(props) {
         // data Order
         const data_order = {
             id_user: sessionStorage.getItem('id_user'),
-            address: information.address,
+            address: information.address, // Lấy địa chỉ đã chốt
             total: total_price,
             status: "1",
             pay: false,
@@ -249,24 +233,9 @@ function Checkout(props) {
 
         }
 
-        // data email
-        // const data_email = {
-        //     id_order: response_order._id,
-        //     total: total_price,
-        //     fullname: information.fullname,
-        //     phone: information.phone,
-        //     price: price,
-        //     address: information.address,
-        //     email: information.email
-        // }
-
         // Gửi socket lên server
         socket.emit('send_order', "Có người vừa đặt hàng")
-        // Xử lý API Send Mail
-
-        // const send_mail = await OrderAPI.post_email(data_email)
-        // console.log(send_mail)
-
+        
         localStorage.removeItem('information')
         localStorage.removeItem('total_price')
         localStorage.removeItem('price')
@@ -276,7 +245,6 @@ function Checkout(props) {
 
         set_redirect(true)
 
-
         // Hàm này dùng để load lại phần header bằng Redux
         const action_count_change = changeCount(count_change)
         dispatch(action_count_change)
@@ -284,9 +252,7 @@ function Checkout(props) {
     }
 
     const Change_Load_Order = (value) => {
-
         set_load_order(value)
-
     }
 
 
@@ -307,9 +273,14 @@ function Checkout(props) {
 
 
     // Kiểm tra xem khách hàng đã nhập chỉ nhận hàng hay chưa và tính phí ship
+    // HÀM QUAN TRỌNG: Lấy dữ liệu từ Map và chốt địa chỉ
     const handler_CheckDistance = () => {
 
-        if (!information.address) {
+        // Lấy giá trị thực tế từ ô input DOM (do Google Script tự điền)
+        const map_element = document.getElementById('to_places');
+        const map_address_value = map_element ? map_element.value : '';
+
+        if (!map_address_value) {
             set_error_address(true)
             return
         }
@@ -320,7 +291,6 @@ function Checkout(props) {
         const kilo = document.getElementById('in_kilo').innerHTML
         const duration_text = document.getElementById('duration_text').innerHTML
         const price_shipping = document.getElementById('price_shipping').innerHTML
-        const to_places = document.getElementById('to_places').value
 
         console.log(kilo)
         console.log(duration_text)
@@ -332,15 +302,18 @@ function Checkout(props) {
         localStorage.setItem('price', price_shipping)
         set_price(price_shipping)
 
+        // Cập nhật State Address chính thức bằng giá trị lấy từ Map
         set_information({
-            fullname: information.fullname,
-            phone: information.phone,
-            address: to_places,
-            email: information.email
+            ...information,
+            address: map_address_value
         })
         
+        // Cập nhật ô search cho đồng bộ
+        setSearchAddress(map_address_value);
+
         if (kilo) {
             set_check_action(true)
+            set_error_address(false) // Xóa lỗi
         }
 
     }
@@ -431,21 +404,61 @@ function Checkout(props) {
                                             <input id="origin" name="origin" type="hidden" value={from} />
                                         </div>
                                     </div>
+
+                                    {/* --- PHẦN ĐỊA CHỈ ĐÃ CHỈNH SỬA --- */}
                                     <div className="col-md-12">
                                         <div className="checkout-form-list">
-                                            <label>Địa chỉ giao hàng <span className="required">*</span></label>
+                                            <label>Tìm kiếm địa chỉ <span className="required">*</span></label>
+                                            
+                                            {/* Ô 1: Input dùng để tìm kiếm (Map điền vào đây) */}
                                             <input type="text"
                                                 id="to_places"
                                                 placeholder="Nhập địa chỉ giao hàng"
-                                                name="address"
-                                                ref={register({ required: true })}
-                                                value={information.address}
-                                                onChange={onChangeAddress} />
-                                            {errors.address && errors.address.type === "required" && <span style={{ color: 'red' }}>* Vui lòng nhập địa chỉ</span>}
-                                            {error_address && <span style={{ color: 'red' }}>* Vui lòng nhập địa chỉ</span>}
-                                            <input id="destination" type="hidden" name="destination" />
+                                                value={searchAddress}
+                                                onChange={onChangeSearchAddress} />
+                                            
+                                            {error_address && <span style={{ color: 'red', marginTop: '5px', display: 'block' }}>* Vui lòng nhập địa chỉ và bấm 'Tính phí'</span>}
                                         </div>
                                     </div>
+
+                                    {/* Nút bấm để kích hoạt tính phí & Chốt địa chỉ */}
+                                    <div className="col-md-12">
+                                        <div className="checkout-form-list">
+                                            <button 
+                                                type="button" 
+                                                className="btn btn-dark" 
+                                                style={{ width: '100%', marginBottom: '20px' }}
+                                                onClick={handler_CheckDistance}
+                                            >
+                                                Kiểm tra địa chỉ & Tính phí Ship
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* Ô 2: Input hiển thị địa chỉ đã chốt (Read-only) */}
+                                    <div className="col-md-12">
+                                        <div className="checkout-form-list">
+                                            <label style={{ color: '#27ae60', fontWeight: 'bold' }}>Địa chỉ nhận hàng (Chính thức):</label>
+                                            <input 
+                                                type="text"
+                                                name="address"
+                                                // Vẫn register để form bắt buộc có địa chỉ này
+                                                ref={register({ required: true })}
+                                                value={information.address}
+                                                disabled
+                                                style={{ 
+                                                    backgroundColor: information.address ? '#e8f5e9' : '#fff', 
+                                                    fontWeight: 'bold', 
+                                                    color: '#2d3436',
+                                                    border: '1px solid #27ae60'
+                                                }}
+                                                placeholder="Địa chỉ sẽ hiện ở đây sau khi tính phí..." 
+                                            />
+                                            {errors.address && errors.address.type === "required" && <span style={{ color: 'red' }}>* Chưa xác nhận địa chỉ giao hàng</span>}
+                                        </div>
+                                    </div>
+                                    {/* ------------------------------------- */}
+
                                     <div className="col-md-12">
                                         <div className="checkout-form-list">
                                             <label>Phương tiện vận chuyển</label>
@@ -482,13 +495,17 @@ function Checkout(props) {
                                         <div><label id="in_kilo"></label></div>
                                         <div><label id="duration_text"></label></div>
                                         <div><label id="price_shipping"></label></div>
+                                        {/* Input destination cho google map script */}
+                                        <input id="destination" type="hidden" name="destination" />
                                     </div>
 
                                     <div className="col-md-12">
-                                        <div className="order-button-payment">
-                                            {redirect && <Redirect to="/success" />}
-                                            <input value="Đặt hàng" type="submit" 
-                                                style={{ width: '100%', backgroundColor: '#000000' }} />
+                                        <div className="checkout-form-list">
+                                            <div className="order-button-payment">
+                                                {redirect && <Redirect to="/success" />}
+                                                <input value="Đặt hàng" type="submit" 
+                                                    style={{ width: '100%', backgroundColor: '#000000' }} />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -58,7 +58,7 @@ function Detail_Product(props) {
 
     // 2. Logic set mặc định (giữ nguyên logic cũ của bạn)
     useEffect(() => {
-        if (product.id_category && product.id_category.category === 'Pants') {
+        if (product.id_category && product.id_category.category === 'Quần') {
             set_size('29')
         } else {
             set_size('S')
@@ -284,7 +284,7 @@ function Detail_Product(props) {
 
                                             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                                                 {
-                                                    product.id_category && product.id_category.category === 'Pants' ?
+                                                    product.id_category && product.id_category.category === 'Quần' ?
                                                         (
                                                             listSizePants.map((item) => (
                                                                 <button
