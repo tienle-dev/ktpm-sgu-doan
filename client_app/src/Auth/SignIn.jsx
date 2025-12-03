@@ -53,17 +53,21 @@ function SignIn(props) {
                     set_error_password(true)
                 }else{
 
-                   console.log(response)
+                   // Thêm điều kiện kiểm tra response và response._id để tránh crash
+                    if (response && response._id) {
+                        const action = addSession(response._id)
+                        dispatch(action)
 
-                    const action = addSession(response._id)
-                    dispatch(action)
+                        sessionStorage.setItem('id_user', response._id)
 
-                    sessionStorage.setItem('id_user', response._id)
-                    
-                    const action_count_change = changeCount(count_change)
-                    dispatch(action_count_change)
+                        const action_count_change = changeCount(count_change)
+                        dispatch(action_count_change)
 
-                    set_redirect(true)
+                        set_redirect(true)
+                    } else {
+                        // Xử lý khi API trả về dữ liệu không hợp lệ (ví dụ: undefined hoặc null)
+                        console.log("Dữ liệu đăng nhập không hợp lệ:", response);
+                    }
 
                 }
             }

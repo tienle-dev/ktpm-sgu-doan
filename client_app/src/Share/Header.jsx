@@ -438,6 +438,8 @@ function Header(props) {
 
                                             <li className="dropdown-holder"><Link to="/">Trang Chủ</Link></li>
                                             <li className="megamenu-holder"><Link to="/shop/all">Danh Mục</Link></li>
+                                            <li><Link to="/event">Sự Kiện</Link></li>
+                                            <li><Link to="/contact">Liên Hệ</Link></li>
                                         </ul>
 
                                     </nav>

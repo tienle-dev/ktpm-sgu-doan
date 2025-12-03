@@ -19,7 +19,9 @@ describe('SignIn Component', () => {
         test('renders login form với tất cả elements', () => {
             renderWithProviders(<SignIn />);
             
-            expect(screen.getByText('Login')).toBeInTheDocument();
+            // kiểm tra tiêu đề:
+            expect(screen.getByRole('heading', { name: /login/i })).toBeInTheDocument();
+
             expect(screen.getByPlaceholderText('Username')).toBeInTheDocument();
             expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
             expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
@@ -113,7 +115,7 @@ describe('SignIn Component', () => {
             fireEvent.click(loginButton);
 
             await waitFor(() => {
-                expect(User.Get_Detail_User).toHaveBeenCalledWith('?username=myuser&password=mypass');
+                expect(User.Get_Detail_User).toHaveBeenCalledWith('?password=mypass&username=myuser');
             });
         });
 
@@ -145,7 +147,7 @@ describe('SignIn Component', () => {
             fireEvent.click(loginButton);
 
             await waitFor(() => {
-                expect(User.Get_Detail_User).toHaveBeenCalledWith('?username=&password=');
+                expect(User.Get_Detail_User).toHaveBeenCalledWith('?password=&username=');
             });
         });
     });
