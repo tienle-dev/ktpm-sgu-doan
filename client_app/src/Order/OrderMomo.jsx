@@ -6,6 +6,7 @@ import CouponAPI from '../API/CouponAPI';
 import NoteAPI from '../API/NoteAPI';
 import OrderAPI from '../API/OrderAPI';
 import Detail_OrderAPI from '../API/Detail_OrderAPI';
+import { getCartKey } from '../Share/CartsLocal';
 
 function OrderMomo(props) {
     const { search } = window.location;
@@ -91,7 +92,8 @@ function OrderMomo(props) {
                 const response_order = await OrderAPI.post_order(data_order)
 
                 // data carts
-                const data_carts = JSON.parse(localStorage.getItem('carts'))
+                const cartKey = getCartKey();
+                const data_carts = JSON.parse(localStorage.getItem(cartKey))
 
                 // Xử lý API Detail_Order
                 for (let i = 0; i < data_carts.length; i++) {
@@ -109,7 +111,7 @@ function OrderMomo(props) {
 
                 }
 
-                localStorage.setItem('carts', JSON.stringify([]))
+                localStorage.setItem(cartKey, JSON.stringify([]))
                 localStorage.removeItem('information')
                 localStorage.removeItem('total_price')
                 localStorage.removeItem('price')

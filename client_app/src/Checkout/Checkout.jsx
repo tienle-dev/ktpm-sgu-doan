@@ -11,6 +11,7 @@ import NoteAPI from '../API/NoteAPI';
 import Detail_OrderAPI from '../API/Detail_OrderAPI';
 import CouponAPI from '../API/CouponAPI';
 import MoMo from './MoMo.jsx'
+import { getCartKey } from '../Share/CartsLocal';
 
 const socket = io('http://localhost:8000/', {
     transports: ['websocket'], jsonp: false
@@ -42,7 +43,8 @@ function Checkout(props) {
 
     // Load giỏ hàng khi component mount
     useEffect(() => {
-        const cartsFromStorage = JSON.parse(localStorage.getItem('carts')) || []
+        const cartKey = getCartKey();
+        const cartsFromStorage = JSON.parse(localStorage.getItem(cartKey)) || []
         set_carts(cartsFromStorage)
         
         if (cartsFromStorage.length > 0) {
@@ -53,10 +55,10 @@ function Checkout(props) {
     useEffect(() => {
 
         if (check_action) {
+            const cartKey = getCartKey();
+            set_carts(JSON.parse(localStorage.getItem(cartKey)))
 
-            set_carts(JSON.parse(localStorage.getItem('carts')))
-
-            Sum_Price(JSON.parse(localStorage.getItem('carts')), 0)
+            Sum_Price(JSON.parse(localStorage.getItem(cartKey)), 0)
 
             set_check_action(false)
         }
@@ -215,7 +217,8 @@ function Checkout(props) {
         const response_order = await OrderAPI.post_order(data_order)
 
         // data carts
-        const data_carts = JSON.parse(localStorage.getItem('carts'))
+        const cartKey = getCartKey();
+        const data_carts = JSON.parse(localStorage.getItem(cartKey))
 
         // Xử lý API Detail_Order
         for (let i = 0; i < data_carts.length; i++) {
@@ -241,7 +244,7 @@ function Checkout(props) {
         localStorage.removeItem('price')
         localStorage.removeItem('id_coupon')
         localStorage.removeItem('coupon')
-        localStorage.setItem('carts', JSON.stringify([]))
+        localStorage.setItem(cartKey, JSON.stringify([]))
 
         set_redirect(true)
 

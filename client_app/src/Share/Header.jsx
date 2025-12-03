@@ -10,7 +10,7 @@ import { addSession, deleteSession } from '../Redux/Action/ActionSession';
 import queryString from 'query-string'
 import Product from '../API/Product';
 import { addSearch } from '../Redux/Action/ActionSearch';
-import CartsLocal from './CartsLocal';
+import CartsLocal, { getCartKey } from './CartsLocal';
 
 function Header(props) {
 
@@ -24,11 +24,11 @@ function Header(props) {
     // Hàm này để khởi tạo localStorage dùng để lưu trữ giỏ hàng
     // Và nó sẽ chạy lần đầu
     useEffect(() => {
-
-        if (localStorage.getItem('carts') !== null) {
-            set_carts_mini(JSON.parse(localStorage.getItem('carts')));
+        const cartKey = getCartKey();
+        if (localStorage.getItem(cartKey) !== null) {
+            set_carts_mini(JSON.parse(localStorage.getItem(cartKey)));
         } else {
-            localStorage.setItem('carts', JSON.stringify([]))
+            localStorage.setItem(cartKey, JSON.stringify([]))
         }
 
     }, [])
@@ -96,6 +96,10 @@ function Header(props) {
         const action = deleteSession('')
         dispatch(action)
 
+        // Không xóa giỏ hàng - giữ lại để user đăng nhập lại vẫn có giỏ hàng cũ
+        // const cartKey = getCartKey();
+        // localStorage.removeItem(cartKey);
+
         sessionStorage.clear()
 
         window.location.replace('/')
@@ -111,8 +115,8 @@ function Header(props) {
     useEffect(() => {
 
         if (count) {
-
-            showData(JSON.parse(localStorage.getItem('carts')), 0, 0)
+            const cartKey = getCartKey();
+            showData(JSON.parse(localStorage.getItem(cartKey)), 0, 0)
 
             const action = changeCount(count)
             dispatch(action)
@@ -434,8 +438,6 @@ function Header(props) {
 
                                             <li className="dropdown-holder"><Link to="/">Trang Chủ</Link></li>
                                             <li className="megamenu-holder"><Link to="/shop/all">Danh Mục</Link></li>
-                                            <li><Link to="/event">Sự Kiện</Link></li>
-                                            <li><Link to="/contact">Liên Hệ</Link></li>
                                         </ul>
 
                                     </nav>

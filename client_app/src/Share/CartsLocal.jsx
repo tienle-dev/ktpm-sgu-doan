@@ -1,4 +1,9 @@
 
+// Hàm lấy key giỏ hàng theo user
+const getCartKey = () => {
+    const userId = sessionStorage.getItem('id_user');
+    return userId ? `carts_${userId}` : 'carts';
+}
 
 const CartsLocal = {
 
@@ -7,7 +12,8 @@ const CartsLocal = {
         const data_add_cart = data
 
         //Lấy dữ liệu có sẵn trong state - Khởi tạo nếu null
-        let add_cart = localStorage.getItem('carts')
+        const cartKey = getCartKey();
+        let add_cart = localStorage.getItem(cartKey)
         if (!add_cart) {
             add_cart = []
         } else {
@@ -21,7 +27,7 @@ const CartsLocal = {
 
             add_cart.push(data_add_cart)
 
-            localStorage.setItem('carts', JSON.stringify(add_cart))
+            localStorage.setItem(cartKey, JSON.stringify(add_cart))
 
         } else {           
 
@@ -37,7 +43,7 @@ const CartsLocal = {
             if (!findCart) {
                 add_cart.push(data_add_cart)
                 
-                localStorage.setItem('carts', JSON.stringify(add_cart))
+                localStorage.setItem(cartKey, JSON.stringify(add_cart))
             } else {
                 for (let i = 0; i < add_cart.length; i++) {
                     if (add_cart[i].id_product === data_add_cart.id_product) {
@@ -46,7 +52,7 @@ const CartsLocal = {
                             flag = true
                             console.log("Update")
 
-                            localStorage.setItem('carts', JSON.stringify(add_cart))
+                            localStorage.setItem(cartKey, JSON.stringify(add_cart))
                         }
                     }
                 }
@@ -55,7 +61,7 @@ const CartsLocal = {
                     add_cart.push(data_add_cart)
                     console.log("Push")
 
-                    localStorage.setItem('carts', JSON.stringify(add_cart))
+                    localStorage.setItem(cartKey, JSON.stringify(add_cart))
                 }
             }
         }
@@ -63,7 +69,8 @@ const CartsLocal = {
 
     deleteProduct: (data) => {
         //Lấy dữ diệu có sẵn trong state
-        const delete_cart = JSON.parse(localStorage.getItem('carts'))
+        const cartKey = getCartKey();
+        const delete_cart = JSON.parse(localStorage.getItem(cartKey))
 
         console.log(data)
 
@@ -75,13 +82,14 @@ const CartsLocal = {
         //Xóa theo vị trí
         delete_cart.splice(indexDelete, 1)
 
-        localStorage.setItem('carts', JSON.stringify(delete_cart))
+        localStorage.setItem(cartKey, JSON.stringify(delete_cart))
     },
 
     updateProduct: (data) => {
         const data_update_cart = data
             
-        const update_cart = JSON.parse(localStorage.getItem('carts'))
+        const cartKey = getCartKey();
+        const update_cart = JSON.parse(localStorage.getItem(cartKey))
 
         const index = update_cart.findIndex(value => {
             return value.id_cart === data_update_cart.id_cart
@@ -89,9 +97,10 @@ const CartsLocal = {
 
         update_cart[index].count = data_update_cart.count
 
-        localStorage.setItem('carts', JSON.stringify(update_cart))
+        localStorage.setItem(cartKey, JSON.stringify(update_cart))
     }
 
 }
 
+export { getCartKey }
 export default CartsLocal

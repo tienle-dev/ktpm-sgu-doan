@@ -210,8 +210,8 @@ function Detail_Product(props) {
                 <div className="container">
                     <div className="breadcrumb-content">
                         <ul>
-                            <li><Link to="/">Home</Link></li>
-                            <li className="active">Detail</li>
+                            <li><Link to="/">Trang chủ</Link></li>
+                            <li className="active">Chi tiết</li>
                         </ul>
                     </div>
                 </div>
@@ -249,7 +249,7 @@ function Detail_Product(props) {
                                     </div>
                                     <div className="product-desc">
                                         <p>
-                                            <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel harum tenetur delectus nam quam assumenda? Soluta vitae tempora ratione excepturi doloremque, repudiandae ullam, eum corporis, itaque dolor aperiam enim aspernatur.
+                                            <span>{product.describe || 'Chưa có mô tả sản phẩm'}
                                             </span>
                                         </p>
                                     </div>
@@ -336,7 +336,7 @@ function Detail_Product(props) {
                                     <div className="single-add-to-cart">
                                         <form action="#" className="cart-quantity">
                                             <div className="quantity">
-                                                <label>Quantity</label>
+                                                <label>Số lượng</label>
                                                 <div className="cart-plus-minus">
                                                     <input className="cart-plus-minus-box" value={count} type="text" onChange={(e) => set_count(e.target.value)} />
                                                     <div className="dec qtybutton" onClick={downCount}><i className="fa fa-angle-down"></i></div>
@@ -372,8 +372,8 @@ function Detail_Product(props) {
                         <div className="col-lg-12">
                             <div className="li-product-tab">
                                 <ul className="nav li-product-menu">
-                                    <li><a className="active" data-toggle="tab" href="#description"><span>Description</span></a></li>
-                                    <li><a data-toggle="tab" href="#reviews"><span>Reviews</span></a></li>
+                                    <li><a className="active" data-toggle="tab" href="#description"><span>Mô tả</span></a></li>
+                                    <li><a data-toggle="tab" href="#reviews"><span>Đánh giá</span></a></li>
                                 </ul>
                             </div>
                         </div>
@@ -381,7 +381,7 @@ function Detail_Product(props) {
                     <div className="tab-content">
                         <div id="description" className="tab-pane active show" role="tabpanel">
                             <div className="product-description">
-                                <span>The best is yet to come! Give your walls a voice with a framed poster. This aesthethic, optimistic poster will look great in your desk or in an open-space office. Painted wooden frame with passe-partout for more depth.</span>
+                                <span>{product.describe || 'Chưa có mô tả chi tiết cho sản phẩm này.'}</span>
                             </div>
                         </div>
                         <div id="reviews" className="tab-pane" role="tabpanel">
