@@ -77,8 +77,8 @@ function MainHistory(props) {
                 <div className="container">
                     <div className="breadcrumb-content">
                         <ul>
-                            <li><Link to="/">Home</Link></li>
-                            <li className="active">History</li>
+                            <li><Link to="/">Trang chủ</Link></li>
+                            <li className="active">Lịch sử đơn hàng</li>
                         </ul>
                     </div>
                 </div>
@@ -93,33 +93,34 @@ function MainHistory(props) {
                                     <table className="table">
                                         <thead>
                                             <tr>
-                                                <th className="li-product-remove">ID Invoice</th>
-                                                <th className="li-product-thumbnail">Name</th>
-                                                <th className="cart-product-name">Phone</th>
-                                                <th className="li-product-price">Address</th>
-                                                <th className="li-product-quantity">Total</th>
-                                                <th className="li-product-subtotal">Payment</th>
-                                                <th className="li-product-subtotal">Status</th>
-                                                <th className="li-product-subtotal">Cancel</th>
+                                                <th className="li-product-remove">Mã Đơn</th>
+                                                <th className="li-product-thumbnail">Tên</th>
+                                                <th className="cart-product-name">SĐT</th>
+                                                <th className="li-product-price">Địa chỉ</th>
+                                                <th className="li-product-quantity">Tổng tiền</th>
+                                                <th className="li-product-subtotal">Thanh toán</th>
+                                                <th className="li-product-subtotal">Tình trạng</th>
+                                                <th className="li-product-subtotal">Hủy đơn</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {
                                                 history && history.map(value => (
                                                     <tr key={value._id}>
-                                                        <td className="li-product-price"><span className="amount"><Link to={`/history/${value._id}`}>View</Link></span></td>
+                                                        <td className="li-product-price"><span className="amount"><Link to={`/history/${value._id}`}>Xem</Link></span></td>
                                                         <td className="li-product-price"><span className="amount">{value.id_note.fullname}</span></td>
                                                         <td className="li-product-price"><span className="amount">{value.id_note.phone}</span></td>
                                                         <td className="li-product-price"><span className="amount">{value.address}</span></td>
 
                                                         <td className="li-product-price"><span className="amount">{new Intl.NumberFormat('vi-VN',{style: 'decimal',decimal: 'VND'}).format(value.total) + ' VNĐ'}</span></td>
-                                                        <td className="li-product-price"><span className="amount" style={value.pay ? { color: 'green' } : { color: 'red' }}>{value.pay ? 'Paid' : 'Unpaid'}</span></td>
+                                                        <td className="li-product-price"><span className="amount" style={value.pay ? { color: 'green' } : { color: 'red' }}>{value.pay ? 'Đã thanh toán' : 'Chưa thanh toán'}</span></td>
                                                         <td className="li-product-price"><span className="amount" >
                                                             {
-                                                                value.status === '1' ? 'Processing' :
-                                                                    (value.status === '2' ? 'Confirmed' :
-                                                                        (value.status === '3' ? 'Shipping' :
-                                                                            (value.status === '4' ? 'Finished' : 'Canceled')))}
+                                                                value.status === '1' ? 'Đang xử lý' :
+                                                                    (value.status === '2' ? 'Đã xác nhận' :
+                                                                        (value.status === '3' ? 'Đang vận chuyển' :
+                                                                            (value.status === '4' ? 'Đã hoàn thành' : 'Đã hủy')))
+                                                            }
                                                         </span>
                                                         </td>
                                                         <td className="li-product-price">
@@ -134,7 +135,7 @@ function MainHistory(props) {
                                                                 case '4':
                                                                     return <i className="fa fa-check text-success" style={{ fontSize: '25px' }}></i>
                                                                 default:
-                                                                    return <span className="text-danger">Cancelled</span>
+                                                                    return <span className="text-danger">Đã hủy</span>
                                                             }
                                                         })()}
                                                         </td>
