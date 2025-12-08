@@ -13,7 +13,7 @@ router.get('/order/detail/:id', Order.get_detail)
 // Đặt Hàng thêm vào hóa đơn
 router.post('/order', Order.post_order)
 
-router.post('/momo', Order.post_momo)
+// router.post('/momo', Order.post_momo)
 
 // API tạo thanh toán MoMo (proxy)
 router.post('/momo/create', Order.create_momo_payment)

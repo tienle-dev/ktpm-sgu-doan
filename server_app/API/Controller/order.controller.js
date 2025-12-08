@@ -66,41 +66,41 @@ module.exports.get_detail = async (req, res) => {
 
 }
 
-module.exports.post_momo = async (req, res) => {
+// module.exports.post_momo = async (req, res) => {
 
-    const serectkey = "uLb683H8g9dWuiyipZbLHgO6zjSDlVm5"
-    const accessKey = req.body.accessKey
-    const amount = req.body.amount
-    const extraData = req.body.extraData
-    const errorCode = req.body.errorCode
-    const localMessage = req.body.localMessage
-    const message = req.body.message
-    const orderId = req.body.orderId
-    const orderInfo = req.body.orderInfo
-    const orderType = req.body.orderType
-    const partnerCode = req.body.partnerCode
-    const payType = req.body.payType
-    const requestId = req.body.requestId
-    const responseTime = req.body.responseTime
-    const transId = req.body.transId
+//     const serectkey = "uLb683H8g9dWuiyipZbLHgO6zjSDlVm5"
+//     const accessKey = req.body.accessKey
+//     const amount = req.body.amount
+//     const extraData = req.body.extraData
+//     const errorCode = req.body.errorCode
+//     const localMessage = req.body.localMessage
+//     const message = req.body.message
+//     const orderId = req.body.orderId
+//     const orderInfo = req.body.orderInfo
+//     const orderType = req.body.orderType
+//     const partnerCode = req.body.partnerCode
+//     const payType = req.body.payType
+//     const requestId = req.body.requestId
+//     const responseTime = req.body.responseTime
+//     const transId = req.body.transId
 
-    let param = `partnerCode=${partnerCode}&accessKey=${accessKey}&requestId=${requestId}&amount=${amount}&orderId=${orderId}&orderInfo=${orderInfo}&orderType=${orderType}&transId=${transId}&message=${message}&localMessage=${localMessage}&responseTime=${responseTime}&errorCode=${errorCode}&payType=${payType}&extraData=${extraData}`
+//     let param = `partnerCode=${partnerCode}&accessKey=${accessKey}&requestId=${requestId}&amount=${amount}&orderId=${orderId}&orderInfo=${orderInfo}&orderType=${orderType}&transId=${transId}&message=${message}&localMessage=${localMessage}&responseTime=${responseTime}&errorCode=${errorCode}&payType=${payType}&extraData=${extraData}`
 
-    var signature = crypto.createHmac('sha256', serectkey)
-        .update(param)
-        .digest('hex');
+//     var signature = crypto.createHmac('sha256', serectkey)
+//         .update(param)
+//         .digest('hex');
 
-    if (req.body.signature !== signature) {
-        res.send("Thông tin request không hợp lệ")
-        return;
-    }
-    if (errorCode == 0) {
-        res.send("Thanh Cong")
-    } else {
-        res.send("Thanh toán thất bại")
-    }
+//     if (req.body.signature !== signature) {
+//         res.send("Thông tin request không hợp lệ")
+//         return;
+//     }
+//     if (errorCode == 0) {
+//         res.send("Thanh Cong")
+//     } else {
+//         res.send("Thanh toán thất bại")
+//     }
 
-}
+// }
 
 // API tạo thanh toán MoMo (proxy để tránh CORS)
 module.exports.create_momo_payment = async (req, res) => {
