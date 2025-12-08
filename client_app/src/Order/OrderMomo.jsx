@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import crypto from 'crypto'
 import { useDispatch, useSelector } from 'react-redux';
 import { changeCount } from '../Redux/Action/ActionCount';
 import CouponAPI from '../API/CouponAPI';
@@ -24,45 +23,26 @@ function OrderMomo(props) {
         const price = localStorage.getItem('price')
 
         const fetchData = async () => {
-            const serectkey = "uLb683H8g9dWuiyipZbLHgO6zjSDlVm5"
-            const accessKey = new URLSearchParams(search).get('accessKey')
-            const amount = new URLSearchParams(search).get('amount')
-            const extraData = new URLSearchParams(search).get('extraData')
-            const errorCode = new URLSearchParams(search).get('errorCode')
-            const localMessage = new URLSearchParams(search).get('localMessage')
-            const message = new URLSearchParams(search).get('message')
+            // MoMo v2 trả về các tham số khác
+            const resultCode = new URLSearchParams(search).get('resultCode')
             const orderId = new URLSearchParams(search).get('orderId')
-            const orderInfo = new URLSearchParams(search).get('orderInfo')
-            const orderType = new URLSearchParams(search).get('orderType')
-            const partnerCode = new URLSearchParams(search).get('partnerCode')
-            const payType = new URLSearchParams(search).get('payType')
-            const requestId = new URLSearchParams(search).get('requestId')
-            const responseTime = new URLSearchParams(search).get('responseTime')
+            const amount = new URLSearchParams(search).get('amount')
+            const message = new URLSearchParams(search).get('message')
             const transId = new URLSearchParams(search).get('transId')
 
-            let param = `partnerCode=${partnerCode}&accessKey=${accessKey}&requestId=${requestId}&amount=${amount}&orderId=${orderId}&orderInfo=${orderInfo}&orderType=${orderType}&transId=${transId}&message=${message}&localMessage=${localMessage}&responseTime=${responseTime}&errorCode=${errorCode}&payType=${payType}&extraData=${extraData}`
+            console.log('MoMo callback params:', { resultCode, orderId, amount, message, transId })
 
-            var signature = crypto.createHmac('sha256', serectkey)
-                .update(param)
-                .digest('hex');
+            // resultCode = 0 là thành công
+            if (resultCode === '0') {
 
-            if (new URLSearchParams(search).get('signature') !== signature) {
-                setNote("Information Request Invalid")
-                return;
-            }
-            if (errorCode == 0) {
-
-                if (!information)
-                {
+                if (!information) {
                     window.location.href = '/'
                     return
                 }
 
-                if (localStorage.getItem("id_coupon")){
-
+                if (localStorage.getItem("id_coupon")) {
                     const responseUpdate = await CouponAPI.updateCoupon(localStorage.getItem("id_coupon"))
                     console.log(responseUpdate)
-        
                 }
 
                 // data Note
@@ -117,7 +97,8 @@ function OrderMomo(props) {
                 localStorage.removeItem('price')
                 localStorage.removeItem('id_coupon')
                 localStorage.removeItem('coupon')
-
+                localStorage.removeItem('momoOrderId')
+                localStorage.removeItem('originalOrderId')
 
                 // Hàm này dùng để load lại phần header bằng Redux
                 const action_count_change = changeCount(count_change)
@@ -127,10 +108,10 @@ function OrderMomo(props) {
                     window.location.href = '/history'
                 }, 2500)
 
-                setNote("You Have Ordered Successfully")
+                setNote("Thanh toán MoMo thành công!")
 
             } else {
-                setNote("You Have Ordered Fail")
+                setNote("Thanh toán MoMo thất bại: " + (message || 'Vui lòng thử lại'))
             }
 
         }
@@ -141,7 +122,7 @@ function OrderMomo(props) {
     return (
         <div className="container fix_order">
             <h1>{note}</h1>
-            <span style={{ fontSize: '1.2rem' }}>Please Checking Information Again!</span>
+            <span style={{ fontSize: '1.2rem' }}>Vui lòng kiểm tra lại thông tin!</span>
         </div>
     );
 }

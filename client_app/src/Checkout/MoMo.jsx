@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import crypto from 'crypto'
-
 
 MoMo.propTypes = {
     orderID: PropTypes.string,
@@ -14,67 +12,91 @@ MoMo.defaultProps = {
     total: 0,
 }
 
-
 function MoMo(props) {
 
     const [error, setError] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [called, setCalled] = useState(false) // Prevent multiple calls
 
     const { orderID, total } = props
 
-    console.log(orderID)
+    console.log('MoMo Component Mounted')
+    console.log('MoMo orderID:', orderID)
+    console.log('MoMo total:', total)
 
     useEffect(() => {
-        const path = "https://test-payment.momo.vn/gw_payment/transactionProcessor"
-        const partnerCode = "MOMOHMXO20210608"
-        const accessKey = "XPBbArMut5PxmWiY"
-        const serectkey = "uLb683H8g9dWuiyipZbLHgO6zjSDlVm5"
-        const orderInfo = "Thanh toán MoMo"
-        const notifyurl = "http://localhost:8000/api/Payment/momo"
-        const returnUrl = "http://localhost:3000/momo"
-        const amount = total.toString()
-        const orderId = orderID
-        const requestType = "captureMoMoWallet"
-        const extraData = "merchantName=Payment"
-        const rawSignature = `partnerCode=${partnerCode}&accessKey=${accessKey}&requestId=${orderId}&amount=${amount}&orderId=${orderId}&orderInfo=${orderInfo}&returnUrl=${returnUrl}&notifyUrl=${notifyurl}&extraData=${extraData}`
+        // Chỉ gọi API khi có orderID và total hợp lệ, và chưa gọi
+        if (!orderID || !total || total <= 0 || called) {
+            console.log('Skipping MoMo API call - invalid params or already called')
+            return
+        }
 
-        var signature = crypto.createHmac('sha256', serectkey)
-            .update(rawSignature)
-            .digest('hex');
+        setCalled(true)
+        setLoading(true)
 
-        var body = JSON.stringify({
-            partnerCode: partnerCode,
-            accessKey: accessKey,
-            requestId: orderId,
-            amount: amount,
-            orderId: orderId,
-            orderInfo: orderInfo,
-            returnUrl: returnUrl,
-            notifyUrl: notifyurl,
-            extraData: extraData,
-            requestType: requestType,
-            signature: signature
+        console.log('Calling MoMo API...')
+
+        // Gọi API proxy từ backend (tránh CORS)
+        axios.post('http://localhost:8000/api/Payment/momo/create', {
+            orderID: orderID,
+            total: total
         })
+        .then((response) => {
+            console.log('MoMo Response:', response.data)
+            setLoading(false)
 
-        axios.post(path, body)
-            .then((response) => {
-                if (response.data.errorCode !== 0) {
+            // Kiểm tra resultCode (0 = thành công)
+            if (response.data.resultCode !== 0) {
+                console.error('MoMo Error:', response.data.message)
+                setError(true)
+                setTimeout(() => {
+                    setError(false)
+                    setCalled(false) // Allow retry
+                }, 3000)
+            } else {
+                // Kiểm tra payUrl có tồn tại không
+                const payUrl = response.data.payUrl
+                console.log('payUrl received:', payUrl)
+                
+                if (payUrl && payUrl !== 'null' && payUrl !== null && payUrl !== '') {
+                    // Lưu orderId vào localStorage để xử lý sau khi redirect về
+                    localStorage.setItem('momoOrderId', response.data.orderId || orderID)
+                    localStorage.setItem('originalOrderId', orderID)
+                    
+                    console.log('Redirecting to:', payUrl)
+                    window.location.href = payUrl
+                } else {
+                    console.error('payUrl is null or invalid:', payUrl)
                     setError(true)
                     setTimeout(() => {
                         setError(false)
-                    }, 1500)
-                } else {
-
-                    window.location.href = response.data.payUrl
-
+                        setCalled(false)
+                    }, 3000)
                 }
-            })
-            .catch(error => {
-                console.error('There was an error!', error);
-            })
-    }, [orderID])
+            }
+        })
+        .catch(error => {
+            console.error('MoMo API Error:', error);
+            setLoading(false)
+            setError(true)
+            setTimeout(() => {
+                setError(false)
+                setCalled(false)
+            }, 3000)
+        })
+    }, [orderID, total, called])
 
     return (
         <div>
+            {
+                loading &&
+                <div style={{ textAlign: 'center', padding: '20px' }}>
+                    <div className="spinner-border text-danger" role="status">
+                        <span className="sr-only">Đang xử lý...</span>
+                    </div>
+                    <p style={{ marginTop: '10px', color: '#666' }}>Đang kết nối với MoMo...</p>
+                </div>
+            }
             {
                 error &&
                 <div className="modal_success">
@@ -82,7 +104,7 @@ function MoMo(props) {
                         <div className="text-center p-2">
                             <i className="fa fa-bell fix_icon_bell" style={{ fontSize: '40px', color: '#fff', backgroundColor: '#f84545' }}></i>
                         </div>
-                        <h4 className="text-center p-3" style={{ color: '#fff' }}>Lỗi thanh toán!!!</h4>
+                        <h4 className="text-center p-3" style={{ color: '#fff' }}>Lỗi thanh toán MoMo! Vui lòng thử lại.</h4>
                     </div>
                 </div>
             }

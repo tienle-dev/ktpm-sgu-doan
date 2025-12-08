@@ -31,6 +31,8 @@ function Checkout(props) {
 
     const [total_price, set_total_price] = useState(0)
 
+    const [triggerMomo, setTriggerMomo] = useState(false)
+
     const [discount, set_discount] = useState(0)
 
     // state load_map - đã gộp chung nên không cần state này nữa
@@ -178,7 +180,17 @@ function Checkout(props) {
 
         // Nếu chọn MoMo thì xử lý riêng
         if (paymentMethod === 'momo') {
-            handlerMomo()
+            // Lưu thông tin trước khi redirect sang MoMo
+            localStorage.setItem('information', JSON.stringify(information))
+            localStorage.setItem('total_price', total_price)
+            localStorage.setItem('price', price)
+            
+            // Tạo orderID mới
+            const newOrderId = 'ORDER' + Date.now().toString()
+            setOrderID(newOrderId)
+            
+            // Trigger gọi MoMo
+            setTriggerMomo(true)
             return
         }
 
@@ -663,7 +675,7 @@ function Checkout(props) {
                                                                     style={{ borderRadius: '8px', marginBottom: '10px' }} 
                                                                 />
                                                                 <p style={{ fontSize: '14px', color: '#666', marginBottom: '10px' }}>Thanh toán an toàn qua ví MoMo</p>
-                                                                {orderID && (
+                                                                {triggerMomo && orderID && total_price > 0 && (
                                                                     <MoMo
                                                                         orderID={orderID}
                                                                         total={total_price}

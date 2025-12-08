@@ -102,6 +102,139 @@ module.exports.post_momo = async (req, res) => {
 
 }
 
+// API tạo thanh toán MoMo (proxy để tránh CORS)
+module.exports.create_momo_payment = async (req, res) => {
+    const crypto = require('crypto')
+    const https = require('https')
+
+    try {
+        const { orderID, total } = req.body
+
+        console.log('=== MoMo Payment Request ===')
+        console.log('orderID:', orderID)
+        console.log('total:', total)
+
+        if (!orderID || !total) {
+            return res.status(400).json({ 
+                resultCode: -1, 
+                message: 'Missing orderID or total' 
+            })
+        }
+
+        // MoMo API v2 parameters
+        const accessKey = 'F8BBA842ECF85'
+        const secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz'
+        const partnerCode = 'MOMO'
+        const redirectUrl = 'http://localhost:3000/momo'
+        const ipnUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b' // URL test
+        const requestType = 'payWithMethod'
+        const amount = total.toString()
+        const orderId = partnerCode + new Date().getTime()
+        const requestId = orderId
+        const extraData = ''
+        const orderInfo = 'Thanh toan don hang ' + orderID
+        const autoCapture = true
+        const lang = 'vi'
+
+        // Tạo raw signature theo format của MoMo v2
+        const rawSignature = "accessKey=" + accessKey 
+            + "&amount=" + amount 
+            + "&extraData=" + extraData 
+            + "&ipnUrl=" + ipnUrl 
+            + "&orderId=" + orderId 
+            + "&orderInfo=" + orderInfo 
+            + "&partnerCode=" + partnerCode 
+            + "&redirectUrl=" + redirectUrl 
+            + "&requestId=" + requestId 
+            + "&requestType=" + requestType
+
+        console.log('Raw Signature:', rawSignature)
+
+        // Tạo signature
+        const signature = crypto.createHmac('sha256', secretKey)
+            .update(rawSignature)
+            .digest('hex')
+
+        console.log('Signature:', signature)
+
+        // Request body
+        const requestBody = JSON.stringify({
+            partnerCode: partnerCode,
+            partnerName: "Test",
+            storeId: "MomoTestStore",
+            requestId: requestId,
+            amount: amount,
+            orderId: orderId,
+            orderInfo: orderInfo,
+            redirectUrl: redirectUrl,
+            ipnUrl: ipnUrl,
+            lang: lang,
+            requestType: requestType,
+            autoCapture: autoCapture,
+            extraData: extraData,
+            orderGroupId: '',
+            signature: signature
+        })
+
+        console.log('Request Body:', requestBody)
+
+        // Gọi API MoMo từ server
+        const options = {
+            hostname: 'test-payment.momo.vn',
+            port: 443,
+            path: '/v2/gateway/api/create',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(requestBody)
+            }
+        }
+
+        const momoRequest = https.request(options, (momoRes) => {
+            let data = ''
+            
+            momoRes.on('data', (chunk) => {
+                data += chunk
+            })
+
+            momoRes.on('end', () => {
+                try {
+                    const result = JSON.parse(data)
+                    console.log('=== MoMo Response ===')
+                    console.log(result)
+                    res.json(result)
+                } catch (error) {
+                    console.error('Parse error:', error)
+                    res.status(500).json({ 
+                        resultCode: -1,
+                        error: 'Parse error', 
+                        message: error.message 
+                    })
+                }
+            })
+        })
+
+        momoRequest.on('error', (error) => {
+            console.error('MoMo Request Error:', error)
+            res.status(500).json({ 
+                resultCode: -1,
+                error: 'Request failed', 
+                message: error.message 
+            })
+        })
+
+        momoRequest.write(requestBody)
+        momoRequest.end()
+
+    } catch (error) {
+        console.error('Server Error:', error)
+        res.status(500).json({ 
+            resultCode: -1,
+            error: 'Server error', 
+            message: error.message 
+        })
+    }
+}
 
 
 
