@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "ktpm-sgu-doan",
+  "version": "1.0.0",
+  "description": "E-commerce project with server, client and admin apps",
+  "scripts": {
+    "install-all": "npm install --prefix server_app && npm install --prefix client_app && npm install --prefix admin_app",
+    "dev": "concurrently \"npm run dev --prefix server_app\" \"npm run dev --prefix client_app\" \"npm run dev --prefix admin_app\"",
+    "start": "concurrently \"npm start --prefix server_app\" \"npm start --prefix client_app\" \"npm start --prefix admin_app\"",
+    "server": "npm run dev --prefix server_app",
+    "client": "npm run dev --prefix client_app",
+    "admin": "npm run dev --prefix admin_app"
+  },
+  "dependencies": {
+    "react-scripts": "^5.0.1"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}

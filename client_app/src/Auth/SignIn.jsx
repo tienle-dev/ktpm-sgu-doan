@@ -5,8 +5,9 @@ import queryString from 'query-string'
 import User from '../API/User';
 import { useDispatch, useSelector } from 'react-redux';
 import { addSession } from '../Redux/Action/ActionSession';
-import Cart from '../API/CartAPI';
+import CartAPI from '../API/CartAPI';
 import { changeCount } from '../Redux/Action/ActionCount';
+import CartsLocal from '../Share/CartsLocal';
 
 SignIn.propTypes = {
     
@@ -59,6 +60,9 @@ function SignIn(props) {
                         dispatch(action)
 
                         sessionStorage.setItem('id_user', response._id)
+
+                        // Đồng bộ giỏ hàng khi đăng nhập
+                        await CartsLocal.syncWithServer(response._id)
 
                         const action_count_change = changeCount(count_change)
                         dispatch(action_count_change)
