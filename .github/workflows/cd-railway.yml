@@ -1,0 +1,67 @@
+name: CD - Deploy to Railway
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch: # Cho phép chạy thủ công
+
+env:
+  RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+jobs:
+  # ==================== DEPLOY SERVER APP ====================
+  deploy-server:
+    name: Deploy Server App
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy Server to Railway
+        run: |
+          cd server_app
+          railway up --service server-app
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+  # ==================== DEPLOY CLIENT APP ====================
+  deploy-client:
+    name: Deploy Client App
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy Client to Railway
+        run: |
+          cd client_app
+          railway up --service client-app
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+  # ==================== DEPLOY ADMIN APP ====================
+  deploy-admin:
+    name: Deploy Admin App
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy Admin to Railway
+        run: |
+          cd admin_app
+          railway up --service admin-app
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
