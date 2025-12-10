@@ -13,7 +13,8 @@ import CouponAPI from '../API/CouponAPI';
 import MoMo from './MoMo.jsx'
 import { getCartKey } from '../Share/CartsLocal';
 
-const socket = io('http://localhost:8000/', {
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const socket = io(API_URL, {
     transports: ['websocket'], jsonp: false
 });
 socket.connect();
