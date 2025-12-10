@@ -4,7 +4,7 @@ import queryString from 'query-string';
 // Set up default config for http requests here
 // Please have a look at here `https://github.com/axios/axios#requestconfig` for the full list of configs
 const axiosClient = axios.create({
-    baseURL: process.env.REACT_APP_API_URL || "http://localhost:8000",
+    baseURL: "https://ktpm-sgu-doan-production.up.railway.app",
     headers: {
         'content-type': 'application/json',
         'Access-Control-Allow-Origin': '*',
