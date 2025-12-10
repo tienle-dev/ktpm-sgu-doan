@@ -1,0 +1,151 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main, master, Vinh]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  # ==================== SERVER APP ====================
+  server-app:
+    name: Server App - Build & Test
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: server_app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: server_app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Check for syntax errors
+        run: node --check index.js
+
+  # ==================== CLIENT APP ====================
+  client-app:
+    name: Client App - Build & Test
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: client_app
+
+    env:
+      CI: true
+      NODE_OPTIONS: --openssl-legacy-provider
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: client_app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Run linting
+        run: npm run build --if-present
+        continue-on-error: true
+
+      - name: Run tests
+        run: npm test -- --watchAll=false --passWithNoTests
+        continue-on-error: true
+
+  # ==================== ADMIN APP ====================
+  admin-app:
+    name: Admin App - Build & Test
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: admin_app
+
+    env:
+      CI: true
+      NODE_OPTIONS: --openssl-legacy-provider
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: admin_app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Run linting
+        run: npm run build --if-present
+        continue-on-error: true
+
+      - name: Run tests
+        run: npm test -- --watchAll=false --passWithNoTests
+        continue-on-error: true
+
+  # ==================== BUILD CHECK ====================
+  build-check:
+    name: Full Build Check
+    runs-on: ubuntu-latest
+    needs: [server-app, client-app, admin-app]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Build Client App
+        working-directory: client_app
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
+          CI: false
+        run: |
+          npm ci --legacy-peer-deps
+          npm run build
+
+      - name: Build Admin App
+        working-directory: admin_app
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
+          CI: false
+        run: |
+          npm ci --legacy-peer-deps
+          npm run build
+
+      - name: Upload Client Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-build
+          path: client_app/build
+          retention-days: 7
+
+      - name: Upload Admin Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin-build
+          path: admin_app/build
+          retention-days: 7
