@@ -37,7 +37,8 @@ function MoMo(props) {
         console.log('Calling MoMo API...')
 
         // Gọi API proxy từ backend (tránh CORS)
-        axios.post('https://ktpm-sgu-doan-production.up.railway.app/api/Payment/momo/create', {
+        const API_URL = process.env.REACT_APP_API_URL || process.env.LOCALHOST_URL;
+        axios.post(`${API_URL}/api/Payment/momo/create`, {
             orderID: orderID,
             total: total
         })
