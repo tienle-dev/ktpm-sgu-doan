@@ -1,0 +1,657 @@
+================================================================================
+                  MÔI TRƯỜNG KIỂM THỬ - DỰ ÁN KTPM-SGU-DOAN
+                         Website Bán Hàng Thời Trang
+================================================================================
+
+Ngày tạo:       12/12/2025
+Người tạo:      Team KTPM-SGU
+Version:        1.0
+Branch:         test-cd
+
+================================================================================
+                           1. THÔNG TIN CHUNG
+================================================================================
+
+1.1. Mục đích
+    Tài liệu này mô tả chi tiết cấu hình môi trường kiểm thử cho dự án
+    E-commerce bao gồm phần cứng, phần mềm, cơ sở dữ liệu và các công cụ.
+
+1.2. Phạm vi
+    - Development Environment
+    - Testing Environment
+    - Staging Environment
+    - Production-like Environment
+
+================================================================================
+                        2. CẤU HÌNH PHẦN CỨNG
+================================================================================
+
+2.1. Server Test (Backend)
+---------------------------
+    Component           Minimum             Recommended         Current
+    ---------           -------             -----------         -------
+    CPU                 2 cores             4 cores             4 cores
+    RAM                 4 GB                8 GB                8 GB
+    Storage             20 GB SSD           50 GB SSD           50 GB SSD
+    Network             100 Mbps            1 Gbps              1 Gbps
+    OS                  Windows 10          Windows 11/Linux    Windows 11
+
+2.2. Client Test Machine (Frontend)
+-------------------------------------
+    Component           Minimum             Recommended
+    ---------           -------             -----------
+    CPU                 Intel i3 / Ryzen 3  Intel i5 / Ryzen 5
+    RAM                 4 GB                8 GB
+    Storage             10 GB               20 GB
+    Screen              1366x768            1920x1080
+    Browser             Chrome 100+         Chrome/Firefox/Edge latest
+
+2.3. Mobile Test Devices (Responsive Testing)
+-----------------------------------------------
+    Device Type         Device Model            OS              Screen Size
+    -----------         ------------            --              -----------
+    Android Phone       Samsung Galaxy S21      Android 13      2400x1080
+    Android Tablet      Samsung Tab S8          Android 12      2560x1600
+    iOS Phone           iPhone 13               iOS 16          2532x1170
+    iOS Tablet          iPad Pro 11"            iPadOS 16       2388x1668
+
+================================================================================
+                        3. PHẦN MÀM HỆ THỐNG
+================================================================================
+
+3.1. Operating System
+----------------------
+    Environment         OS                      Version         Architecture
+    -----------         --                      -------         ------------
+    Development         Windows 11              Latest          x64
+    Testing             Windows 11 / Ubuntu     22.04 LTS       x64
+    Staging             Ubuntu Server           22.04 LTS       x64
+    Production          Railway / Cloud         N/A             N/A
+
+3.2. Runtime Environments
+--------------------------
+    Component           Version         Installation Command
+    ---------           -------         --------------------
+    Node.js             16.x - 18.x     Download from nodejs.org
+    npm                 8.x+            Included with Node.js
+    MongoDB             5.x - 6.x       Docker or MongoDB Atlas
+    Git                 Latest          Download from git-scm.com
+
+3.3. Browsers (Cross-browser Testing)
+---------------------------------------
+    Browser             Version         Platform            Priority
+    -------             -------         --------            --------
+    Chrome              Latest          Windows/Mac/Linux   HIGH
+    Firefox             Latest          Windows/Mac/Linux   HIGH
+    Edge                Latest          Windows             MEDIUM
+    Safari              Latest          Mac/iOS             MEDIUM
+    Mobile Chrome       Latest          Android             HIGH
+    Mobile Safari       Latest          iOS                 HIGH
+
+================================================================================
+                        4. CẤU HÌNH DATABASE
+================================================================================
+
+4.1. MongoDB Test Database
+----------------------------
+    Parameter           Development                 Testing                     Staging
+    ---------           -----------                 -------                     -------
+    Host                localhost                   MongoDB Atlas               MongoDB Atlas
+    Port                27017                       27017                       27017
+    Database Name       ecommerce_dev               ecommerce_test              ecommerce_staging
+    Username            dev_user                    test_user                   staging_user
+    Password            [stored in .env]            [stored in .env]            [stored in .env]
+    Connection String   mongodb://localhost:27017   mongodb+srv://...           mongodb+srv://...
+
+4.2. Database Collections
+---------------------------
+    Collection          Purpose                     Est. Records (Test)
+    ----------          -------                     -------------------
+    users               User accounts               100
+    products            Product catalog             500
+    carts               Shopping carts              100
+    orders              Order history               200
+    payments            Payment transactions        200
+    coupons             Discount coupons            20
+    reviews             Product reviews             1000
+    categories          Product categories          10
+    favorites           User favorites              500
+    sales               Sale events                 10
+
+4.3. Database Backup & Restore
+--------------------------------
+    Backup Frequency:   Daily (automated)
+    Backup Location:    /backup/db/YYYYMMDD/
+    Restore Command:    mongorestore --db ecommerce_test /backup/db/latest/
+    Clean DB Command:   mongo ecommerce_test --eval "db.dropDatabase()"
+    Seed Command:       cd server_app && npm run seed
+
+================================================================================
+                        5. CẤU HÌNH SERVER (Backend)
+================================================================================
+
+5.1. Server Application Setup
+-------------------------------
+    Parameter               Value                       Notes
+    ---------               -----                       -----
+    Root Directory          server_app/                 Backend root
+    Entry Point             index.js                    Main server file
+    Port                    8000                        Default port
+    Node Environment        test / development          Set via NODE_ENV
+    Logging Level           debug                       For test environment
+
+5.2. Environment Variables (.env)
+----------------------------------
+    Variable                Example Value               Description
+    --------                -------------               -----------
+    NODE_ENV                test                        Environment mode
+    PORT                    8000                        Server port
+    MONGODB_URI             mongodb://localhost:27017   Database connection
+    JWT_SECRET              test_secret_key_123         JWT signing key
+    JWT_EXPIRE              24h                         Token expiration
+    MOMO_PARTNER_CODE       MOMO                        MoMo partner code
+    MOMO_ACCESS_KEY         test_access_key             MoMo access key (sandbox)
+    MOMO_SECRET_KEY         test_secret_key             MoMo secret key (sandbox)
+    MOMO_REDIRECT_URL       http://localhost:3000/momo  MoMo callback URL
+    EMAIL_USER              test@gmail.com              Email for notifications
+    EMAIL_PASS              app_password                Email password
+    CLOUDINARY_NAME         test_cloud                  Image hosting
+    CLOUDINARY_KEY          123456                      Cloudinary API key
+    CLOUDINARY_SECRET       secret123                   Cloudinary secret
+
+5.3. Server Dependencies (package.json)
+-----------------------------------------
+    Package                 Version         Purpose
+    -------                 -------         -------
+    express                 4.17.1          Web framework
+    mongoose                5.12.2          MongoDB ODM
+    jsonwebtoken            8.5.1           Authentication
+    bcryptjs                2.4.3           Password hashing
+    crypto                  built-in        MoMo signature generation
+    axios                   0.21.1          HTTP client (MoMo API)
+    nodemailer              6.5.0           Email service
+    socket.io               3.1.0           Real-time notifications
+    cors                    2.8.5           CORS handling
+    dotenv                  8.2.0           Environment variables
+    multer                  1.4.2           File upload
+    cloudinary              1.25.1          Image hosting
+
+5.4. Server Start Commands
+----------------------------
+    Purpose                 Command                     Description
+    -------                 -------                     -----------
+    Development             npm run dev                 Start with nodemon
+    Testing                 npm run test                Run tests
+    Seed Database           npm run seed                Insert test data
+    Production              npm start                   Start server
+
+================================================================================
+                        6. CẤU HÌNH CLIENT (Frontend - User)
+================================================================================
+
+6.1. Client Application Setup
+-------------------------------
+    Parameter               Value                       Notes
+    ---------               -----                       -----
+    Root Directory          client_app/                 Frontend root
+    Entry Point             src/index.js                React entry
+    Port                    3000                        Default port
+    Build Tool              Create React App            React toolchain
+    State Management        Redux                       Global state
+
+6.2. Environment Variables (.env)
+----------------------------------
+    Variable                    Value                   Description
+    --------                    -----                   -----------
+    REACT_APP_API_URL           http://localhost:8000   Backend API URL
+    PORT                        3000                    Client port
+    SKIP_PREFLIGHT_CHECK        true                    CRA compatibility
+    NODE_OPTIONS                --openssl-legacy-...    OpenSSL fix for Node 17+
+
+6.3. Client Dependencies
+-------------------------
+    Package                 Version         Purpose
+    -------                 -------         -------
+    react                   17.0.1          UI library
+    react-dom               17.0.1          React rendering
+    react-router-dom        5.2.0           Routing
+    redux                   4.0.5           State management
+    react-redux             7.2.2           React-Redux binding
+    axios                   0.21.1          HTTP client
+    socket.io-client        3.1.1           WebSocket client
+    query-string            6.14.0          URL parsing
+
+6.4. Client Start Commands
+----------------------------
+    Purpose                 Command                     Description
+    -------                 -------                     -----------
+    Development             npm run dev                 Start dev server
+    Testing                 npm test                    Run tests
+    Build                   npm run build               Production build
+    E2E Test                npm run cypress             Run Cypress tests
+
+================================================================================
+                        7. CẤU HÌNH ADMIN (Frontend - Admin)
+================================================================================
+
+7.1. Admin Application Setup
+------------------------------
+    Parameter               Value                       Notes
+    ---------               -----                       -----
+    Root Directory          admin_app/                  Admin root
+    Entry Point             src/index.js                React entry
+    Port                    3001                        Different from client
+    Build Tool              Create React App            React toolchain
+
+7.2. Environment Variables (.env)
+----------------------------------
+    Variable                    Value                   Description
+    --------                    -----                   -----------
+    REACT_APP_API_URL           http://localhost:8000   Backend API URL
+    PORT                        3001                    Admin port
+    SKIP_PREFLIGHT_CHECK        true                    CRA compatibility
+    NODE_OPTIONS                --openssl-legacy-...    OpenSSL fix
+
+7.3. Admin Start Commands
+---------------------------
+    Purpose                 Command                     Description
+    -------                 -------                     -----------
+    Development             npm run dev                 Start admin panel
+    Build                   npm run build               Production build
+
+================================================================================
+                        8. DOCKER ENVIRONMENT (Optional)
+================================================================================
+
+8.1. Docker Containers
+-----------------------
+    Service         Image               Port Mapping        Purpose
+    -------         -----               ------------        -------
+    mongodb         mongo:5             27017:27017         Database
+    server          node:16-alpine      8000:8000           Backend
+    client          node:16-alpine      3000:3000           Frontend
+    admin           node:16-alpine      3001:3001           Admin Panel
+
+8.2. Docker Commands
+---------------------
+    Purpose                     Command
+    -------                     -------
+    Start all services          docker-compose up -d
+    Stop all services           docker-compose down
+    View logs                   docker-compose logs -f
+    Rebuild containers          docker-compose up -d --build
+    Reset volumes               docker-compose down -v
+
+8.3. docker-compose.yml (Sample)
+---------------------------------
+    version: '3.8'
+    services:
+      mongodb:
+        image: mongo:5
+        ports:
+          - "27017:27017"
+        volumes:
+          - mongo-data:/data/db
+      server:
+        build: ./server_app
+        ports:
+          - "8000:8000"
+        environment:
+          - NODE_ENV=test
+          - MONGODB_URI=mongodb://mongodb:27017/ecommerce_test
+        depends_on:
+          - mongodb
+
+================================================================================
+                        9. CÔNG CỤ KIỂM THỬ
+================================================================================
+
+9.1. Unit Testing Tools
+------------------------
+    Tool                Version         Installation                Purpose
+    ----                -------         ------------                -------
+    Jest                29.x            npm install --save-dev jest Unit testing framework
+    @testing-library    14.x            npm install --save-dev ...  React component testing
+    Supertest           6.x             npm install --save-dev ...  API testing
+
+9.2. Integration Testing Tools
+--------------------------------
+    Tool                Version         Installation                Purpose
+    ----                -------         ------------                -------
+    Postman             Latest          Download installer          API manual testing
+    Newman              Latest          npm install -g newman       API automation
+    Insomnia            Latest          Download installer          Alternative to Postman
+
+9.3. E2E Testing Tools
+-----------------------
+    Tool                Version         Installation                Purpose
+    ----                -------         ------------                -------
+    Cypress             13.x            npm install --save-dev ...  E2E testing
+    Playwright          Latest          npm install --save-dev ...  Alternative E2E
+    Selenium WebDriver  4.x             npm install selenium-...    Browser automation
+
+9.4. Performance Testing Tools
+--------------------------------
+    Tool                Version         Installation                Purpose
+    ----                -------         ------------                -------
+    Artillery           2.x             npm install -g artillery    Load testing
+    Apache JMeter       Latest          Download installer          Performance testing
+    k6                  Latest          Download installer          Modern load testing
+
+9.5. Security Testing Tools
+-----------------------------
+    Tool                Version         Installation                Purpose
+    ----                -------         ------------                -------
+    OWASP ZAP           Latest          Download installer          Security scanning
+    npm audit           Built-in        npm audit                   Dependency check
+    Snyk                Latest          npm install -g snyk         Vulnerability scanning
+
+9.6. Code Quality Tools
+------------------------
+    Tool                Version         Installation                Purpose
+    ----                -------         ------------                -------
+    ESLint              8.x             npm install --save-dev ...  JavaScript linting
+    Prettier            2.x             npm install --save-dev ...  Code formatting
+    SonarQube           Community       Docker image                Code quality analysis
+
+9.7. Monitoring & Logging Tools
+---------------------------------
+    Tool                Version         Purpose
+    ----                -------         -------
+    Morgan              1.10.0          HTTP request logging
+    Winston             3.x             Application logging
+    PM2                 Latest          Process monitoring
+
+================================================================================
+                        10. NETWORK & API CONFIGURATION
+================================================================================
+
+10.1. API Endpoints (Backend)
+-------------------------------
+    Module              Endpoint                Method          Port
+    ------              --------                ------          ----
+    User                /api/User               GET/POST/PUT    8000
+    Product             /api/Product            GET/POST/PUT    8000
+    Cart                /api/Cart               GET/POST/PUT    8000
+    Order               /api/Payment            GET/POST/PUT    8000
+    Coupon              /api/Coupon             GET/POST/PUT    8000
+    Review              /api/Comment            GET/POST/PUT    8000
+    Category            /api/Category           GET/POST/PUT    8000
+
+10.2. External Services
+------------------------
+    Service             URL                                 Purpose
+    -------             ---                                 -------
+    MoMo Test API       https://test-payment.momo.vn        Payment testing (sandbox)
+    MongoDB Atlas       mongodb+srv://...                   Cloud database
+    Cloudinary          https://api.cloudinary.com          Image hosting
+    Gmail SMTP          smtp.gmail.com:587                  Email service
+
+10.3. CORS Configuration
+-------------------------
+    Allowed Origins:    http://localhost:3000, http://localhost:3001
+    Allowed Methods:    GET, POST, PUT, DELETE, PATCH
+    Allowed Headers:    Content-Type, Authorization
+    Credentials:        true
+
+10.4. Rate Limiting (For Testing)
+-----------------------------------
+    Endpoint            Rate Limit              Window
+    --------            ----------              ------
+    /api/User/signin    5 requests              1 minute
+    /api/User/signup    3 requests              5 minutes
+    /api/Payment        10 requests             1 minute
+    Other APIs          100 requests            1 minute
+
+================================================================================
+                        11. TEST DATA MANAGEMENT
+================================================================================
+
+11.1. Seed Data Script (server_app/seed.js)
+---------------------------------------------
+    Purpose:            Initialize database with test data
+    Run Command:        cd server_app && npm run seed
+    Data Included:      Users, Products, Categories, Coupons
+
+11.2. Test Data Files
+----------------------
+    File Location                   Purpose
+    -------------                   -------
+    /server_app/seed.js             Seed database script
+    /test_data/users.json           User test data
+    /test_data/products.json        Product test data
+    /test_data/orders.json          Order test data
+
+11.3. Database Reset Procedure
+--------------------------------
+    Step 1:     Backup current data (if needed)
+                mongodump --db ecommerce_test --out /backup/before_test/
+    
+    Step 2:     Drop test database
+                mongo ecommerce_test --eval "db.dropDatabase()"
+    
+    Step 3:     Reseed database
+                cd server_app && npm run seed
+    
+    Step 4:     Verify data
+                mongo ecommerce_test --eval "db.users.count()"
+
+================================================================================
+                        12. CI/CD ENVIRONMENT
+================================================================================
+
+12.1. GitHub Actions (Automated Testing)
+------------------------------------------
+    Trigger:            Push to test-cd branch
+    Jobs:               - Install dependencies
+                        - Run unit tests
+                        - Run integration tests
+                        - Build applications
+                        - Deploy to staging
+
+12.2. Test Automation Schedule
+--------------------------------
+    Test Type           Schedule                Trigger
+    ---------           --------                -------
+    Unit Tests          On every commit         GitHub push
+    Integration Tests   On every PR             Pull request
+    E2E Tests           Nightly (2 AM)          Cron job
+    Performance Tests   Weekly (Sunday)         Manual trigger
+
+12.3. Environment Variables (CI/CD)
+-------------------------------------
+    Variable                    Source                  Purpose
+    --------                    ------                  -------
+    MONGODB_URI_TEST            GitHub Secrets          Test DB connection
+    MOMO_ACCESS_KEY_TEST        GitHub Secrets          MoMo sandbox access key
+    MOMO_SECRET_KEY_TEST        GitHub Secrets          MoMo sandbox secret key
+    JWT_SECRET_TEST             GitHub Secrets          JWT for testing
+
+================================================================================
+                        13. STAGING ENVIRONMENT
+================================================================================
+
+13.1. Staging Server Configuration
+------------------------------------
+    Component           Configuration
+    ---------           -------------
+    Platform            Railway / Heroku / DigitalOcean
+    Server URL          https://staging.yourapp.com
+    Client URL          https://staging-client.yourapp.com
+    Admin URL           https://staging-admin.yourapp.com
+    Database            MongoDB Atlas (Staging cluster)
+
+13.2. Staging Deployment
+--------------------------
+    Deploy Trigger:     Push to staging branch
+    Build Time:         ~5 minutes
+    Auto-deploy:        Enabled
+    Rollback:           Manual (previous deployment)
+
+================================================================================
+                        14. ACCESS & CREDENTIALS
+================================================================================
+
+14.1. Test Accounts
+--------------------
+    Role                Username        Password        Email
+    ----                --------        --------        -----
+    Admin               admin           admin123        admin@test.com
+    Manager             manager         manager123      manager@test.com
+    Customer            customer1       Pass123!        customer1@test.com
+
+14.2. External Service Credentials
+------------------------------------
+    Service             Account                         Purpose
+    -------             -------                         -------
+    MongoDB Atlas       test_user                       Test database
+    MoMo Sandbox        Phone: 0909000000 / OTP: 123456 Payment testing
+    Cloudinary          test_account                    Image uploads
+
+14.3. Repository Access
+------------------------
+    Repository:         https://github.com/tienle-dev/ktpm-sgu-doan
+    Branch (Test):      test-cd
+    Clone Command:      git clone https://github.com/tienle-dev/ktpm-sgu-doan.git
+
+================================================================================
+                        15. TROUBLESHOOTING
+================================================================================
+
+15.1. Common Issues & Solutions
+---------------------------------
+
+    Issue: "npm not recognized"
+    Solution: Set PowerShell execution policy
+              Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+    Issue: "Error: digital envelope routines::unsupported"
+    Solution: Add NODE_OPTIONS=--openssl-legacy-provider to .env
+
+    Issue: "Port 3000 already in use"
+    Solution: Kill process or change PORT in .env
+
+    Issue: "MongoDB connection failed"
+    Solution: Check MongoDB is running: mongod --version
+              Check connection string in .env
+
+    Issue: "CORS error in browser"
+    Solution: Check server CORS configuration allows localhost:3000
+
+15.2. Health Check Commands
+-----------------------------
+    Check Node.js:      node --version (should be 16.x - 18.x)
+    Check npm:          npm --version
+    Check MongoDB:      mongod --version OR check Atlas connection
+    Check server:       curl http://localhost:8000/api/User
+    Check client:       curl http://localhost:3000
+
+15.3. Log Locations
+--------------------
+    Server Logs:        server_app/logs/app.log
+    Client Logs:        Browser DevTools Console
+    Database Logs:      MongoDB Compass / Atlas Logs
+    Test Results:       /coverage/lcov-report/index.html
+
+================================================================================
+                        16. INSTALLATION GUIDE
+================================================================================
+
+16.1. Fresh Environment Setup (Step-by-step)
+----------------------------------------------
+
+    Step 1: Install Prerequisites
+    ------------------------------
+    1.1. Install Node.js 16.x or 18.x LTS
+         Download: https://nodejs.org/
+    
+    1.2. Install Git
+         Download: https://git-scm.com/
+    
+    1.3. Install MongoDB (local) OR setup MongoDB Atlas (cloud)
+         Local: https://www.mongodb.com/try/download/community
+         Atlas: https://www.mongodb.com/cloud/atlas
+
+    Step 2: Clone Repository
+    -------------------------
+    git clone https://github.com/tienle-dev/ktpm-sgu-doan.git
+    cd ktpm-sgu-doan
+
+    Step 3: Install Dependencies
+    -----------------------------
+    npm run install-all
+    (This installs dependencies for server, client, and admin)
+
+    Step 4: Configure Environment Variables
+    -----------------------------------------
+    4.1. Copy .env.example to .env in each app:
+         cp server_app/.env.example server_app/.env
+         cp client_app/.env.example client_app/.env
+         cp admin_app/.env.example admin_app/.env
+    
+    4.2. Update values in each .env file
+
+    Step 5: Seed Test Database
+    ---------------------------
+    cd server_app
+    npm run seed
+
+    Step 6: Start All Applications
+    -------------------------------
+    cd ..
+    npm run dev
+    (Starts server on :8000, client on :3000, admin on :3001)
+
+    Step 7: Verify Installation
+    ----------------------------
+    - Open http://localhost:3000 (Client app)
+    - Open http://localhost:3001 (Admin app)
+    - Check server logs for successful connection
+
+16.2. Quick Start (For Experienced Developers)
+------------------------------------------------
+    git clone https://github.com/tienle-dev/ktpm-sgu-doan.git
+    cd ktpm-sgu-doan
+    npm run install-all
+    # Configure .env files
+    cd server_app && npm run seed && cd ..
+    npm run dev
+
+================================================================================
+                        17. CHECKLIST KIỂM TRA
+================================================================================
+
+Before Starting Test:
+    [ ] Node.js version 16-18 installed
+    [ ] MongoDB running (local or Atlas connected)
+    [ ] All dependencies installed (npm run install-all)
+    [ ] Environment variables configured (.env files)
+    [ ] Test database seeded
+    [ ] All 3 apps start successfully (npm run dev)
+    [ ] Can access client at localhost:3000
+    [ ] Can access admin at localhost:3001
+    [ ] Server responds at localhost:8000/api/User
+    [ ] Test accounts can login
+    [ ] PayPal sandbox credentials configured
+
+Before Each Test Cycle:
+    [ ] Database reset to known state
+    [ ] Clear browser cache/cookies
+    [ ] Test data prepared
+    [ ] Test cases reviewed
+    [ ] Test results document ready
+
+After Test Completion:
+    [ ] All test cases executed
+    [ ] Test results documented
+    [ ] Bugs logged in GitHub Issues
+    [ ] Test environment cleaned up
+    [ ] Data backed up if needed
+
+================================================================================
+                              KẾT THÚC TÀI LIỆU
+================================================================================
+
+Ngày cập nhật:  12/12/2025
+Version:        1.0
+Liên hệ:        Team KTPM-SGU

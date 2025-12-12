@@ -1,0 +1,363 @@
+================================================================================
+                    TÀI LIỆU TEST CASES - DỰ ÁN KTPM-SGU-DOAN
+                         Website Bán Hàng Thời Trang
+================================================================================
+
+Ngày tạo:       10/12/2025
+Người tạo:      Team KTPM-SGU
+Công nghệ:      React.js, Node.js/Express, MongoDB
+Branch:         test-cd
+
+================================================================================
+                           PHẦN I: TỔNG QUAN
+================================================================================
+
+Tổng số Test Cases:     86
+- Functional Testing:   55 (64%)
+- Validation Testing:   28 (33%)
+- Security Testing:     3  (3%)
+
+Cần Auto Test:          74 (86%)
+Không bắt buộc:         12 (14%)
+
+================================================================================
+                    PHẦN II: DANH SÁCH TEST CASES
+================================================================================
+
+--------------------------------------------------------------------------------
+MODULE 1: USER MANAGEMENT (Quản lý người dùng) - 11 Test Cases
+--------------------------------------------------------------------------------
+
+1.1. FUNCTIONAL TESTING (5 test cases)
+--------------------------------------
+
+ID          Mô tả                           Phương pháp             Kỹ thuật                    Auto?
+----        -----                           -----------             --------                    -----
+UM_001      Đăng ký tài khoản hợp lệ        Black-box, Integration  Equivalence Partitioning    Có
+UM_002      Đăng ký email đã tồn tại        Black-box, System       Boundary Value Analysis     Có
+UM_003      Đăng nhập mật khẩu sai          Black-box, Acceptance   Error Guessing              Có
+UM_004      Chỉnh sửa hồ sơ                 White-box, Integration  Decision Table              Có
+UM_005      Đăng xuất hệ thống              System Testing          Error Guessing              Không
+
+1.2. VALIDATION TESTING (6 test cases)
+--------------------------------------
+
+ID          Mô tả                           Phương pháp             Kỹ thuật                    Auto?
+----        -----                           -----------             --------                    -----
+UM_VAL_001  Email format không hợp lệ       Black-box               Boundary Value Analysis     Có
+UM_VAL_002  Password quá ngắn (<6 ký tự)    Black-box               Boundary Value Analysis     Có
+UM_VAL_003  Password quá dài (>50 ký tự)    Black-box               Boundary Value Analysis     Có
+UM_VAL_004  Username chứa ký tự đặc biệt    Black-box, Security     Error Guessing              Có
+UM_VAL_005  Phone number sai format         Black-box               Equivalence Partitioning    Có
+UM_VAL_006  Các trường bắt buộc để trống    Black-box               Error Guessing              Có
+
+--------------------------------------------------------------------------------
+MODULE 2: PRODUCT MANAGEMENT (Quản lý sản phẩm) - 12 Test Cases
+--------------------------------------------------------------------------------
+
+2.1. FUNCTIONAL TESTING (6 test cases)
+--------------------------------------
+
+ID          Mô tả                           Phương pháp             Kỹ thuật                    Auto?
+----        -----                           -----------             --------                    -----
+PM_001      Xem danh sách sản phẩm          Performance, System     Equivalence Partitioning    Không
+PM_002      Tìm kiếm sản phẩm theo tên      Black-box, Integration  Error Guessing              Có
+PM_003      Lọc sản phẩm theo giá           Black-box               Boundary Value Analysis     Có
+PM_004      Xem chi tiết sản phẩm           Integration Testing     Equivalence Partitioning    Có
+PM_005      Lọc sản phẩm theo danh mục      Black-box               Equivalence Partitioning    Có
+PM_006      Phân trang danh sách            Black-box               Boundary Value Analysis     Có
+
+2.2. VALIDATION TESTING (6 test cases)
+--------------------------------------
+
+ID          Mô tả                           Phương pháp             Kỹ thuật                    Auto?
+----        -----                           -----------             --------                    -----
+PM_VAL_001  Tên sản phẩm để trống           Black-box               Equivalence Partitioning    Có
+PM_VAL_002  Giá sản phẩm âm hoặc = 0        Black-box               Boundary Value Analysis     Có
+PM_VAL_003  Giá sản phẩm quá lớn            Black-box               Boundary Value Analysis     Có
+PM_VAL_004  Số lượng tồn kho âm             Black-box               Boundary Value Analysis     Có
+PM_VAL_005  Upload ảnh sai định dạng        Black-box               Error Guessing              Có
+PM_VAL_006  Upload ảnh quá dung lượng       Black-box               Boundary Value Analysis     Có
+
+--------------------------------------------------------------------------------
+MODULE 3: SHOPPING CART (Giỏ hàng) - 12 Test Cases
+--------------------------------------------------------------------------------
+
+3.1. FUNCTIONAL TESTING (8 test cases)
+--------------------------------------
+
+ID          Mô tả                           Phương pháp             Kỹ thuật                    Auto?
+----        -----                           -----------             --------                    -----
+SC_001      Thêm sản phẩm vào giỏ           Unit, White-box         Equivalence Partitioning    Có
+SC_002      Cập nhật số lượng sản phẩm      White-box               Boundary Value Analysis     Có
+SC_003      Xóa sản phẩm khỏi giỏ           Integration Testing     Error Guessing              Có
+SC_004      Xem tổng tiền giỏ hàng          Unit Testing            Decision Table              Có
+SC_005      Đồng bộ giỏ hàng khi login      Integration, System     Decision Table              Có
+SC_006      Giỏ hàng riêng theo user        Security, Integration   Error Guessing              Có
+SC_007      Lưu giỏ hàng lên server         Integration Testing     Boundary Value Analysis     Có
+SC_008      Xóa toàn bộ giỏ hàng            Integration Testing     Error Guessing              Có
+
+3.2. VALIDATION TESTING (4 test cases)
+--------------------------------------
+
+ID          Mô tả                           Phương pháp             Kỹ thuật                    Auto?
+----        -----                           -----------             --------                    -----
+SC_VAL_001  Số lượng sản phẩm = 0           Black-box               Boundary Value Analysis     Có
+SC_VAL_002  Số lượng sản phẩm âm            Black-box               Error Guessing              Có
+SC_VAL_003  Số lượng vượt tồn kho           Black-box               Boundary Value Analysis     Có
+SC_VAL_004  Size sản phẩm không chọn        Black-box               Equivalence Partitioning    Có
+
+--------------------------------------------------------------------------------
+MODULE 4: ORDER & PAYMENT (Đặt hàng & Thanh toán) - 12 Test Cases
+--------------------------------------------------------------------------------
+
+4.1. FUNCTIONAL TESTING (7 test cases)
+--------------------------------------
+
+ID          Mô tả                           Phương pháp             Kỹ thuật                    Auto?
+----        -----                           -----------             --------                    -----
+OP_001      Đặt hàng thành công             System, E2E Testing     Equivalence Partitioning    Có
+OP_002      Áp dụng mã giảm giá hợp lệ      Black-box, Acceptance   Decision Table              Có
+OP_003      Thanh toán MoMo thành công      Integration, Security   Error Guessing              Không
+OP_004      Thanh toán COD                  System Testing          Equivalence Partitioning    Có
+OP_005      Xem lịch sử đơn hàng            Black-box, Integration  Equivalence Partitioning    Có
+OP_006      Hủy đơn hàng                    System Testing          Decision Table              Có
+OP_007      Gửi email xác nhận              Integration Testing     Error Guessing              Không
+
+4.2. VALIDATION TESTING (5 test cases)
+--------------------------------------
+
+ID          Mô tả                           Phương pháp             Kỹ thuật                    Auto?
+----        -----                           -----------             --------                    -----
+OP_VAL_001  Địa chỉ giao hàng để trống      Black-box               Equivalence Partitioning    Có
+OP_VAL_002  SĐT nhận hàng sai format        Black-box               Boundary Value Analysis     Có
+OP_VAL_003  Mã giảm giá không tồn tại       Black-box               Error Guessing              Có
+OP_VAL_004  Mã giảm giá hết hạn             Black-box               Decision Table              Có
+OP_VAL_005  Mã giảm giá đã sử dụng          Black-box               Decision Table              Có
+
+--------------------------------------------------------------------------------
+MODULE 5: ADMIN PANEL (Quản trị) - 12 Test Cases
+--------------------------------------------------------------------------------
+
+5.1. FUNCTIONAL TESTING (9 test cases)
+--------------------------------------
+
+ID          Mô tả                           Phương pháp             Kỹ thuật                    Auto?
+----        -----                           -----------             --------                    -----
+AP_001      Thêm sản phẩm mới               White-box, Integration  Equivalence Partitioning    Có
+AP_002      Sửa thông tin sản phẩm          Integration Testing     Decision Table              Có
+AP_003      Xóa sản phẩm                    System Testing          Boundary Value Analysis     Có
+AP_004      Quản lý user - block/unblock    Security Testing        Error Guessing              Có
+AP_005      Cập nhật trạng thái đơn hàng    Integration Testing     Decision Table              Có
+AP_006      Quản lý danh mục sản phẩm       Integration Testing     Equivalence Partitioning    Có
+AP_007      Quản lý mã giảm giá             Integration Testing     Decision Table              Có
+AP_008      Quản lý khuyến mãi (Sale)       Integration Testing     Boundary Value Analysis     Có
+AP_009      Phân quyền user (Permission)    Security Testing        Decision Table              Có
+
+5.2. SECURITY TESTING (3 test cases)
+------------------------------------
+
+ID          Mô tả                           Phương pháp             Kỹ thuật                    Auto?
+----        -----                           -----------             --------                    -----
+AP_SEC_001  Truy cập admin không có quyền   Security Testing        Error Guessing              Có
+AP_SEC_002  Token hết hạn                   Security Testing        Boundary Value Analysis     Có
+AP_SEC_003  CSRF protection                 Security Testing        Error Guessing              Có
+
+--------------------------------------------------------------------------------
+MODULE 6: REVIEW SYSTEM (Đánh giá & Bình luận) - 8 Test Cases
+--------------------------------------------------------------------------------
+
+6.1. FUNCTIONAL TESTING (4 test cases)
+--------------------------------------
+
+ID          Mô tả                           Phương pháp             Kỹ thuật                    Auto?
+----        -----                           -----------             --------                    -----
+RS_001      Thêm đánh giá sản phẩm          Black-box, Integration  Equivalence Partitioning    Có
+RS_002      Xem danh sách bình luận         Performance Testing     Error Guessing              Không
+RS_003      Xóa bình luận (admin/user)      Security Testing        Decision Table              Có
+RS_004      Chỉnh sửa bình luận             Integration Testing     Equivalence Partitioning    Có
+
+6.2. VALIDATION TESTING (4 test cases)
+--------------------------------------
+
+ID          Mô tả                           Phương pháp             Kỹ thuật                    Auto?
+----        -----                           -----------             --------                    -----
+RS_VAL_001  Comment chứa script (XSS)       Security Testing        Error Guessing              Có
+RS_VAL_002  Rating ngoài range (0 hoặc 6)   Black-box               Boundary Value Analysis     Có
+RS_VAL_003  Comment quá dài (>1000 ký tự)   Black-box               Boundary Value Analysis     Có
+RS_VAL_004  Comment để trống                Black-box               Equivalence Partitioning    Có
+
+--------------------------------------------------------------------------------
+MODULE 7: COUPON & SALE (Mã giảm giá & Khuyến mãi) - 4 Test Cases
+--------------------------------------------------------------------------------
+
+ID          Mô tả                           Phương pháp             Kỹ thuật                    Auto?
+----        -----                           -----------             --------                    -----
+CS_001      Áp dụng mã giảm giá hợp lệ      Black-box               Boundary Value Analysis     Có
+CS_002      Xác minh giá cuối sau giảm      Unit, White-box         Decision Table              Có
+CS_003      Hiển thị sản phẩm đang sale     Black-box               Equivalence Partitioning    Có
+CS_004      Tính giá sale đúng              Unit Testing            Boundary Value Analysis     Có
+
+--------------------------------------------------------------------------------
+MODULE 8: SEARCH & FILTER (Tìm kiếm & Lọc) - 6 Test Cases
+--------------------------------------------------------------------------------
+
+8.1. FUNCTIONAL TESTING (3 test cases)
+--------------------------------------
+
+ID          Mô tả                           Phương pháp             Kỹ thuật                    Auto?
+----        -----                           -----------             --------                    -----
+SF_001      Tìm kiếm sản phẩm theo tên      Black-box               Equivalence Partitioning    Có
+SF_002      Lọc theo nhiều tiêu chí         Black-box               Decision Table              Có
+SF_003      Sắp xếp sản phẩm                Black-box               Equivalence Partitioning    Có
+
+8.2. VALIDATION & SECURITY (3 test cases)
+-----------------------------------------
+
+ID          Mô tả                           Phương pháp             Kỹ thuật                    Auto?
+----        -----                           -----------             --------                    -----
+SF_VAL_001  Search với SQL injection        Security Testing        Error Guessing              Có
+SF_VAL_002  Search với ký tự đặc biệt       Black-box               Error Guessing              Có
+SF_VAL_003  Search keyword quá dài          Black-box               Boundary Value Analysis     Không
+
+--------------------------------------------------------------------------------
+MODULE 9: API TESTING (Kiểm thử API) - 9 Test Cases
+--------------------------------------------------------------------------------
+
+ID          Mô tả                           Phương pháp             Kỹ thuật                    Auto?
+----        -----                           -----------             --------                    -----
+API_001     GET /api/Product                Integration Testing     Equivalence Partitioning    Có
+API_002     POST /api/User (đăng ký)        Integration Testing     Decision Table              Có
+API_003     GET /api/Cart/:id_user          Integration Testing     Boundary Value Analysis     Có
+API_004     POST /api/Cart (thêm giỏ)       Integration Testing     Error Guessing              Có
+API_005     PUT /api/Cart (cập nhật)        Integration Testing     Decision Table              Có
+API_006     DELETE /api/Cart/:id/:item      Integration Testing     Error Guessing              Có
+API_007     POST /api/Cart/sync             Integration Testing     Decision Table              Có
+API_008     API Rate Limiting               Performance Testing     Boundary Value Analysis     Không
+API_009     API Authentication              Security Testing        Error Guessing              Có
+
+================================================================================
+                        PHẦN III: THỐNG KÊ
+================================================================================
+
+--------------------------------------------------------------------------------
+3.1. THỐNG KÊ THEO MODULE
+--------------------------------------------------------------------------------
+
+    Module                      Functional  Validation  Security    Tổng
+    ------                      ----------  ----------  --------    ----
+    1. User Management              5           6          0         11
+    2. Product Management           6           6          0         12
+    3. Shopping Cart                8           4          0         12
+    4. Order & Payment              7           5          0         12
+    5. Admin Panel                  9           0          3         12
+    6. Review System                4           4          0          8
+    7. Coupon & Sale                4           0          0          4
+    8. Search & Filter              3           3          0          6
+    9. API Testing                  9           0          0          9
+    ----------------------------------------------------------------
+    TỔNG CỘNG                      55          28          3         86
+
+--------------------------------------------------------------------------------
+3.2. THỐNG KÊ THEO PHƯƠNG PHÁP KIỂM THỬ
+--------------------------------------------------------------------------------
+
+    STT     Phương Pháp                 Số Test Cases       Tỷ lệ
+    ---     -----------                 -------------       -----
+    1       Black-box Testing                42             48.8%
+    2       Integration Testing              28             32.6%
+    3       Security Testing                 12             14.0%
+    4       System Testing                    8              9.3%
+    5       Unit Testing                      6              7.0%
+    6       White-box Testing                 5              5.8%
+    7       Performance Testing               3              3.5%
+    8       Acceptance Testing                2              2.3%
+    9       End-to-End Testing                2              2.3%
+
+    * Lưu ý: Một test case có thể áp dụng nhiều phương pháp
+
+--------------------------------------------------------------------------------
+3.3. THỐNG KÊ THEO KỸ THUẬT THIẾT KẾ
+--------------------------------------------------------------------------------
+
+    STT     Kỹ Thuật                    Số Test Cases       Tỷ lệ       Mô tả
+    ---     --------                    -------------       -----       -----
+    1       Equivalence Partitioning         32             37.2%       Chia input thành lớp tương đương
+    2       Boundary Value Analysis          28             32.6%       Kiểm tra giá trị biên
+    3       Error Guessing                   22             25.6%       Đoán lỗi dựa kinh nghiệm
+    4       Decision Table                   18             20.9%       Bảng quyết định logic phức tạp
+
+--------------------------------------------------------------------------------
+3.4. THỐNG KÊ AUTO TEST
+--------------------------------------------------------------------------------
+
+    Loại                    Số lượng        Tỷ lệ
+    ----                    --------        -----
+    Cần Auto Test              74           86.0%
+    Không bắt buộc             12           14.0%
+    --------------------------------
+    TỔNG                       86          100.0%
+
+================================================================================
+                        PHẦN IV: ĐỀ XUẤT
+================================================================================
+
+--------------------------------------------------------------------------------
+4.1. MỨC ĐỘ ƯU TIÊN TEST
+--------------------------------------------------------------------------------
+
+    Mức độ          Module                          Lý do
+    ------          ------                          -----
+    CAO             Shopping Cart                   Liên quan tiền, dữ liệu quan trọng
+    CAO             Order & Payment                 Liên quan tiền, thanh toán
+    CAO             User Management (Auth)          Bảo mật, session
+    TRUNG BÌNH      Admin Panel                     Quản trị hệ thống
+    TRUNG BÌNH      Product Management              Core feature
+    THẤP            Review System                   Tính năng phụ
+    THẤP            Search & Filter                 Tính năng phụ
+
+--------------------------------------------------------------------------------
+4.2. CÔNG CỤ ĐỀ XUẤT
+--------------------------------------------------------------------------------
+
+    Loại Test               Công cụ                     Lý do chọn
+    ---------               -------                     ----------
+    Unit Test (Frontend)    Jest + React Testing Lib    Tích hợp sẵn với React
+    Unit Test (Backend)     Jest + Supertest            Test API endpoints
+    Integration Test        Jest + Supertest            Test kết nối DB/API
+    E2E Test                Cypress hoặc Playwright     Test flow người dùng
+    API Test                Postman/Newman              Test manual + automation
+    Performance Test        Artillery hoặc k6           Load testing
+    Security Test           OWASP ZAP                   Scan vulnerabilities
+
+
+
+================================================================================
+                           PHẦN V: KẾT LUẬN
+================================================================================
+
+TỔNG SỐ TEST CASES: 86
+
+Phân loại theo loại test:
+    - Functional Testing:   55 (64%)
+    - Validation Testing:   28 (33%)
+    - Security Testing:      3 (3%)
+
+Kỹ thuật sử dụng chính:
+    1. Equivalence Partitioning (37.2%)
+    2. Boundary Value Analysis (32.6%)
+    3. Error Guessing (25.6%)
+    4. Decision Table (20.9%)
+
+Đề xuất:
+    - Ưu tiên viết auto test cho 74 test cases quan trọng
+    - Tập trung vào module Cart và Order (liên quan tiền)
+    - Sử dụng Jest + Supertest cho backend, Jest + RTL cho frontend
+
+================================================================================
+                              KẾT THÚC TÀI LIỆU
+================================================================================
+
+Tài liệu được tạo: 10/12/2025
+Người tạo: Team KTPM-SGU
+Version: 1.0
