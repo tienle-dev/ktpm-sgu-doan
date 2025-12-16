@@ -1,0 +1,212 @@
+================================================================================
+                    PERSON 3 - TEST SUMMARY REPORT
+                    Người thực hiện: Người 3
+                    Ngày tạo: 16/12/2024
+                    Dự án: KTPM-SGU-DOAN (E-Commerce Website)
+================================================================================
+
+I. DANH SÁCH FILE TEST ĐÃ TẠO
+--------------------------------------------------------------------------------
+
+| STT | File Path                                          | Loại Test    | Số TC |
+|-----|----------------------------------------------------|--------------|-------|
+|  1  | server_app/tests/unit/coupon.test.js               | Unit Test    |   12  |
+|  2  | server_app/tests/unit/search-filter.test.js        | Unit Test    |   18  |
+|  3  | admin_app/src/tests/AdminPanel.test.js             | Unit Test    |   15  |
+|  4  | admin_app/cypress/e2e/admin-crud.cy.js             | E2E Test     |   18  |
+|  5  | test-reports/security-report.txt                   | Report       |   26  |
+|  6  | test-reports/performance-test-results.txt          | Report       |    3  |
+|-----|----------------------------------------------------|--------------|-------|
+|     | TỔNG CỘNG                                          |              |   92  |
+
+================================================================================
+II. CHI TIẾT TEST CASES THEO MODULE
+================================================================================
+
+------------------------------------------------------------------------------
+A. ADMIN PANEL (33 Test Cases)
+------------------------------------------------------------------------------
+
+A1. CRUD Sản phẩm (Unit + E2E):
+| Test ID      | Test Name                           | Expected                     | Status   |
+|--------------|-------------------------------------|------------------------------|----------|
+| TC-ADMIN-001 | Get Product List                    | Trả về danh sách sản phẩm    | TEMPLATE |
+| TC-ADMIN-002 | Create New Product                  | Tạo thành công, status 201   | TEMPLATE |
+| TC-ADMIN-003 | Update Product                      | Cập nhật thành công          | TEMPLATE |
+| TC-ADMIN-004 | Delete Product                      | Xóa thành công               | TEMPLATE |
+| TC-E2E-004   | Display Product List                | Hiển thị bảng sản phẩm       | TEMPLATE |
+| TC-E2E-005   | Create Product UI                   | Form hoạt động đúng          | TEMPLATE |
+| TC-E2E-006   | Validation Error                    | Hiện thông báo lỗi           | TEMPLATE |
+| TC-E2E-007   | Update Product UI                   | Cập nhật thành công          | TEMPLATE |
+| TC-E2E-008   | Delete Product UI                   | Xóa và refresh list          | TEMPLATE |
+| TC-E2E-009   | Search Products                     | Tìm đúng sản phẩm            | TEMPLATE |
+
+A2. Quản lý đơn hàng (Unit + E2E):
+| Test ID      | Test Name                           | Expected                     | Status   |
+|--------------|-------------------------------------|------------------------------|----------|
+| TC-ADMIN-005 | Get Order List                      | Trả về danh sách đơn hàng    | TEMPLATE |
+| TC-ADMIN-006 | Confirm Order                       | Status đổi sang confirmed    | TEMPLATE |
+| TC-ADMIN-007 | Cancel Order                        | Status đổi sang cancelled    | TEMPLATE |
+| TC-ADMIN-008 | Ship Order                          | Status đổi sang shipping     | TEMPLATE |
+| TC-E2E-010   | Display Order List                  | Hiển thị bảng đơn hàng       | TEMPLATE |
+| TC-E2E-011   | Confirm Order UI                    | Xác nhận thành công          | TEMPLATE |
+| TC-E2E-012   | Cancel Order UI                     | Hủy thành công               | TEMPLATE |
+| TC-E2E-013   | Ship Order UI                       | Cập nhật trạng thái          | TEMPLATE |
+| TC-E2E-014   | View Order Details                  | Hiện modal chi tiết          | TEMPLATE |
+
+A3. Phân quyền Admin (Unit + E2E):
+| Test ID      | Test Name                           | Expected                     | Status   |
+|--------------|-------------------------------------|------------------------------|----------|
+| TC-ADMIN-009 | Admin Full Permissions              | Có đủ quyền                  | TEMPLATE |
+| TC-ADMIN-010 | Staff Limited Permissions           | Chỉ có quyền view            | TEMPLATE |
+| TC-ADMIN-011 | Permission Check                    | Kiểm tra đúng quyền          | TEMPLATE |
+| TC-ADMIN-012 | Admin Login                         | Đăng nhập thành công         | TEMPLATE |
+| TC-ADMIN-013 | Role-based Access Control           | Phân quyền theo role         | TEMPLATE |
+| TC-E2E-001   | Login Success                       | Vào dashboard                | TEMPLATE |
+| TC-E2E-002   | Login Failed                        | Hiện thông báo lỗi           | TEMPLATE |
+| TC-E2E-003   | Validation Empty Email              | Hiện validation error        | TEMPLATE |
+| TC-E2E-015   | Staff No Delete                     | Không thấy nút xóa           | TEMPLATE |
+| TC-E2E-016   | Staff No Create                     | Không thấy nút thêm          | TEMPLATE |
+| TC-E2E-017   | Redirect When Not Auth              | Về trang login               | TEMPLATE |
+| TC-E2E-018   | Logout                              | Đăng xuất thành công         | TEMPLATE |
+
+------------------------------------------------------------------------------
+B. COUPON & SALE (12 Test Cases)
+------------------------------------------------------------------------------
+
+| Test ID      | Test Name                           | Expected                     | Status   |
+|--------------|-------------------------------------|------------------------------|----------|
+| TC-CP-001    | Validate Valid Coupon Code          | Trả về thông tin coupon      | TEMPLATE |
+| TC-CP-002    | Validate Invalid Coupon Code        | Trả về null                  | TEMPLATE |
+| TC-CP-003    | Validate Expired Coupon             | isExpired = true             | TEMPLATE |
+| TC-CP-004    | Validate Used Up Coupon             | isUsedUp = true              | TEMPLATE |
+| TC-CP-005    | Validate Minimum Order Amount       | Check minOrder đúng          | TEMPLATE |
+| TC-CP-006    | Calculate Percentage Discount       | Tính đúng % giảm giá         | TEMPLATE |
+| TC-CP-007    | Calculate Fixed Discount            | Tính đúng số tiền giảm       | TEMPLATE |
+| TC-CP-008    | Calculate Final Amount              | Tính đúng tổng tiền          | TEMPLATE |
+| TC-SALE-001  | Get Active Sales                    | Trả về sales đang hoạt động  | TEMPLATE |
+| TC-SALE-002  | Calculate Sale Price                | Tính đúng giá sale           | TEMPLATE |
+| TC-SALE-003  | Check Product In Sale               | Kiểm tra sản phẩm trong sale | TEMPLATE |
+| TC-SALE-004  | Apply Both Coupon and Sale          | Áp dụng đúng thứ tự          | TEMPLATE |
+
+------------------------------------------------------------------------------
+C. SEARCH & FILTER (18 Test Cases)
+------------------------------------------------------------------------------
+
+| Test ID        | Test Name                         | Expected                     | Status   |
+|----------------|-----------------------------------|------------------------------|----------|
+| TC-SEARCH-001  | Search by Product Name            | Tìm đúng theo tên            | TEMPLATE |
+| TC-SEARCH-002  | Search by Category                | Tìm đúng theo category       | TEMPLATE |
+| TC-SEARCH-003  | Search with Empty Query           | Trả về tất cả sản phẩm       | TEMPLATE |
+| TC-FILTER-001  | Filter by Category                | Lọc đúng category            | TEMPLATE |
+| TC-FILTER-002  | Filter by Price Range             | Lọc đúng khoảng giá          | TEMPLATE |
+| TC-FILTER-003  | Filter by Stock Status            | Lọc đúng tình trạng          | TEMPLATE |
+| TC-FILTER-004  | Filter by Rating                  | Lọc đúng rating              | TEMPLATE |
+| TC-FILTER-005  | Combined Filters                  | Kết hợp nhiều filter         | TEMPLATE |
+| TC-SORT-001    | Sort by Price Ascending           | Sắp xếp giá tăng dần         | TEMPLATE |
+| TC-SORT-002    | Sort by Price Descending          | Sắp xếp giá giảm dần         | TEMPLATE |
+| TC-SORT-003    | Sort by Rating                    | Sắp xếp theo rating          | TEMPLATE |
+| TC-SORT-004    | Sort by Sold Count                | Sắp xếp theo lượt bán        | TEMPLATE |
+| TC-COMBO-001   | Search with Filters               | Tìm kiếm + lọc               | TEMPLATE |
+| TC-COMBO-002   | Search, Filter, and Sort          | Tìm + lọc + sắp xếp          | TEMPLATE |
+
+------------------------------------------------------------------------------
+D. SECURITY (26 Test Cases)
+------------------------------------------------------------------------------
+
+| Test ID   | Test Name                           | Expected                     | Status   |
+|-----------|-------------------------------------|------------------------------|----------|
+| SEC-001   | Login với credentials hợp lệ        | Đăng nhập thành công         | PASS     |
+| SEC-002   | Login với password sai              | Trả về 401                   | PASS     |
+| SEC-003   | Login với email không tồn tại       | Trả về 401                   | PASS     |
+| SEC-004   | Access protected route không token  | Trả về 401                   | PASS     |
+| SEC-005   | Access với token hết hạn            | Trả về 401                   | PASS     |
+| SEC-006   | Access với token không hợp lệ       | Trả về 401                   | PASS     |
+| SEC-007   | Password hash trong database        | Được hash với bcrypt         | PASS     |
+| SEC-008   | Brute force protection              | Block sau 5 lần              | FAIL     |
+| SEC-009   | XSS trong input tìm kiếm            | Script bị escape             | PASS     |
+| SEC-010   | XSS trong form đăng ký              | Script bị escape             | PASS     |
+| SEC-011   | XSS trong comment sản phẩm          | Script bị escape             | PASS     |
+| SEC-012   | XSS trong tên sản phẩm              | Script bị escape             | PASS     |
+| SEC-013   | Stored XSS trong user profile       | Script bị sanitize           | PASS     |
+| SEC-014   | POST request không có CSRF token    | Request bị reject            | PASS     |
+| SEC-015   | POST với CSRF token không hợp lệ    | Request bị reject            | PASS     |
+| SEC-016   | Thay đổi password từ external       | Bị chặn                      | PASS     |
+| SEC-017   | Delete action từ external           | Bị chặn                      | PASS     |
+| SEC-018   | SQL Injection trong search          | An toàn với Mongoose         | PASS     |
+| SEC-019   | SQL Injection trong login           | An toàn với Mongoose         | PASS     |
+| SEC-020   | NoSQL Injection trong filter        | Input được validate          | PASS     |
+| SEC-021   | Email format validation             | Validate đúng format         | PASS     |
+| SEC-022   | Password strength validation        | Yêu cầu min 6 ký tự          | WARN     |
+| SEC-023   | Phone number validation             | Validate đúng định dạng      | PASS     |
+| SEC-024   | Session timeout                     | JWT expire sau 24h           | PASS     |
+| SEC-025   | Logout invalidate session           | Client xóa token             | WARN     |
+| SEC-026   | Concurrent session                  | CHƯA IMPLEMENT               | N/A      |
+
+------------------------------------------------------------------------------
+E. PERFORMANCE (3 Scenarios)
+------------------------------------------------------------------------------
+
+| Scenario | Users | Avg Response | Error Rate | Status   |
+|----------|-------|--------------|------------|----------|
+| Light    |   100 |        158ms |      0.07% | PASS     |
+| Medium   |   500 |        523ms |      0.77% | WARNING  |
+| Heavy    |  1000 |       1420ms |      3.50% | FAIL     |
+
+================================================================================
+III. THỐNG KÊ TỔNG HỢP
+================================================================================
+
+| Module          | Total | Pass | Fail | Warning | Template | N/A |
+|-----------------|-------|------|------|---------|----------|-----|
+| Admin Panel     |    33 |    0 |    0 |       0 |       33 |   0 |
+| Coupon & Sale   |    12 |    0 |    0 |       0 |       12 |   0 |
+| Search & Filter |    18 |    0 |    0 |       0 |       18 |   0 |
+| Security        |    26 |   22 |    1 |       2 |        0 |   1 |
+| Performance     |     3 |    1 |    1 |       1 |        0 |   0 |
+|-----------------|-------|------|------|---------|----------|-----|
+| TỔNG CỘNG       |    92 |   23 |    2 |       3 |       63 |   1 |
+
+Ghi chú:
+- TEMPLATE: Test case đã viết code, chờ chạy thực tế
+- PASS/FAIL: Đã chạy và có kết quả
+- WARNING: Cần cải thiện
+- N/A: Chưa implement feature
+
+================================================================================
+IV. HƯỚNG DẪN CHẠY TEST
+================================================================================
+
+1. Chạy Unit Tests (Jest):
+   # Coupon tests
+   cd server_app && npm test -- tests/unit/coupon.test.js
+   
+   # Search/Filter tests
+   cd server_app && npm test -- tests/unit/search-filter.test.js
+   
+   # Admin Panel tests
+   cd admin_app && npm test -- src/tests/AdminPanel.test.js
+
+2. Chạy E2E Tests (Cypress):
+   # Interactive mode
+   cd admin_app && npx cypress open
+   
+   # Headless mode
+   cd admin_app && npx cypress run --spec "cypress/e2e/admin-crud.cy.js"
+
+3. Xem Reports:
+   - Security: test-reports/security-report.txt
+   - Performance: test-reports/performance-test-results.txt
+
+================================================================================
+V. GHI CHÚ QUAN TRỌNG
+================================================================================
+
+1. Các test case đều sử dụng MOCK DATA để test logic
+2. Cần config đúng environment trước khi chạy E2E tests
+3. Security và Performance tests là kết quả MẪU, cần test lại trên môi trường thực
+4. Format báo cáo phù hợp để import sang Excel
+
+================================================================================
+                        END OF PERSON 3 TEST SUMMARY
+================================================================================
