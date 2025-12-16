@@ -9,7 +9,8 @@ import Search from '../Shared/Search'
 
 import io from "socket.io-client";
 
-const socket = io('https://ktpm-sgu-doan-production.up.railway.app', {
+const API_URL = process.env.REACT_APP_API_URL || process.env.LOCALHOST_URL;
+const socket = io(API_URL, {
     transports: ['websocket'], jsonp: false
 });
 socket.connect();

@@ -7,7 +7,8 @@ import orderAPI from '../Api/orderAPI';
 import Pagination from '../Shared/Pagination'
 import Search from '../Shared/Search'
 
-const socket = io('https://ktpm-sgu-doan-production.up.railway.app', {
+const API_URL = process.env.REACT_APP_API_URL || process.env.LOCALHOST_URL;
+const socket = io(API_URL, {
     transports: ['websocket'], jsonp: false
 });
 socket.connect();

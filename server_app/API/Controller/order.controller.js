@@ -5,6 +5,7 @@ const crypto = require('crypto')
 const Order = require('../../Models/order')
 const Detail_Order = require('../../Models/detail_order')
 const Note = require('../../Models/note')
+const API_URL = process.env.REACT_APP_API_URL || process.env.LOCALHOST_URL;
 
 // Đặt hàng
 module.exports.post_order = async (req, res) => {
@@ -125,7 +126,7 @@ module.exports.create_momo_payment = async (req, res) => {
         const accessKey = 'F8BBA842ECF85'
         const secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz'
         const partnerCode = 'MOMO'
-        const redirectUrl = 'http://localhost:3000/momo'
+        const redirectUrl = `${API_URL}/momo`
         const ipnUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b' // URL test
         const requestType = 'payWithMethod'
         const amount = total.toString()

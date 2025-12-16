@@ -196,15 +196,15 @@ function AllProducts(props) {
                                         Tất Cả
                                     </button>
                                     <button
-                                        onClick={() => handleGenderFilter('male')}
+                                        onClick={() => handleGenderFilter('Male')}
                                         onMouseEnter={(e) => {
-                                            if (selectedGender !== 'male') {
+                                            if (selectedGender !== 'Male') {
                                                 e.target.style.backgroundColor = '#e3f2fd';
                                                 e.target.style.transform = 'translateY(-2px)';
                                             }
                                         }}
                                         onMouseLeave={(e) => {
-                                            if (selectedGender !== 'male') {
+                                            if (selectedGender !== 'Male') {
                                                 e.target.style.backgroundColor = '#fff';
                                                 e.target.style.transform = 'translateY(0)';
                                             }
@@ -212,14 +212,14 @@ function AllProducts(props) {
                                         style={{
                                             padding: '10px 24px',
                                             margin: '0',
-                                            border: selectedGender === 'male' ? 'none' : '2px solid #ddd',
+                                            border: selectedGender === 'Male' ? 'none' : '2px solid #ddd',
                                             borderRadius: '25px',
                                             cursor: 'pointer',
                                             fontSize: '14px',
                                             fontWeight: '600',
-                                            backgroundColor: selectedGender === 'male' ? '#3498db' : '#fff',
-                                            color: selectedGender === 'male' ? '#fff' : '#555',
-                                            boxShadow: selectedGender === 'male' ? '0 4px 12px rgba(52,152,219,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
+                                            backgroundColor: selectedGender === 'Male' ? '#3498db' : '#fff',
+                                            color: selectedGender === 'Male' ? '#fff' : '#555',
+                                            boxShadow: selectedGender === 'Male' ? '0 4px 12px rgba(52,152,219,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
                                             transition: 'all 0.3s ease',
                                             position: 'relative',
                                             zIndex: 1,
@@ -229,15 +229,15 @@ function AllProducts(props) {
                                         Nam
                                     </button>
                                     <button
-                                        onClick={() => handleGenderFilter('female')}
+                                        onClick={() => handleGenderFilter('Female')}
                                         onMouseEnter={(e) => {
-                                            if (selectedGender !== 'female') {
+                                            if (selectedGender !== 'Female') {
                                                 e.target.style.backgroundColor = '#fce4ec';
                                                 e.target.style.transform = 'translateY(-2px)';
                                             }
                                         }}
                                         onMouseLeave={(e) => {
-                                            if (selectedGender !== 'female') {
+                                            if (selectedGender !== 'Female') {
                                                 e.target.style.backgroundColor = '#fff';
                                                 e.target.style.transform = 'translateY(0)';
                                             }
@@ -245,14 +245,14 @@ function AllProducts(props) {
                                         style={{
                                             padding: '10px 24px',
                                             margin: '0',
-                                            border: selectedGender === 'female' ? 'none' : '2px solid #ddd',
+                                            border: selectedGender === 'Female' ? 'none' : '2px solid #ddd',
                                             borderRadius: '25px',
                                             cursor: 'pointer',
                                             fontSize: '14px',
                                             fontWeight: '600',
-                                            backgroundColor: selectedGender === 'female' ? '#e91e63' : '#fff',
-                                            color: selectedGender === 'female' ? '#fff' : '#555',
-                                            boxShadow: selectedGender === 'female' ? '0 4px 12px rgba(233,30,99,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
+                                            backgroundColor: selectedGender === 'Female' ? '#e91e63' : '#fff',
+                                            color: selectedGender === 'Female' ? '#fff' : '#555',
+                                            boxShadow: selectedGender === 'Female' ? '0 4px 12px rgba(233,30,99,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
                                             transition: 'all 0.3s ease',
                                             position: 'relative',
                                             zIndex: 1,
@@ -262,15 +262,15 @@ function AllProducts(props) {
                                         Nữ
                                     </button>
                                     <button
-                                        onClick={() => handleGenderFilter('unisex')}
+                                        onClick={() => handleGenderFilter('Unisex')}
                                         onMouseEnter={(e) => {
-                                            if (selectedGender !== 'unisex') {
+                                            if (selectedGender !== 'Unisex') {
                                                 e.target.style.backgroundColor = '#f3e5f5';
                                                 e.target.style.transform = 'translateY(-2px)';
                                             }
                                         }}
                                         onMouseLeave={(e) => {
-                                            if (selectedGender !== 'unisex') {
+                                            if (selectedGender !== 'Unisex') {
                                                 e.target.style.backgroundColor = '#fff';
                                                 e.target.style.transform = 'translateY(0)';
                                             }
@@ -278,14 +278,14 @@ function AllProducts(props) {
                                         style={{
                                             padding: '10px 24px',
                                             margin: '0',
-                                            border: selectedGender === 'unisex' ? 'none' : '2px solid #ddd',
+                                            border: selectedGender === 'Unisex' ? 'none' : '2px solid #ddd',
                                             borderRadius: '25px',
                                             cursor: 'pointer',
                                             fontSize: '14px',
                                             fontWeight: '600',
-                                            backgroundColor: selectedGender === 'unisex' ? '#9c27b0' : '#fff',
-                                            color: selectedGender === 'unisex' ? '#fff' : '#555',
-                                            boxShadow: selectedGender === 'unisex' ? '0 4px 12px rgba(156,39,176,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
+                                            backgroundColor: selectedGender === 'Unisex' ? '#9c27b0' : '#fff',
+                                            color: selectedGender === 'Unisex' ? '#fff' : '#555',
+                                            boxShadow: selectedGender === 'Unisex' ? '0 4px 12px rgba(156,39,176,0.3)' : '0 2px 4px rgba(0,0,0,0.08)',
                                             transition: 'all 0.3s ease',
                                             position: 'relative',
                                             zIndex: 1,

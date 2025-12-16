@@ -1,0 +1,434 @@
+================================================================================
+                    DỮ LIỆU KIỂM THỬ - DỰ ÁN KTPM-SGU-DOAN
+                         Website Bán Hàng Thời Trang
+================================================================================
+
+Ngày tạo:       12/12/2025
+Người tạo:      Team KTPM-SGU
+Version:        1.0
+Branch:         test-cd
+
+================================================================================
+                           1. THÔNG TIN CHUNG
+================================================================================
+
+1.1. Mục đích
+    Tài liệu này cung cấp dữ liệu mẫu để sử dụng trong quá trình kiểm thử
+    các module của hệ thống E-commerce.
+
+1.2. Phạm vi
+    - User accounts (khách hàng và admin)
+    - Product catalog
+    - Shopping cart items
+    - Orders & Payments
+    - Coupons & Sales
+    - Reviews & Comments
+
+1.3. Cách sử dụng
+    - Sử dụng seed.js để import dữ liệu vào MongoDB
+    - Có thể tạo thêm data qua Admin Panel hoặc API
+    - Reset data trước mỗi round test
+
+================================================================================
+                        2. USER ACCOUNTS (Tài khoản)
+================================================================================
+
+2.1. ADMIN ACCOUNTS
+---------------------
+
+    Username        Password        Email                   Permission      Fullname
+    --------        --------        -----                   ----------      --------
+    admin           admin123        admin@test.com          ADMIN           Admin User
+    manager         manager123      manager@test.com        MANAGER         Manager User
+    staff           staff123        staff@test.com          STAFF           Staff User
+
+2.2. CUSTOMER ACCOUNTS - VALID DATA
+-------------------------------------
+
+    Username        Password        Email                   Phone           Fullname            Gender
+    --------        --------        -----                   -----           --------            ------
+    customer1       Pass123!        customer1@test.com      0901234567      Nguyễn Văn A        Male
+    customer2       Pass123!        customer2@test.com      0902345678      Trần Thị B          Female
+    customer3       Pass123!        customer3@test.com      0903456789      Lê Văn C            Male
+    customer4       Pass123!        customer4@test.com      0904567890      Phạm Thị D          Female
+    customer5       Pass123!        customer5@test.com      0905678901      Hoàng Văn E         Male
+
+2.3. INVALID TEST DATA - User Registration/Login
+--------------------------------------------------
+
+    Test Case               Username        Password        Email                   Expected Result
+    ---------               --------        --------        -----                   ---------------
+    Email invalid           testuser        Pass123!        invalidemail            Email format error
+    Email missing @         testuser        Pass123!        test.com                Email format error
+    Password too short      testuser        123             test@test.com           Password min 6 chars
+    Password too long       testuser        Pass123!abc...  test@test.com           Password max 50 chars
+    Empty username          [empty]         Pass123!        test@test.com           Username required
+    Empty password          testuser        [empty]         test@test.com           Password required
+    Empty email             testuser        Pass123!        [empty]                 Email required
+    Duplicate email         testuser        Pass123!        customer1@test.com      Email already exists
+    SQL Injection           admin'--        Pass123!        test@test.com           Blocked/Sanitized
+    XSS Script              <script>alert   Pass123!        test@test.com           Blocked/Sanitized
+
+2.4. User Profile Data
+-----------------------
+
+    Field               Valid Data              Invalid Data            Boundary
+    -----               ----------              ------------            --------
+    Fullname            Nguyễn Văn A            [empty]                 Min: 2, Max: 100
+    Phone               0901234567              123                     10 digits
+    Email               test@email.com          test@                   Valid email format
+    Gender              Male/Female             Other                   Male, Female
+    Address             123 Nguyễn Huệ, Q1      [empty]                 Min: 10, Max: 200
+
+================================================================================
+                        3. PRODUCT DATA (Sản phẩm)
+================================================================================
+
+3.1. VALID PRODUCT DATA
+------------------------
+
+    ID      Name                    Category    Price       Stock   Gender  Size            Image
+    --      ----                    --------    -----       -----   ------  ----            -----
+    P001    Áo Thun Nam Basic       Áo          250000      100     Male    S,M,L,XL        /img/p001.jpg
+    P002    Quần Jean Nữ Skinny     Quần        450000      50      Female  28,29,30,31     /img/p002.jpg
+    P003    Váy Dạ Hội Sang Trọng   Váy         890000      30      Female  S,M,L           /img/p003.jpg
+    P004    Áo Khoác Da Nam         Áo Khoác    1200000     20      Male    M,L,XL,XXL      /img/p004.jpg
+    P005    Giày Thể Thao Unisex    Giày        750000      80      Both    38,39,40,41,42  /img/p005.jpg
+    P006    Túi Xách Nữ Da Thật     Phụ Kiện    650000      40      Female  One Size        /img/p006.jpg
+    P007    Mũ Lưỡi Trai Nam        Phụ Kiện    150000      200     Male    One Size        /img/p007.jpg
+    P008    Đầm Công Sở Nữ          Váy         580000      60      Female  S,M,L,XL        /img/p008.jpg
+    P009    Quần Short Nam           Quần        280000      90      Male    28,29,30,31,32  /img/p009.jpg
+    P010    Áo Sơ Mi Nữ Trắng       Áo          320000      70      Female  S,M,L           /img/p010.jpg
+
+3.2. PRODUCT SALE (Khuyến mãi)
+-------------------------------
+
+    Product ID      Original Price      Sale %      Sale Price      Start Date      End Date
+    ----------      --------------      ------      ----------      ----------      --------
+    P001            250000              20%         200000          01/12/2025      31/12/2025
+    P003            890000              30%         623000          15/12/2025      25/12/2025
+    P005            750000              15%         637500          10/12/2025      20/12/2025
+
+3.3. INVALID PRODUCT DATA (For Admin Testing)
+----------------------------------------------
+
+    Test Case               Name                Price       Stock       Image           Expected
+    ---------               ----                -----       -----       -----           --------
+    Empty name              [empty]             100000      10          valid.jpg       Name required
+    Negative price          Valid Name          -100000     10          valid.jpg       Price > 0
+    Zero price              Valid Name          0           10          valid.jpg       Price > 0
+    Price too large         Valid Name          999999999   10          valid.jpg       Price max limit
+    Negative stock          Valid Name          100000      -10         valid.jpg       Stock >= 0
+    Invalid image format    Valid Name          100000      10          file.exe        Only jpg/png/webp
+    Large image size        Valid Name          100000      10          10mb.jpg        Max 5MB
+
+3.4. Product Filters & Search
+-------------------------------
+
+    Test Type           Input                   Expected Result
+    ---------           -----                   ---------------
+    Search by name      "Áo"                    P001, P004, P008, P010
+    Search by name      "Jean"                  P002
+    Filter by gender    Male                    P001, P004, P007, P009
+    Filter by gender    Female                  P002, P003, P006, P008, P010
+    Filter by category  Áo                      P001, P010
+    Filter by category  Quần                    P002, P009
+    Price range         100000-500000           P001, P002, P007, P008, P009, P010
+    Price range         500000-1000000          P003, P005, P006
+    SQL Injection       "' OR '1'='1"           Blocked/Empty
+    XSS                 "<script>alert()</>"    Blocked/Empty
+
+================================================================================
+                        4. SHOPPING CART DATA (Giỏ hàng)
+================================================================================
+
+4.1. VALID CART ITEMS
+----------------------
+
+    User ID         Product ID      Quantity    Size    Unit Price      Total
+    -------         ----------      --------    ----    ----------      -----
+    customer1       P001            2           M       250000          500000
+    customer1       P005            1           40      750000          750000
+    customer2       P003            1           M       890000          890000
+    customer2       P006            2           -       650000          1300000
+    customer3       P002            1           29      450000          450000
+
+4.2. INVALID CART DATA
+-----------------------
+
+    Test Case                   Product     Quantity    Size        Expected Result
+    ---------                   -------     --------    ----        ---------------
+    Quantity zero               P001        0           M           Quantity must be > 0
+    Quantity negative           P001        -5          M           Quantity must be > 0
+    Quantity > stock            P004        100         M           Max stock is 20
+    Size not selected           P001        1           [empty]     Size required
+    Invalid size                P001        1           XXXL        Invalid size
+    Product out of stock        P011        1           M           Out of stock
+
+4.3. Cart Calculation Test Data
+---------------------------------
+
+    Scenario                    Items                       Subtotal    Discount    Total
+    --------                    -----                       --------    --------    -----
+    Simple cart                 1x P001 (M)                 250000      0           250000
+    Multiple items              2x P001 + 1x P005           1250000     0           1250000
+    With 10% coupon             2x P001                     500000      50000       450000
+    With 20% sale               1x P001 (sale)              250000      50000       200000
+    Sale + Coupon               1x P001 (20% sale + 10%)    200000      20000       180000
+
+================================================================================
+                        5. ORDER & PAYMENT DATA (Đơn hàng)
+================================================================================
+
+5.1. VALID ORDER DATA
+----------------------
+
+    Order ID    User            Items           Total       Payment     Status      Date
+    --------    ----            -----           -----       -------     ------      ----
+    ORD001      customer1       2 items         1250000     MoMo        Pending     10/12/2025
+    ORD002      customer2       1 item          890000      COD         Shipped     11/12/2025
+    ORD003      customer3       3 items         1680000     MoMo        Delivered   09/12/2025
+    ORD004      customer1       1 item          200000      COD         Cancelled   12/12/2025
+
+5.2. Shipping Information
+--------------------------
+
+    Field               Valid Data                          Invalid Data
+    -----               ----------                          ------------
+    Fullname            Nguyễn Văn A                        [empty]
+    Phone               0901234567                          123
+    Address             123 Nguyễn Huệ, Q1, TP.HCM         [empty]
+    City                Hồ Chí Minh                         [empty]
+    District            Quận 1                              [empty]
+    Ward                Phường Bến Nghé                     [empty]
+    Note                Giao giờ hành chính                 [optional]
+
+5.3. Payment Test Data
+-----------------------
+
+    A. MoMo Test Environment (Sandbox)
+    -----------------------------------
+    Phone Number:       0909000000
+    Name:               NGUYEN VAN A
+    OTP Code:           123456
+    Test Amount:        10000 - 50000000 VND
+    
+    MoMo Result Codes:
+        0       = Giao dịch thành công
+        9000    = Giao dịch đã được xác nhận thành công nhưng chưa hoàn thành
+        1006    = User đã từ chối xác nhận thanh toán
+        1001    = Giao dịch thất bại
+        1002    = Giao dịch bị từ chối do sai thông tin
+    
+    B. COD (Cash on Delivery)
+    -------------------------
+    Payment Method:     Tiền mặt khi nhận hàng
+    No credentials needed
+
+5.4. Order Status Flow
+-----------------------
+
+    Current Status      Action              Next Status         Can Cancel?
+    --------------      ------              -----------         -----------
+    Pending             Confirm             Confirmed           Yes
+    Confirmed           Ship                Shipping            No
+    Shipping            Deliver             Delivered           No
+    Delivered           -                   Delivered           No
+    Pending             Cancel              Cancelled           Yes
+
+================================================================================
+                        6. COUPON DATA (Mã giảm giá)
+================================================================================
+
+6.1. VALID COUPONS
+-------------------
+
+    Code            Discount    Min Order   Max Uses    Used    Start Date      End Date        Status
+    ----            --------    ---------   --------    ----    ----------      --------        ------
+    WELCOME10       10%         0           100         15      01/12/2025      31/12/2025      Active
+    SALE20          20%         500000      50          8       10/12/2025      20/12/2025      Active
+    VIP30           30%         1000000     20          3       15/12/2025      25/12/2025      Active
+    EXPIRED50       50%         0           100         0       01/11/2025      30/11/2025      Expired
+    USED100         100%        0           1           1       01/12/2025      31/12/2025      Used Up
+
+6.2. INVALID COUPON TEST DATA
+------------------------------
+
+    Test Case               Code            Expected Result
+    ---------               ----            ---------------
+    Non-existent code       INVALID123      Coupon not found
+    Expired code            EXPIRED50       Coupon expired
+    Used up code            USED100         Coupon limit reached
+    Order below minimum     SALE20 (100k)   Min order 500k required
+    Already used by user    WELCOME10       Already used this coupon
+    Empty code              [empty]         Coupon code required
+
+6.3. Coupon Calculation
+------------------------
+
+    Order Total     Coupon      Discount    Final Total
+    -----------     ------      --------    -----------
+    500000          WELCOME10   50000       450000
+    600000          SALE20      120000      480000
+    1200000         VIP30       360000      840000
+    300000          SALE20      0           300000 (below min)
+
+================================================================================
+                        7. REVIEW & COMMENT DATA (Đánh giá)
+================================================================================
+
+7.1. VALID REVIEWS
+-------------------
+
+    Review ID   Product     User        Rating  Comment                         Date
+    ---------   -------     ----        ------  -------                         ----
+    REV001      P001        customer1   5       Sản phẩm rất tốt, đúng mô tả    10/12/2025
+    REV002      P003        customer2   4       Đẹp nhưng hơi đắt               11/12/2025
+    REV003      P005        customer3   5       Giày chất lượng, ship nhanh     09/12/2025
+    REV004      P001        customer4   3       Bình thường, không nổi bật      12/12/2025
+
+7.2. INVALID REVIEW DATA
+-------------------------
+
+    Test Case               Rating  Comment                         Expected Result
+    ---------               ------  -------                         ---------------
+    Rating out of range     0       Valid comment                   Rating 1-5 required
+    Rating out of range     6       Valid comment                   Rating 1-5 required
+    Empty comment           5       [empty]                         Comment required
+    Comment too long        5       >1000 characters                Max 1000 characters
+    XSS in comment          5       <script>alert('xss')</script>   Blocked/Sanitized
+    SQL injection           5       ' OR '1'='1                     Blocked/Sanitized
+
+================================================================================
+                        8. CATEGORY DATA (Danh mục)
+================================================================================
+
+    Category ID     Name            Description                     Product Count
+    -----------     ----            -----------                     -------------
+    CAT001          Áo              Áo thun, áo sơ mi, áo khoác     4
+    CAT002          Quần            Quần jean, short, dài           2
+    CAT003          Váy             Váy dạ hội, đầm công sở         2
+    CAT004          Giày            Giày thể thao, giày cao gót     1
+    CAT005          Phụ Kiện        Túi, mũ, khăn, thắt lưng        2
+
+================================================================================
+                        9. FILE UPLOAD TEST DATA
+================================================================================
+
+9.1. Valid Image Files
+-----------------------
+    Filename            Format      Size        Resolution      Expected
+    --------            ------      ----        ----------      --------
+    product1.jpg        JPEG        500KB       800x800         Success
+    product2.png        PNG         1MB         1200x1200       Success
+    product3.webp       WebP        300KB       600x600         Success
+
+9.2. Invalid Image Files
+-------------------------
+    Filename            Format      Size        Issue               Expected
+    --------            ------      ----        -----               --------
+    product.exe         EXE         1MB         Wrong format        Reject
+    product.pdf         PDF         2MB         Wrong format        Reject
+    large.jpg           JPEG        10MB        Too large           Reject (max 5MB)
+    tiny.jpg            JPEG        1KB         Too small           Warning
+
+================================================================================
+                        10. API TEST DATA
+================================================================================
+
+10.1. Authentication Headers
+------------------------------
+    Valid Token:    Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+    Expired Token:  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.expired...
+    Invalid Token:  Bearer invalid_token_string
+
+10.2. API Request Bodies
+-------------------------
+
+    POST /api/User (Register):
+    {
+        "username": "testuser",
+        "password": "Pass123!",
+        "email": "test@test.com",
+        "fullname": "Test User",
+        "phone": "0901234567",
+        "gender": "Male"
+    }
+
+    POST /api/Cart (Add to cart):
+    {
+        "id_user": "user123",
+        "id_product": "P001",
+        "name_product": "Áo Thun Nam",
+        "price_product": 250000,
+        "count": 2,
+        "size": "M",
+        "image": "/img/p001.jpg"
+    }
+
+    POST /api/Payment (Create order):
+    {
+        "id_user": "user123",
+        "items": [...],
+        "total": 1250000,
+        "shipping": {
+            "fullname": "Nguyễn Văn A",
+            "phone": "0901234567",
+            "address": "123 Nguyễn Huệ, Q1, TP.HCM"
+        },
+        "payment_method": "momo"  // hoặc "cod"
+    }
+
+    POST /api/Payment/momo/create (MoMo payment):
+    {
+        "orderID": "ORDER1702345678901",
+        "total": 1250000
+    }
+
+================================================================================
+                        11. PERFORMANCE TEST DATA
+================================================================================
+
+11.1. Load Test Scenarios
+---------------------------
+
+    Scenario            Users       Duration    Expected Response Time
+    --------            -----       --------    ----------------------
+    Normal Load         100         5 min       < 500ms
+    Peak Load           500         3 min       < 1s
+    Stress Test         1000        2 min       < 2s
+    Spike Test          100→1000    1 min       System stable
+
+11.2. Test Data Volume
+-----------------------
+    Users:              1000
+    Products:           500
+    Orders per day:     200
+    Reviews:            1000
+    Cart items:         5000
+
+================================================================================
+                        12. BACKUP & RESTORE
+================================================================================
+
+12.1. Seed Data Script
+-----------------------
+    Command:    cd server_app && npm run seed
+    Purpose:    Initialize test database with sample data
+
+12.2. Clean Database
+---------------------
+    Command:    Drop all collections
+    Purpose:    Reset before each test cycle
+
+12.3. Backup Test Data
+-----------------------
+    Frequency:  Before each major test phase
+    Location:   /backup/test_data_YYYYMMDD.json
+
+================================================================================
+                              KẾT THÚC TÀI LIỆU
+================================================================================
+
+Ngày cập nhật:  12/12/2025
+Version:        1.0
