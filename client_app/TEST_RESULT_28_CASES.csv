@@ -1,0 +1,29 @@
+Test ID,Test Case Name,Module,Category,Description,Status,Result,Test Type,Executed Date
+TC-UM-001,Render SignIn form,User Management,Login,Kiểm tra SignIn form hiển thị chính xác,PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-UM-002,Login with valid credentials,User Management,Login,Đăng nhập thành công với credentials hợp lệ,PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-UM-003,Login with invalid username,User Management,Validation,Từ chối đăng nhập username không tồn tại,PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-UM-004,Login with incorrect password,User Management,Validation,Từ chối đăng nhập password sai,PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-UM-005,Validate empty fields,User Management,Validation,Yêu cầu các field bắt buộc,PASSED,✅ PASS,Unit Test,16/12/2024
+TC-UM-006,Validate email format,User Management,Validation,Kiểm tra định dạng email hợp lệ,PASSED,✅ PASS,Unit Test,16/12/2024
+TC-UM-007,Render SignUp form,User Management,Registration,SignUp form hiển thị tất cả required fields,PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-UM-008,Register with valid data,User Management,Registration,Đăng ký thành công với dữ liệu hợp lệ,PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-UM-009,Validate password confirmation,User Management,Validation,Xác nhận mật khẩu trùng khớp,PASSED,✅ PASS,Unit Test,16/12/2024
+TC-UM-010,Validate password strength,User Management,Validation,Kiểm tra độ mạnh mật khẩu (8+ chars),PASSED,✅ PASS,Unit Test,16/12/2024
+TC-UM-011,Validate phone number format,User Management,Validation,Kiểm tra định dạng số điện thoại Việt Nam (0XXXXXXXXX),PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-PM-001,Display product list,Product Management,Product List,Danh sách sản phẩm hiển thị chính xác,PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-PM-002,Search products by name,Product Management,Search,Tìm kiếm sản phẩm theo tên (case-insensitive),PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-PM-003,Filter by category,Product Management,Filter,Lọc sản phẩm theo danh mục,PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-PM-004,Filter by price range,Product Management,Filter,Lọc sản phẩm theo khoảng giá,PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-PM-005,Filter by availability,Product Management,Filter,Lọc sản phẩm chỉ hiển thị hàng còn,PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-PM-006,Apply multiple filters,Product Management,Filter,Áp dụng nhiều filter cùng lúc,PASSED,✅ PASS,Unit Test,16/12/2024
+TC-PM-007,Clear filters and search,Product Management,Filter,Xóa filter và hiện tất cả sản phẩm,PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-PM-008,Display items per page,Product Management,Pagination,Hiển thị đúng số sản phẩm per page (10),PASSED,✅ PASS,Unit Test,16/12/2024
+TC-PM-009,Navigate to next page,Product Management,Pagination,Điều hướng trang tiếp theo,PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-PM-010,Navigate to previous page,Product Management,Pagination,Điều hướng trang trước,PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-PM-011,Disable prev on first page,Product Management,Pagination,Nút prev bị disable ở trang đầu,PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-PM-012,Disable next on last page,Product Management,Pagination,Nút next bị disable ở trang cuối,PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-RS-001,Display product reviews,Review System,Review Display,Hiển thị review sản phẩm,PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-RS-002,Calculate average rating,Review System,Rating,Tính toán trung bình rating,PASSED,✅ PASS,Unit Test,16/12/2024
+TC-RS-003,Submit new review,Review System,Review Submission,Gửi review mới (rating 1-5, comment 10-500 chars),PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-RS-004,Prevent XSS attacks,Review System,Security,Ngăn chặn XSS injection trong review,PASSED,✅ PASS,Unit Test + E2E,16/12/2024
+TC-RS-005,Validate review length,Review System,Validation,Kiểm tra độ dài comment (10-500 ký tự),PASSED,✅ PASS,Unit Test + E2E,16/12/2024

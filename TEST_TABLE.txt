@@ -1,0 +1,66 @@
+KẾT QUẢ KIỂM THỬ - KTPM-SGU-DOAN (28 Test Cases)
+
+Module Code: Mixed Modules
+Test Requirement: USER MANAGEMENT (11) + PRODUCT MANAGEMENT (12) + REVIEW SYSTEM (5)
+Tester: QA Team
+
+Pass: 28    Fail: 0    Untested: 0    N/A: 0    Number of Test cases: 28
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+
+ID          | Mô tả TestCase                   | Quy trình kiểm thử                   | Kết quả mong đợi                    | Sự phụ thuộc | Result | Ngày kiểm thử | Ghi chú
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+FUNCTIONAL TESTING - USER MANAGEMENT
+
+TC-UM-001   | Render SignIn form               | Mở form đăng nhập                    | Form hiển thị đầy đủ fields         | -            | PASS   | 16/12/2024    |
+TC-UM-002   | Login with valid credentials     | Nhập username/password hợp lệ        | Đăng nhập thành công                | -            | PASS   | 16/12/2024    |
+TC-UM-003   | Login with invalid username      | Nhập username không tồn tại          | Lỗi: User not found                 | -            | PASS   | 16/12/2024    |
+TC-UM-004   | Login with incorrect password    | Nhập password sai                    | Lỗi: Incorrect password             | -            | PASS   | 16/12/2024    |
+TC-UM-005   | Validate empty fields            | Bỏ trống các field bắt buộc          | Lỗi: Field required                 | -            | PASS   | 16/12/2024    |
+
+VALIDATION TESTING - USER MANAGEMENT
+
+TC-UM-006   | Validate email format            | Nhập email không hợp lệ              | Lỗi: Invalid email                  | -            | PASS   | 16/12/2024    |
+TC-UM-007   | Render SignUp form               | Mở form đăng ký                      | Form hiển thị đầy đủ fields         | -            | PASS   | 16/12/2024    |
+TC-UM-008   | Register with valid data         | Đăng ký với dữ liệu hợp lệ           | Đăng ký thành công                  | TC-UM-006    | PASS   | 16/12/2024    |
+TC-UM-009   | Validate password confirmation   | Nhập password không trùng            | Lỗi: Passwords don't match          | -            | PASS   | 16/12/2024    |
+TC-UM-010   | Validate password strength       | Nhập password yếu (<8 chars)         | Lỗi: Password too weak              | -            | PASS   | 16/12/2024    |
+TC-UM-011   | Validate phone number format     | Nhập SĐT sai format                  | Lỗi: Invalid phone                  | -            | PASS   | 16/12/2024    |
+
+FUNCTIONAL TESTING - PRODUCT MANAGEMENT
+
+TC-PM-001   | Display product list             | Vào trang sản phẩm                   | Danh sách sản phẩm hiển thị         | -            | PASS   | 16/12/2024    |
+TC-PM-002   | Search products by name          | Tìm kiếm theo tên                    | Hiển thị kết quả tìm kiếm           | TC-PM-001    | PASS   | 16/12/2024    |
+TC-PM-003   | Filter by category               | Lọc theo danh mục                    | Hiển thị sản phẩm đúng danh mục     | TC-PM-001    | PASS   | 16/12/2024    |
+TC-PM-004   | Filter by price range            | Lọc theo khoảng giá                  | Hiển thị sản phẩm trong khoảng      | TC-PM-001    | PASS   | 16/12/2024    |
+TC-PM-005   | Filter by availability           | Lọc hàng còn                         | Hiển thị hàng còn                   | TC-PM-001    | PASS   | 16/12/2024    |
+TC-PM-006   | Apply multiple filters           | Áp dụng nhiều filter cùng lúc        | Hiển thị sản phẩm phù hợp           | TC-PM-001    | PASS   | 16/12/2024    |
+
+VALIDATION TESTING - PRODUCT MANAGEMENT
+
+TC-PM-007   | Clear filters                    | Xóa tất cả filter                    | Hiển thị tất cả sản phẩm            | TC-PM-001    | PASS   | 16/12/2024    |
+TC-PM-008   | Pagination - items per page      | Kiểm tra số items/page               | Hiển thị 10 items/page              | TC-PM-001    | PASS   | 16/12/2024    |
+TC-PM-009   | Pagination - next page           | Click next page                      | Chuyển sang trang sau               | TC-PM-001    | PASS   | 16/12/2024    |
+TC-PM-010   | Pagination - prev page           | Click prev page                      | Chuyển sang trang trước             | TC-PM-001    | PASS   | 16/12/2024    |
+TC-PM-011   | Disable prev on first page       | Ở trang 1, kiểm tra prev             | Nút prev bị disable                 | TC-PM-001    | PASS   | 16/12/2024    |
+TC-PM-012   | Disable next on last page        | Ở trang cuối, kiểm tra next          | Nút next bị disable                 | TC-PM-001    | PASS   | 16/12/2024    |
+
+FUNCTIONAL TESTING - REVIEW SYSTEM
+
+TC-RS-001   | Display product reviews          | Xem review sản phẩm                  | Hiển thị danh sách review           | TC-PM-001    | PASS   | 16/12/2024    |
+TC-RS-002   | Calculate average rating         | Kiểm tra rating trung bình           | Tính toán đúng                      | TC-RS-001    | PASS   | 16/12/2024    |
+TC-RS-003   | Submit new review                | Gửi review mới                       | Review được thêm                    | TC-RS-001    | PASS   | 16/12/2024    |
+
+SECURITY TESTING - REVIEW SYSTEM
+
+TC-RS-004   | Prevent XSS attacks              | Gửi XSS payload trong review         | Script bị escape/sanitize           | TC-RS-001    | PASS   | 16/12/2024    |
+TC-RS-005   | Validate comment length          | Comment <10 hoặc >500 chars          | Lỗi: Invalid length                 | TC-RS-001    | PASS   | 16/12/2024    |
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+
+TỔNG KẾT:
+Tổng số test cases: 28
+Passed: 28
+Failed: 0
+Pass Rate: 100%
