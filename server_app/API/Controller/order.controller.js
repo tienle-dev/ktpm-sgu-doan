@@ -126,7 +126,7 @@ module.exports.create_momo_payment = async (req, res) => {
         const accessKey = 'F8BBA842ECF85'
         const secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz'
         const partnerCode = 'MOMO'
-        const redirectUrl = `${API_URL}/momo`
+        const redirectUrl = `https://ktpm-sgu-doan.vercel.app/momo`
         const ipnUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b' // URL test
         const requestType = 'payWithMethod'
         const amount = total.toString()
