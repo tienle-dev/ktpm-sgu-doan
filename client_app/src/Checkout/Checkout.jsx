@@ -656,7 +656,7 @@ function Checkout(props) {
                                                             style={{ width: '18px', height: '18px', accentColor: '#a50064' }}
                                                         />
                                                         <img 
-                                                            src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png"
+                                                            src="https://homepage.momocdn.net/img/logo-momo.png"
                                                             alt="MoMo" 
                                                             style={{ width: '24px', height: '24px', borderRadius: '4px' }}
                                                         />
@@ -670,7 +670,7 @@ function Checkout(props) {
                                                         show_error ? <p style={{ color: '#e74c3c' }}>Vui lòng kiểm tra lại thông tin!</p> :
                                                             <div>
                                                                 <img 
-                                                                    src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" 
+                                                                    src="https://homepage.momocdn.net/img/logo-momo.png" 
                                                                     width="80" 
                                                                     alt="MoMo"
                                                                     style={{ borderRadius: '8px', marginBottom: '10px' }} 
